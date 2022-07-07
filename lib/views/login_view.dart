@@ -72,7 +72,7 @@ class LoginView extends StatelessWidget {
                             controller: state.controllers['username']!,
                             focusNode: state.focusNodes['username']!,
                             validate: isAtleast8Chars,
-                            onDone: () => FocusScope.of(context)
+                            onDone: (str) => FocusScope.of(context)
                                 .requestFocus(state.focusNodes['password']),
                             label: 'Username'),
                       const SizedBox(

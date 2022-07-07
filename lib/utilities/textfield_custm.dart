@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 
 class TextFieldCustm extends StatelessWidget {
@@ -19,7 +21,7 @@ class TextFieldCustm extends StatelessWidget {
   final bool showLabel;
   final String? Function(String?)? validate;
   final FocusNode focusNode;
-  final VoidCallback? onDone;
+  final void Function(String?)? onDone;
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -34,9 +36,7 @@ class TextFieldCustm extends StatelessWidget {
           focusNode: focusNode,
           autovalidateMode: AutovalidateMode.onUserInteraction,
           validator: validate ?? (str) => null,
-          onFieldSubmitted: (str) {
-            onDone?.call();
-          },
+          onFieldSubmitted: onDone ?? (str) => log("field submitted"),
           decoration: InputDecoration(
               hintText: showLabel ? '' : label,
               fillColor: Colors.white.withOpacity(0.6),

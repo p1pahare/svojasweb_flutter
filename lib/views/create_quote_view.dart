@@ -82,7 +82,7 @@ class _CreateQuoteViewState extends State<CreateQuoteView> {
                             options: fields[index]['options'],
                             controller: fields[index]['controller'],
                             focusNode: fields[index]['focusnode']!,
-                            onDone: () => index == fields.length - 1
+                            onDone: (str) => index == fields.length - 1
                                 ? FocusScope.of(context).unfocus()
                                 : FocusScope.of(context).requestFocus(
                                     fields[index + 1]['focusnode']),
@@ -95,7 +95,7 @@ class _CreateQuoteViewState extends State<CreateQuoteView> {
                           return TextFieldCustm(
                             controller: fields[index]['controller'],
                             focusNode: fields[index]['focusnode']!,
-                            onDone: () => index == fields.length - 1
+                            onDone: (str) => index == fields.length - 1
                                 ? FocusScope.of(context).unfocus()
                                 : FocusScope.of(context).requestFocus(
                                     fields[index + 1]['focusnode']),

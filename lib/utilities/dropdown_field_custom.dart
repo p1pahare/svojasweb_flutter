@@ -19,7 +19,7 @@ class DropDownFieldCustm extends StatelessWidget {
   final List<String>? options;
   final String? Function(String?)? validate;
   final FocusNode focusNode;
-  final VoidCallback? onDone;
+  final void Function(String?)? onDone;
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -37,7 +37,9 @@ class DropDownFieldCustm extends StatelessWidget {
           validator: validate ?? (str) => null,
           onChanged: (str) {
             controller.text = str ?? '';
-            onDone?.call();
+            if (onDone != null) {
+              onDone!(str);
+            }
           },
           decoration: InputDecoration(
               hintText: label,
