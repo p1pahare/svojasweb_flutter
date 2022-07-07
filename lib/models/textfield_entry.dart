@@ -13,6 +13,7 @@ class TextFieldEntry {
       this.visible = true,
       this.obscure = false,
       this.options,
+      this.isTime = false,
       this.focusnode,
       this.isLast = false,
       this.validate,
@@ -36,6 +37,7 @@ class TextFieldEntry {
   late String? Function(String?)? validate;
   late FocusNode? focusnode;
   late bool isLast;
+  late final bool isTime;
   late void Function(String?)? onDone;
 }
 

@@ -66,8 +66,7 @@ class NetworkCalls {
     }
   }
 
-  Future<ApiResponse> getDateAndReference(
-      String? username, String? password) async {
+  Future<ApiResponse> getDateAndReference() async {
     try {
       final http.Response response = await http
           .get(Uri.parse(Values.base_url + Values.get_date_and_reference));

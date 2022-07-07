@@ -1,8 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:svojasweb/blocs/create_party/create_party_cubit.dart';
+import 'package:svojasweb/blocs/create_quote/create_quote_cubit.dart';
 import 'package:svojasweb/blocs/dashboard/dashboard_cubit.dart';
 import 'package:svojasweb/blocs/login/login_cubit.dart';
+import 'package:svojasweb/blocs/party/party_cubit.dart';
+import 'package:svojasweb/blocs/quote/quote_cubit.dart';
 import 'package:svojasweb/models/customer.dart';
 import 'package:svojasweb/models/party.dart';
 import 'package:svojasweb/models/quote.dart';
@@ -26,6 +30,10 @@ class MyApp extends StatelessWidget {
     GetIt.I.registerSingleton(LoginCubit());
     GetIt.I.registerSingleton(DashboardCubit());
     GetIt.I.registerSingleton(NetworkCalls());
+    GetIt.I.registerSingleton(PartyCubit());
+    GetIt.I.registerSingleton(CreatePartyCubit());
+    GetIt.I.registerSingleton(QuoteCubit());
+    GetIt.I.registerSingleton(CreateQuoteCubit());
   }
 
   @override
