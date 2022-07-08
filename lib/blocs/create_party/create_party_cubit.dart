@@ -38,4 +38,19 @@ class CreatePartyCubit extends Cubit<CreatePartyState> {
       emit(CreatePartyFailed(errorMessage: apiResponse.message));
     }
   }
+
+  edit(Map<String, dynamic> party) async {
+    emit(CreatePartyLoading());
+    final ApiResponse apiResponse =
+        await GetIt.I<NetworkCalls>().editParty(party);
+    if (apiResponse.status) {
+      // GetIt.I<Preferences>().saveIsCreateParty(isCreateParty: true);
+
+      emit(CreatePartySuccess(
+          successMessage:
+              "Party Was Updated Successfully. You can close the page now."));
+    } else {
+      emit(CreatePartyFailed(errorMessage: apiResponse.message));
+    }
+  }
 }

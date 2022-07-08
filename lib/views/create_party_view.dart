@@ -86,7 +86,7 @@ class _CreatePartyViewState extends State<CreatePartyView> {
   }
 
   void focusOnNextVisible(int index) {
-    for (int x = index; x < partyFields.length; x++) {
+    for (int x = index + 1; x < partyFields.length; x++) {
       if (partyFields.values.toList()[x].visible) {
         FocusScope.of(context)
             .requestFocus(partyFields.values.toList()[x].focusnode);
@@ -280,7 +280,7 @@ class _CreatePartyViewState extends State<CreatePartyView> {
       onValueSelected(
           Values.delivery_appointment_needed,
           widget.party?.deliveryAppointmentNeeded == null
-              ? ''
+              ? 'Select'
               : widget.party?.deliveryAppointmentNeeded ?? false
                   ? 'Yes'
                   : 'No');
@@ -445,7 +445,12 @@ class _CreatePartyViewState extends State<CreatePartyView> {
                                   if (_formKey.currentState!.validate()) {
                                     dev.log(values.toString());
                                     values[Values.extra_contacts] = [];
-                                    GetIt.I<CreatePartyCubit>().create(values);
+                                    if (widget.party == null) {
+                                      GetIt.I<CreatePartyCubit>()
+                                          .create(values);
+                                    } else {
+                                      GetIt.I<CreatePartyCubit>().edit(values);
+                                    }
                                   }
                                 },
                               ),

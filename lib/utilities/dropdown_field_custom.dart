@@ -27,7 +27,7 @@ class DropDownFieldCustm extends StatelessWidget {
       children: [
         if (showLabel) Text(label),
         DropdownButtonFormField<String>(
-          value: options?.first,
+          value: controller.text.isEmpty ? options?.first : controller.text,
           items: options
               ?.map<DropdownMenuItem<String>>(
                   (e) => DropdownMenuItem(value: e, child: Text(e)))

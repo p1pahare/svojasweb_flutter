@@ -258,58 +258,13 @@ class NetworkCalls {
     }
   }
 
-  Future<ApiResponse> editParty(
-      {String? partyId,
-      String? partyName,
-      String? orgName,
-      String? emailId,
-      String? partyType,
-      List<Map<String, String>>? extraContacts,
-      String? address,
-      int? zipCode,
-      String? city,
-      String? phone,
-      String? scac,
-      String? states,
-      bool? haz,
-      bool? overweight,
-      bool? oog,
-      bool? reefer,
-      bool? transloadService,
-      bool? deliveryAppointmentNeeded,
-      String? warehouseTimingsOpen,
-      String? warehouseTimingsClose,
-      String? insuranceExpiry,
-      String? motorCarrier}) async {
+  Future<ApiResponse> editParty(Map<String, dynamic> party) async {
     try {
+      String partyId = party[Values.party_id];
+      party.remove(Values.party_id);
       final http.Response response = await http.put(
-          Uri.parse(Values.base_url + Values.party + '/' + partyId!),
-          body: jsonEncode({
-            if (partyName != null) "party_name": partyName,
-            if (orgName != null) "org_name": orgName,
-            if (emailId != null) "email_id": emailId,
-            if (partyType != null) "party_type": partyType,
-            if (extraContacts != null) "extra_contacts": extraContacts,
-            if (address != null) "address": address,
-            if (zipCode != null) "zip_code": zipCode,
-            if (city != null) "city": city,
-            if (phone != null) "phone": phone,
-            if (scac != null) "scac": scac,
-            if (states != null) "states": states,
-            if (haz != null) "haz": haz,
-            if (overweight != null) "overweight": overweight,
-            if (oog != null) "oog": oog,
-            if (reefer != null) "reefer": reefer,
-            if (transloadService != null) "transload_service": transloadService,
-            if (deliveryAppointmentNeeded != null)
-              "delivery_appointment_needed": deliveryAppointmentNeeded,
-            if (warehouseTimingsOpen != null)
-              "warehouse_timings_open": warehouseTimingsOpen,
-            if (warehouseTimingsClose != null)
-              "warehouse_timings_close": warehouseTimingsClose,
-            if (insuranceExpiry != null) "insurance_expiry": insuranceExpiry,
-            if (motorCarrier != null) "motor_carrier": motorCarrier
-          }));
+          Uri.parse(Values.base_url + Values.party + '/' + partyId),
+          body: jsonEncode(party));
       if (response.statusCode == 200) {
         final String body = response.body;
         log(body);
@@ -318,7 +273,7 @@ class NetworkCalls {
           "message": "Party was updated successfully",
         });
       } else {
-        String message = response.reasonPhrase ?? 'Something Went Wrong';
+        String message = response.body;
         log(message);
         return ApiResponse.fromJson({"status": false, "message": message});
       }
