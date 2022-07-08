@@ -1,8 +1,14 @@
 import 'dart:math';
 import 'dart:developer' as dev;
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
+import 'package:svojasweb/blocs/create_quote/create_quote_cubit.dart';
 import 'package:svojasweb/models/quote.dart';
+import 'package:svojasweb/models/textfield_entry.dart';
+import 'package:svojasweb/repositories/values.dart';
 import 'package:svojasweb/utilities/button_custm.dart';
+import 'package:svojasweb/utilities/datefield_custm.dart';
 import 'package:svojasweb/utilities/dropdown_field_custom.dart';
 import 'package:svojasweb/utilities/textfield_custm.dart';
 import 'package:svojasweb/utilities/validations.dart';
@@ -18,46 +24,230 @@ class CreateQuoteView extends StatefulWidget {
 
 class _CreateQuoteViewState extends State<CreateQuoteView> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  List<Map<String, dynamic>> fields = [
-    {
-      'type': "dropdown",
-      'label': 'Party Type',
-      'controller': TextEditingController(),
-      'focusnode': FocusNode(),
-      'options': ['Select', 'Customer', 'Trucker', 'Consignee', 'Shipper']
-    },
-    {
-      'type': "textfield",
-      'label': 'Party Name',
-      'controller': TextEditingController(),
-      'focusnode': FocusNode()
-    },
-    {
-      'type': "textfield",
-      'label': 'Company Name',
-      'controller': TextEditingController(),
-      'focusnode': FocusNode()
-    },
-    {
-      'type': "textfield",
-      'label': 'Field XYZ',
-      'controller': TextEditingController(),
-      'focusnode': FocusNode()
-    },
-  ];
+
+  void onValueSelected(String key, String? value) {}
+
+  void focusOnNextVisible(int index) {
+    for (int x = index + 1; x < quoteFields.length; x++) {
+      if (quoteFields.values.toList()[x].visible) {
+        FocusScope.of(context)
+            .requestFocus(quoteFields.values.toList()[x].focusnode);
+        break;
+      }
+    }
+  }
+
+  Map<String, TextFieldEntry> quoteFields = {};
+  Map<String, TextFieldEntry> packageFields = {};
 
   @override
   void initState() {
+    quoteFields = {
+      Values.date: TextFieldEntry(
+          label: 'Date',
+          keyId: Values.date,
+          enabled: false,
+          controller: TextEditingController(text: widget.quote?.date)),
+      Values.quote_number: TextFieldEntry(
+          label: 'Quote Number',
+          keyId: Values.quote_number,
+          enabled: false,
+          controller: TextEditingController(text: widget.quote?.sid)),
+      Values.type_of_move: TextFieldEntry(
+          label: 'Type Of Move',
+          keyId: Values.type_of_move,
+          fieldType: FieldType.dropdown,
+          options: ['Select', 'Ocean', 'Air', 'Inland'],
+          controller: TextEditingController(text: widget.quote?.typeOfMove)),
+      Values.transit_type: TextFieldEntry(
+          label: 'Transit Type',
+          keyId: Values.type_of_move,
+          fieldType: FieldType.dropdown,
+          visible: false,
+          options: [
+            'Select',
+            'Import',
+            'Export',
+            'LTL',
+            'FTL',
+          ],
+          controller: TextEditingController(text: widget.quote?.transitType)),
+      Values.pickup_ramp: TextFieldEntry(
+          label: 'Pickup Port',
+          keyId: Values.pickup_ramp,
+          fieldType: FieldType.dropdown,
+          visible: false,
+          options: [
+            'Select',
+            'Airport 1',
+            'Airport 2',
+            'Airport 3',
+            'Airport 4',
+          ],
+          controller: TextEditingController(text: widget.quote?.pickupRamp)),
+      Values.delivery_ramp: TextFieldEntry(
+          label: 'Delivery Port',
+          keyId: Values.delivery_ramp,
+          fieldType: FieldType.dropdown,
+          visible: false,
+          options: [
+            'Select',
+            'Airport 1',
+            'Airport 2',
+            'Airport 3',
+            'Airport 4',
+          ],
+          controller: TextEditingController(text: widget.quote?.deliveryRamp)),
+      Values.delivery_address: TextFieldEntry(
+          label: 'Delivery Address',
+          keyId: Values.delivery_address,
+          visible: false,
+          controller:
+              TextEditingController(text: widget.quote?.deliveryAddress)),
+      Values.delivery_city: TextFieldEntry(
+          label: 'Delivery City',
+          keyId: Values.delivery_city,
+          visible: false,
+          controller: TextEditingController(text: widget.quote?.deliveryCity)),
+      Values.delivery_state: TextFieldEntry(
+          label: 'Delivery State',
+          keyId: Values.delivery_state,
+          visible: false,
+          controller: TextEditingController(text: widget.quote?.deliveryState)),
+      Values.delivery_zip: TextFieldEntry(
+          label: 'Delivery Zipcode',
+          keyId: Values.delivery_zip,
+          visible: false,
+          validate: isInteger,
+          controller: TextEditingController(text: widget.quote?.deliveryZip)),
+      Values.pickup_address: TextFieldEntry(
+          label: 'Pickup Address',
+          keyId: Values.pickup_address,
+          visible: false,
+          controller: TextEditingController(text: widget.quote?.pickupAddress)),
+      Values.pickup_city: TextFieldEntry(
+          label: 'Pickup City',
+          keyId: Values.pickup_city,
+          visible: false,
+          controller: TextEditingController(text: widget.quote?.pickupCity)),
+      Values.pickup_state: TextFieldEntry(
+          label: 'Pickup State',
+          keyId: Values.pickup_state,
+          visible: false,
+          controller: TextEditingController(text: widget.quote?.pickupState)),
+      Values.pickup_zip: TextFieldEntry(
+          label: 'Pickup Zipcode',
+          keyId: Values.pickup_zip,
+          visible: false,
+          validate: isInteger,
+          controller: TextEditingController(text: widget.quote?.pickupZip)),
+      Values.commodity: TextFieldEntry(
+          label: 'Commodity',
+          keyId: Values.commodity,
+          visible: false,
+          controller: TextEditingController(text: widget.quote?.commodity)),
+      Values.size_of_container: TextFieldEntry(
+          label: 'Size of Container',
+          keyId: Values.delivery_ramp,
+          fieldType: FieldType.dropdown,
+          visible: false,
+          options: [
+            'Select',
+            '20\'',
+            '40\'',
+            '45\'',
+          ],
+          controller:
+              TextEditingController(text: widget.quote?.sizeOfContainer)),
+      Values.type_of_container: TextFieldEntry(
+          label: 'Size of Container',
+          keyId: Values.type_of_container,
+          fieldType: FieldType.dropdown,
+          visible: false,
+          options: [
+            'Select',
+            'Standart',
+            'High Cube',
+            'Reefer',
+            'Open Top',
+            'Flat Rack',
+            'ISO Tank'
+          ],
+          controller:
+              TextEditingController(text: widget.quote?.typeOfContainer)),
+      Values.gross_weight: TextFieldEntry(
+          label: 'Gross Weight',
+          keyId: Values.gross_weight,
+          fieldType:
+              ['', 'Legal', 'Overweight'].contains(widget.quote?.grossWeight)
+                  ? FieldType.dropdown
+                  : FieldType.text,
+          visible: false,
+          options: ['Select', 'Legal', 'Overweight', 'Manual (Custom)'],
+          controller: TextEditingController(text: widget.quote?.grossWeight)),
+      Values.haz: TextFieldEntry(
+          label: 'Haz',
+          keyId: Values.haz,
+          fieldType: FieldType.dropdown,
+          options: ['Select', 'Yes', 'No'],
+          visible: false,
+          controller: TextEditingController(
+              text: widget.quote?.haz == null
+                  ? ''
+                  : widget.quote?.haz ?? false
+                      ? 'Yes'
+                      : 'No')),
+      Values.haz_un_number: TextFieldEntry(
+          label: 'Haz UN Number',
+          keyId: Values.haz_un_number,
+          visible: false,
+          controller: TextEditingController(text: widget.quote?.hazUnNumber)),
+      Values.haz_class: TextFieldEntry(
+          label: 'Haz Class',
+          keyId: Values.haz_class,
+          fieldType: FieldType.dropdown,
+          visible: false,
+          options: [
+            'Select',
+            ...List<String>.generate(9, (index) => "Class ${index + 1}")
+          ],
+          controller: TextEditingController(text: widget.quote?.hazClass)),
+      Values.haz_proper_shipping_name: TextFieldEntry(
+          label: 'Proper Shipping Name',
+          keyId: Values.haz_proper_shipping_name,
+          visible: false,
+          controller:
+              TextEditingController(text: widget.quote?.hazProperShippingName)),
+      Values.reefer: TextFieldEntry(
+          label: 'Reefer',
+          keyId: Values.reefer,
+          fieldType: FieldType.dropdown,
+          options: ['Select', 'Yes', 'No'],
+          visible: false,
+          controller: TextEditingController(
+              text: widget.quote?.reefer == null
+                  ? ''
+                  : widget.quote?.reefer ?? false
+                      ? 'Yes'
+                      : 'No')),
+      Values.reefer_temp: TextFieldEntry(
+          label: 'Reefer Temperature (In Celsius)',
+          keyId: Values.reefer_temp,
+          visible: false,
+          controller: TextEditingController(text: widget.quote?.reeferTemp)),
+      Values.type_of_equipment: TextFieldEntry(
+          label: 'Type of Equipment',
+          keyId: Values.type_of_equipment,
+          visible: false,
+          controller:
+              TextEditingController(text: widget.quote?.typeOfEquipment)),
+    };
+    packageFields = {};
+
     // if (widget.quote != null) {
-    //   _textfields['customer_name']!.text = widget.customer!.customerName;
-    //   _textfields['company_name']!.text = widget.customer!.companyName;
-    //   _textfields['customer_type']!.text = widget.customer!.customerType;
-    //   _textfields['email']!.text = widget.customer!.emailId;
-    //   _textfields['phone']!.text = widget.customer!.phone;
-    //   _textfields['address']!.text = widget.customer!.address;
-    //   _textfields['city']!.text = widget.customer!.city;
-    //   _textfields['zip_code']!.text = widget.customer!.zipCode.toString();
+
     // }
+    GetIt.I<CreateQuoteCubit>().load();
     super.initState();
   }
 
@@ -69,64 +259,172 @@ class _CreateQuoteViewState extends State<CreateQuoteView> {
       // drawer: const DrawerView(),
       body: Center(
         child: SingleChildScrollView(
-          child: SizedBox(
-            width: min(MediaQuery.of(context).size.width, 480),
-            child: Form(
-                key: _formKey,
-                child: Column(
+          child: BlocBuilder<CreateQuoteCubit, CreateQuoteState>(
+            bloc: GetIt.I<CreateQuoteCubit>(),
+            builder: (context, state) {
+              if (state is CreateQuoteLoading) {
+                return const Center(
+                  child: CircularProgressIndicator(
+                    backgroundColor: Colors.white,
+                  ),
+                );
+              }
+              if (state is CreateQuoteFailed) {
+                return Text(state.errorMessage!);
+              }
+
+              if (state is CreateQuoteSuccess) {
+                return Column(
                   children: [
-                    Column(
-                      children: List<Widget>.generate(fields.length, (index) {
-                        if (fields[index]['type'] == 'dropdown') {
-                          return DropDownFieldCustm(
-                            options: fields[index]['options'],
-                            controller: fields[index]['controller'],
-                            focusNode: fields[index]['focusnode']!,
-                            onDone: (str) => index == fields.length - 1
-                                ? FocusScope.of(context).unfocus()
-                                : FocusScope.of(context).requestFocus(
-                                    fields[index + 1]['focusnode']),
-                            validate: isNotBlank,
-                            label: fields[index]['label'],
-                            showLabel: true,
-                          );
-                        }
-                        if (fields[index]['type'] == 'textfield') {
-                          return TextFieldCustm(
-                            controller: fields[index]['controller'],
-                            focusNode: fields[index]['focusnode']!,
-                            onDone: (str) => index == fields.length - 1
-                                ? FocusScope.of(context).unfocus()
-                                : FocusScope.of(context).requestFocus(
-                                    fields[index + 1]['focusnode']),
-                            validate: isNotBlank,
-                            label: fields[index]['label'],
-                            showLabel: true,
-                          );
-                        }
-                        return const SizedBox(
-                          height: 0,
-                        );
-                      }),
-                    ),
+                    Text(state.successMessage!),
                     Padding(
                       padding: const EdgeInsets.all(12.0),
                       child: ButtonCustm(
-                        label: "Submit",
+                        label: "Close",
                         padding: 10,
                         function1: () {
-                          final Map<String, dynamic> values = {
-                            for (final element in fields)
-                              element['label']: element['controller'].text
-                          };
-                          if (_formKey.currentState!.validate()) {
-                            dev.log(values.toString());
-                          }
+                          Navigator.pop(context, true);
                         },
                       ),
                     )
                   ],
-                )),
+                );
+              }
+              if (state is CreatePageSuccess) {
+                quoteFields[Values.date]?.controller?.text = state.date ?? '';
+                quoteFields[Values.quote_number]?.controller?.text =
+                    widget.quote?.sid ?? state.id ?? '';
+                return SizedBox(
+                    // width: min(MediaQuery.of(context).size.width, 480),
+                    child: Form(
+                        key: _formKey,
+                        child: Column(
+                          children: [
+                            Wrap(
+                              alignment: WrapAlignment.start,
+                              children: List<Widget>.generate(
+                                  quoteFields.length, (index) {
+                                if (!quoteFields.values
+                                    .toList()[index]
+                                    .visible) {
+                                  return const SizedBox(
+                                    height: 0,
+                                    width: 0,
+                                  );
+                                }
+                                return Container(
+                                  margin: const EdgeInsets.symmetric(
+                                      horizontal: 20),
+                                  width: min(460,
+                                      MediaQuery.of(context).size.width - 40),
+                                  child: Builder(builder: (context) {
+                                    final TextFieldEntry textFieldEntry =
+                                        quoteFields.values.toList()[index];
+
+                                    if (textFieldEntry.fieldType ==
+                                        FieldType.dropdown) {
+                                      return DropDownFieldCustm(
+                                        options: textFieldEntry.options,
+                                        controller: textFieldEntry.controller!,
+                                        focusNode: textFieldEntry.focusnode!,
+                                        onDone: (str) {
+                                          onValueSelected(
+                                              textFieldEntry.keyId, str);
+                                          textFieldEntry.isLast
+                                              ? FocusScope.of(context).unfocus()
+                                              : focusOnNextVisible(index);
+                                        },
+                                        validate: textFieldEntry.validate,
+                                        label: textFieldEntry.label,
+                                        showLabel: true,
+                                      );
+                                    }
+                                    if (textFieldEntry.fieldType ==
+                                        FieldType.text) {
+                                      return TextFieldCustm(
+                                        controller: textFieldEntry.controller!,
+                                        enabled: textFieldEntry.enabled,
+                                        focusNode: textFieldEntry.focusnode!,
+                                        onDone: (str) {
+                                          onValueSelected(
+                                              textFieldEntry.keyId, str);
+                                          textFieldEntry.isLast
+                                              ? FocusScope.of(context).unfocus()
+                                              : focusOnNextVisible(index);
+                                        },
+                                        validate: textFieldEntry.validate,
+                                        label: textFieldEntry.label,
+                                        showLabel: true,
+                                      );
+                                    }
+                                    if (textFieldEntry.fieldType ==
+                                        FieldType.date) {
+                                      return DateFieldCustm(
+                                        controller: textFieldEntry.controller!,
+                                        enabled: textFieldEntry.enabled,
+                                        focusNode: textFieldEntry.focusnode!,
+                                        isTime: textFieldEntry.isTime,
+                                        onDone: (str) {
+                                          onValueSelected(textFieldEntry.keyId,
+                                              str?.toString());
+                                          textFieldEntry.isLast
+                                              ? FocusScope.of(context).unfocus()
+                                              : focusOnNextVisible(index);
+                                        },
+                                        validate: textFieldEntry.validate,
+                                        label: textFieldEntry.label,
+                                        showLabel: true,
+                                      );
+                                    }
+                                    return const SizedBox(
+                                      height: 0,
+                                      width: 0,
+                                    );
+                                  }),
+                                );
+                              }),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(12.0),
+                              child: ButtonCustm(
+                                label: "Submit",
+                                padding: 10,
+                                function1: () {
+                                  final Map<String, dynamic> values = {
+                                    for (final element in quoteFields.entries)
+                                      if (element.value.controller?.text
+                                              .isNotEmpty ??
+                                          false)
+                                        element.key: element
+                                                    .value.controller?.text ==
+                                                'Yes'
+                                            ? true
+                                            : element.value.controller?.text ==
+                                                    'No'
+                                                ? false
+                                                : element.value.controller?.text
+                                  };
+                                  if (_formKey.currentState!.validate()) {
+                                    dev.log(values.toString());
+                                    values[Values.extra_contacts] = [];
+                                    if (widget.quote == null) {
+                                      GetIt.I<CreateQuoteCubit>()
+                                          .create(values);
+                                    } else {
+                                      GetIt.I<CreateQuoteCubit>().edit(values);
+                                    }
+                                  }
+                                },
+                              ),
+                            )
+                          ],
+                        )));
+              }
+              return const SizedBox(
+                height: 0,
+                width: 0,
+              );
+            },
           ),
         ),
       ),

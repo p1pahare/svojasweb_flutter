@@ -53,8 +53,8 @@ class _DashboardViewState extends State<DashboardView> {
                         List<Widget>.generate(10, (index) {
                       return Container(
                         margin: const EdgeInsets.all(18),
-                        height: MediaQuery.of(context).size.height / 3,
-                        width: MediaQuery.of(context).size.width / 3 - 60,
+                        height: MediaQuery.of(context).size.height / 4,
+                        width: MediaQuery.of(context).size.width / 4 - 60,
                         decoration: BoxDecoration(
                             color: colors[index % colors.length],
                             borderRadius: BorderRadius.circular(14)),
@@ -75,10 +75,13 @@ class _DashboardViewState extends State<DashboardView> {
                                   fontSize: 22,
                                   fontWeight: FontWeight.w700),
                             ),
-                            Text(state.statistics!
-                                .toJson()
-                                .keys
-                                .toList()[index]),
+                            Text(
+                              state.statistics!.toJson().keys.toList()[index],
+                              style: const TextStyle(
+                                  color: Colors.black45,
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w400),
+                            ),
                           ],
                         ),
                       );

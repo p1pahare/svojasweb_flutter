@@ -13,7 +13,16 @@ class CreateQuoteFailed extends CreateQuoteState {
 }
 
 class CreateQuoteSuccess extends CreateQuoteState {
-  CreateQuoteSuccess({this.id, this.date});
+  CreateQuoteSuccess({this.successMessage});
+
+  final String? successMessage;
+}
+
+class CreatePageSuccess extends CreateQuoteState {
+  CreatePageSuccess({
+    this.id,
+    this.date,
+  });
   final String? id;
   final String? date;
 }

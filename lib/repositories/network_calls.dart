@@ -175,66 +175,11 @@ class NetworkCalls {
     }
   }
 
-  Future<ApiResponse> createQuote({
-    String? quoteNumber,
-    String? date,
-    String? customer,
-    String? typeOfMove,
-    String? transitType,
-    String? grossWeight,
-    String? commodity,
-    bool? haz,
-    bool? reefer,
-    List<Map<String, dynamic>>? package,
-    String? pickupRamp,
-    String? deliveryRamp,
-    String? deliveryAddress,
-    String? deliveryCity,
-    String? deliveryState,
-    String? deliveryZip,
-    String? pickupAddress,
-    String? pickupCity,
-    String? pickupState,
-    String? pickupZip,
-    String? sizeOfContainer,
-    String? typeOfContainer,
-    String? hazUnNumber,
-    String? hazClass,
-    String? hazProperShippingName,
-    String? reeferTemp,
-    String? typeOfEquipment,
-  }) async {
+  Future<ApiResponse> createQuote(Map<String, dynamic> quote) async {
     try {
-      final http.Response response =
-          await http.post(Uri.parse(Values.base_url + Values.quote),
-              body: jsonEncode({
-                "date": date,
-                "customer": customer,
-                "type_of_move": typeOfMove,
-                "transit_type": transitType,
-                "gross_weight": grossWeight,
-                "commodity": commodity,
-                "haz": haz,
-                "reefer": reefer,
-                "package": package ?? [],
-                "pickup_ramp": pickupRamp ?? '',
-                "delivery_ramp": deliveryRamp ?? '',
-                "delivery_address": deliveryAddress ?? '',
-                "delivery_city": deliveryCity ?? '',
-                "delivery_state": deliveryState ?? '',
-                "delivery_zip": deliveryZip ?? '',
-                "pickup_address": pickupAddress ?? '',
-                "pickup_city": pickupCity ?? '',
-                "pickup_state": pickupState ?? '',
-                "pickup_zip": pickupZip ?? '',
-                "size_of_container": sizeOfContainer ?? '',
-                "type_of_container": typeOfContainer ?? '',
-                "haz_un_number": hazUnNumber ?? '',
-                "haz_class": hazClass ?? '',
-                "haz_proper_shipping_name": hazProperShippingName ?? '',
-                "reefer_temp": reeferTemp ?? '',
-                "type_of_equipment": typeOfEquipment ?? ''
-              }));
+      final http.Response response = await http.post(
+          Uri.parse(Values.base_url + Values.quote),
+          body: jsonEncode(quote));
 
       if (response.statusCode == 200) {
         final String body = response.body;
@@ -289,66 +234,40 @@ class NetworkCalls {
     }
   }
 
-  Future<ApiResponse> editQuote({
-    String? quoteNumber,
-    String? customer,
-    String? typeOfMove,
-    String? transitType,
-    String? grossWeight,
-    String? commodity,
-    bool? haz,
-    bool? reefer,
-    List<Map<String, dynamic>>? package,
-    String? pickupRamp,
-    String? deliveryRamp,
-    String? deliveryAddress,
-    String? deliveryCity,
-    String? deliveryState,
-    String? deliveryZip,
-    String? pickupAddress,
-    String? pickupCity,
-    String? pickupState,
-    String? pickupZip,
-    String? sizeOfContainer,
-    String? typeOfContainer,
-    String? hazUnNumber,
-    String? hazClass,
-    String? hazProperShippingName,
-    String? reeferTemp,
-    String? typeOfEquipment,
-  }) async {
+  Future<ApiResponse> editQuote(Map<String, dynamic> quote) async {
     try {
-      final http.Response response = await http.put(
-          Uri.parse(Values.base_url + Values.quote + '/' + quoteNumber!),
-          body: jsonEncode({
-            if (customer != null) "customer": customer,
-            if (typeOfMove != null) "type_of_move": typeOfMove,
-            if (transitType != null) "transit_type": transitType,
-            if (grossWeight != null) "gross_weight": grossWeight,
-            if (commodity != null) "commodity": commodity,
-            if (haz != null) "haz": haz,
-            if (reefer != null) "reefer": reefer,
-            if (package != null) "package": package,
-            if (pickupRamp != null) "pickup_ramp": pickupRamp,
-            if (deliveryRamp != null) "delivery_ramp": deliveryRamp,
-            if (deliveryAddress != null) "delivery_address": deliveryAddress,
-            if (deliveryCity != null) "delivery_city": deliveryCity,
-            if (deliveryState != null) "delivery_state": deliveryState,
-            if (deliveryZip != null) "delivery_zip": deliveryZip,
-            if (pickupAddress != null) "pickup_address": pickupAddress,
-            if (pickupCity != null) "pickup_city": pickupCity,
-            if (pickupState != null) "pickup_state": pickupState,
-            if (pickupZip != null) "pickup_zip": pickupZip,
-            if (sizeOfContainer != null) "size_of_container": sizeOfContainer,
-            if (typeOfContainer != null) "type_of_container": typeOfContainer,
-            if (hazUnNumber != null) "haz_un_number": hazUnNumber,
-            if (hazClass != null) "haz_class": hazClass,
-            if (hazProperShippingName != null)
-              "haz_proper_shipping_name": hazProperShippingName,
-            if (reeferTemp != null) "reefer_temp": reeferTemp,
-            if (typeOfEquipment != null) "type_of_equipment": typeOfEquipment
-          }));
+      String quoteNumber = quote[Values.quote_number];
+      quote.remove(Values.quote_number);
 
+      final http.Response response = await http.put(
+          Uri.parse(Values.base_url + Values.quote + '/' + quoteNumber),
+          body: jsonEncode(quote));
+// if (customer != null) "customer": customer,
+//             if (typeOfMove != null) "type_of_move": typeOfMove,
+//             if (transitType != null) "transit_type": transitType,
+//             if (grossWeight != null) "gross_weight": grossWeight,
+//             if (commodity != null) "commodity": commodity,
+//             if (haz != null) "haz": haz,
+//             if (reefer != null) "reefer": reefer,
+//             if (package != null) "package": package,
+//             if (pickupRamp != null) "pickup_ramp": pickupRamp,
+//             if (deliveryRamp != null) "delivery_ramp": deliveryRamp,
+//             if (deliveryAddress != null) "delivery_address": deliveryAddress,
+//             if (deliveryCity != null) "delivery_city": deliveryCity,
+//             if (deliveryState != null) "delivery_state": deliveryState,
+//             if (deliveryZip != null) "delivery_zip": deliveryZip,
+//             if (pickupAddress != null) "pickup_address": pickupAddress,
+//             if (pickupCity != null) "pickup_city": pickupCity,
+//             if (pickupState != null) "pickup_state": pickupState,
+//             if (pickupZip != null) "pickup_zip": pickupZip,
+//             if (sizeOfContainer != null) "size_of_container": sizeOfContainer,
+//             if (typeOfContainer != null) "type_of_container": typeOfContainer,
+//             if (hazUnNumber != null) "haz_un_number": hazUnNumber,
+//             if (hazClass != null) "haz_class": hazClass,
+//             if (hazProperShippingName != null)
+//               "haz_proper_shipping_name": hazProperShippingName,
+//             if (reeferTemp != null) "reefer_temp": reeferTemp,
+//             if (typeOfEquipment != null) "type_of_equipment": typeOfEquipment
       if (response.statusCode == 200) {
         final String body = response.body;
         log(body);

@@ -138,17 +138,18 @@ class _CreatePartyViewState extends State<CreatePartyView> {
           keyId: Values.address,
           visible: false,
           controller: TextEditingController(text: widget.party?.address)),
+
+      Values.city: TextFieldEntry(
+          label: 'City',
+          keyId: Values.city,
+          visible: false,
+          controller: TextEditingController(text: widget.party?.city)),
       Values.zip_code: TextFieldEntry(
           label: 'Zip Code',
           keyId: Values.zip_code,
           validate: isInteger,
           visible: false,
           controller: TextEditingController(text: widget.party?.zipCode)),
-      Values.city: TextFieldEntry(
-          label: 'City',
-          keyId: Values.city,
-          visible: false,
-          controller: TextEditingController(text: widget.party?.city)),
       Values.phone: TextFieldEntry(
           label: 'Phone',
           keyId: Values.phone,

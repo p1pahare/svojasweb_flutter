@@ -67,11 +67,11 @@ class Quote {
     deliveryAddress = json['delivery_address'];
     deliveryCity = json['delivery_city'];
     deliveryState = json['delivery_state'];
-    deliveryZip = json['delivery_zip'];
+    deliveryZip = json['delivery_zip']?.toString() ?? '';
     pickupAddress = json['pickup_address'];
     pickupCity = json['pickup_city'];
     pickupState = json['pickup_state'];
-    pickupZip = json['pickup_zip'];
+    pickupZip = json['pickup_zip']?.toString() ?? '';
     sizeOfContainer = json['size_of_container'];
     typeOfContainer = json['type_of_container'];
     grossWeight = json['gross_weight'];
@@ -138,10 +138,10 @@ class Package {
 
   Package.fromJson(Map<String, dynamic> json) {
     packageNo = json['package_no'];
-    height = double.tryParse(json['height']);
-    width = double.tryParse(json['width']);
-    length = double.tryParse(json['length']);
-    weight = double.tryParse(json['weight']);
+    height = double.tryParse(json['height'].toString());
+    width = double.tryParse(json['width'].toString());
+    length = double.tryParse(json['length'].toString());
+    weight = double.tryParse(json['weight'].toString());
     quantity = json['quantity'];
   }
 
