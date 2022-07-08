@@ -187,7 +187,7 @@ class NetworkCalls {
         return ApiResponse.fromJson(
             {"status": true, "message": "", "data": jsonDecode(body)});
       } else {
-        String message = response.reasonPhrase ?? 'Something Went Wrong';
+        String message = response.body;
         log(message);
         return ApiResponse.fromJson({"status": false, "message": message});
       }
@@ -238,36 +238,11 @@ class NetworkCalls {
     try {
       String quoteNumber = quote[Values.quote_number];
       quote.remove(Values.quote_number);
-
+      quote.remove(Values.date);
       final http.Response response = await http.put(
           Uri.parse(Values.base_url + Values.quote + '/' + quoteNumber),
           body: jsonEncode(quote));
-// if (customer != null) "customer": customer,
-//             if (typeOfMove != null) "type_of_move": typeOfMove,
-//             if (transitType != null) "transit_type": transitType,
-//             if (grossWeight != null) "gross_weight": grossWeight,
-//             if (commodity != null) "commodity": commodity,
-//             if (haz != null) "haz": haz,
-//             if (reefer != null) "reefer": reefer,
-//             if (package != null) "package": package,
-//             if (pickupRamp != null) "pickup_ramp": pickupRamp,
-//             if (deliveryRamp != null) "delivery_ramp": deliveryRamp,
-//             if (deliveryAddress != null) "delivery_address": deliveryAddress,
-//             if (deliveryCity != null) "delivery_city": deliveryCity,
-//             if (deliveryState != null) "delivery_state": deliveryState,
-//             if (deliveryZip != null) "delivery_zip": deliveryZip,
-//             if (pickupAddress != null) "pickup_address": pickupAddress,
-//             if (pickupCity != null) "pickup_city": pickupCity,
-//             if (pickupState != null) "pickup_state": pickupState,
-//             if (pickupZip != null) "pickup_zip": pickupZip,
-//             if (sizeOfContainer != null) "size_of_container": sizeOfContainer,
-//             if (typeOfContainer != null) "type_of_container": typeOfContainer,
-//             if (hazUnNumber != null) "haz_un_number": hazUnNumber,
-//             if (hazClass != null) "haz_class": hazClass,
-//             if (hazProperShippingName != null)
-//               "haz_proper_shipping_name": hazProperShippingName,
-//             if (reeferTemp != null) "reefer_temp": reeferTemp,
-//             if (typeOfEquipment != null) "type_of_equipment": typeOfEquipment
+
       if (response.statusCode == 200) {
         final String body = response.body;
         log(body);
@@ -276,7 +251,7 @@ class NetworkCalls {
           "message": "Quote was updated successfully",
         });
       } else {
-        String message = response.reasonPhrase ?? 'Something Went Wrong';
+        String message = response.body;
         log(message);
         return ApiResponse.fromJson({"status": false, "message": message});
       }

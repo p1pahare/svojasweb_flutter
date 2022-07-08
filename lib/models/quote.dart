@@ -33,28 +33,28 @@ class Quote {
   late final String customer;
   late final String typeOfMove;
   late final String transitType;
-  late final String pickupRamp;
-  late final String deliveryRamp;
-  late final String deliveryAddress;
-  late final String deliveryCity;
-  late final String deliveryState;
-  late final String deliveryZip;
-  late final String pickupAddress;
-  late final String pickupCity;
-  late final String pickupState;
-  late final String pickupZip;
-  late final String sizeOfContainer;
-  late final String typeOfContainer;
+  late final String? pickupRamp;
+  late final String? deliveryRamp;
+  late final String? deliveryAddress;
+  late final String? deliveryCity;
+  late final String? deliveryState;
+  late final String? deliveryZip;
+  late final String? pickupAddress;
+  late final String? pickupCity;
+  late final String? pickupState;
+  late final String? pickupZip;
+  late final String? sizeOfContainer;
+  late final String? typeOfContainer;
   late final String grossWeight;
   late final String commodity;
   late final bool haz;
   late final bool reefer;
-  late final String hazUnNumber;
-  late final String hazClass;
-  late final String hazProperShippingName;
-  late final String reeferTemp;
-  late final String typeOfEquipment;
-  late final List<Package> package;
+  late final String? hazUnNumber;
+  late final String? hazClass;
+  late final String? hazProperShippingName;
+  late final String? reeferTemp;
+  late final String? typeOfEquipment;
+  late final List<Package>? package;
 
   Quote.fromJson(Map<String, dynamic> json) {
     date = json['date'];
@@ -115,7 +115,7 @@ class Quote {
     _data['haz_proper_shipping_name'] = hazProperShippingName;
     _data['reefer_temp'] = reeferTemp;
     _data['type_of_equipment'] = typeOfEquipment;
-    _data['package'] = package.map((e) => e.toJson()).toList();
+    _data['package'] = package?.map((e) => e.toJson()).toList();
     return _data;
   }
 }

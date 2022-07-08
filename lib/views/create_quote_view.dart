@@ -25,7 +25,139 @@ class CreateQuoteView extends StatefulWidget {
 class _CreateQuoteViewState extends State<CreateQuoteView> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  void onValueSelected(String key, String? value) {}
+  void onValueSelected(String key, String? value, {bool clear = true}) {
+    switch (key) {
+      case Values.type_of_move:
+        quoteFields.forEach((key, value) {
+          if (![Values.date, Values.quote_number, Values.type_of_move]
+              .contains(key)) {
+            value.visible = false;
+            value.isLast = false;
+          }
+        });
+        if (value == 'Ocean') {
+          quoteFields[Values.transit_type]?.visible = true;
+          if (clear) {
+            quoteFields[Values.transit_type]?.controller?.clear();
+          }
+          quoteFields[Values.transit_type]?.options = [
+            'Select',
+            'Import',
+            'Export'
+          ];
+        }
+        if (value == 'Air') {
+          quoteFields[Values.transit_type]?.visible = true;
+          if (clear) {
+            quoteFields[Values.transit_type]?.controller?.clear();
+          }
+          quoteFields[Values.transit_type]?.options = [
+            'Select',
+            'Import',
+            'Export'
+          ];
+        }
+        if (value == 'Inland') {
+          quoteFields[Values.transit_type]?.visible = true;
+          if (clear) {
+            quoteFields[Values.transit_type]?.controller?.clear();
+          }
+          quoteFields[Values.transit_type]?.options = ['Select', 'LTL', 'FTL'];
+        }
+        break;
+      case Values.transit_type:
+        quoteFields[Values.transit_type]?.visible = true;
+        quoteFields.forEach((key, value) {
+          if (![
+            Values.date,
+            Values.quote_number,
+            Values.type_of_move,
+            Values.transit_type
+          ].contains(key)) {
+            value.visible = false;
+            value.isLast = false;
+          }
+        });
+        if (value == 'Import') {
+          if (quoteFields[Values.type_of_move]?.controller?.text == 'Ocean') {
+            quoteFields[Values.pickup_ramp]?.visible = true;
+            quoteFields[Values.delivery_address]?.visible = true;
+            quoteFields[Values.delivery_city]?.visible = true;
+            quoteFields[Values.delivery_state]?.visible = true;
+            quoteFields[Values.delivery_zip]?.visible = true;
+            quoteFields[Values.size_of_container]?.visible = true;
+            quoteFields[Values.type_of_container]?.visible = true;
+            quoteFields[Values.gross_weight]?.visible = true;
+            quoteFields[Values.commodity]?.visible = true;
+            quoteFields[Values.haz]?.visible = true;
+            quoteFields[Values.reefer]?.visible = true;
+            quoteFields[Values.reefer]?.isLast = true;
+          }
+          if (quoteFields[Values.type_of_move]?.controller?.text == 'Air') {
+            quoteFields[Values.pickup_ramp]?.visible = true;
+            quoteFields[Values.delivery_address]?.visible = true;
+            quoteFields[Values.delivery_city]?.visible = true;
+            quoteFields[Values.delivery_state]?.visible = true;
+            quoteFields[Values.delivery_zip]?.visible = true;
+            quoteFields[Values.gross_weight]?.visible = true;
+            quoteFields[Values.commodity]?.visible = true;
+            quoteFields[Values.haz]?.visible = true;
+            quoteFields[Values.reefer]?.visible = true;
+            quoteFields[Values.reefer]?.isLast = true;
+          }
+        }
+        if (value == 'Export') {
+          if (quoteFields[Values.type_of_move]?.controller?.text == 'Ocean') {
+            quoteFields[Values.delivery_ramp]?.visible = true;
+            quoteFields[Values.pickup_address]?.visible = true;
+            quoteFields[Values.pickup_city]?.visible = true;
+            quoteFields[Values.pickup_state]?.visible = true;
+            quoteFields[Values.pickup_zip]?.visible = true;
+            quoteFields[Values.size_of_container]?.visible = true;
+            quoteFields[Values.type_of_container]?.visible = true;
+            quoteFields[Values.gross_weight]?.visible = true;
+            quoteFields[Values.commodity]?.visible = true;
+            quoteFields[Values.haz]?.visible = true;
+            quoteFields[Values.reefer]?.visible = true;
+            quoteFields[Values.reefer]?.isLast = true;
+          }
+          if (quoteFields[Values.type_of_move]?.controller?.text == 'Air') {
+            quoteFields[Values.delivery_ramp]?.visible = true;
+            quoteFields[Values.pickup_address]?.visible = true;
+            quoteFields[Values.pickup_city]?.visible = true;
+            quoteFields[Values.pickup_state]?.visible = true;
+            quoteFields[Values.pickup_zip]?.visible = true;
+            quoteFields[Values.gross_weight]?.visible = true;
+            quoteFields[Values.commodity]?.visible = true;
+            quoteFields[Values.haz]?.visible = true;
+            quoteFields[Values.reefer]?.visible = true;
+            quoteFields[Values.reefer]?.isLast = true;
+          }
+        }
+        if (value == 'LTL' || value == 'FTL') {
+          quoteFields[Values.delivery_address]?.visible = true;
+          quoteFields[Values.delivery_city]?.visible = true;
+          quoteFields[Values.delivery_state]?.visible = true;
+          quoteFields[Values.delivery_zip]?.visible = true;
+          quoteFields[Values.pickup_address]?.visible = true;
+          quoteFields[Values.pickup_city]?.visible = true;
+          quoteFields[Values.pickup_state]?.visible = true;
+          quoteFields[Values.pickup_zip]?.visible = true;
+          quoteFields[Values.gross_weight]?.visible = true;
+          quoteFields[Values.commodity]?.visible = true;
+          quoteFields[Values.haz]?.visible = true;
+          quoteFields[Values.reefer]?.visible = true;
+          quoteFields[Values.reefer]?.isLast = true;
+          if (value == 'FTL') {
+            quoteFields[Values.type_of_equipment]?.visible = true;
+            quoteFields[Values.type_of_equipment]?.isLast = true;
+          }
+        }
+
+        break;
+      default:
+    }
+  }
 
   void focusOnNextVisible(int index) {
     for (int x = index + 1; x < quoteFields.length; x++) {
@@ -61,7 +193,7 @@ class _CreateQuoteViewState extends State<CreateQuoteView> {
           controller: TextEditingController(text: widget.quote?.typeOfMove)),
       Values.transit_type: TextFieldEntry(
           label: 'Transit Type',
-          keyId: Values.type_of_move,
+          keyId: Values.transit_type,
           fieldType: FieldType.dropdown,
           visible: false,
           options: [
@@ -244,9 +376,13 @@ class _CreateQuoteViewState extends State<CreateQuoteView> {
     };
     packageFields = {};
 
-    // if (widget.quote != null) {
-
-    // }
+    if (widget.quote != null) {
+      dev.log(
+          "ADSFGSDGsdg ${quoteFields[Values.transit_type]?.controller?.value}");
+      onValueSelected(Values.type_of_move, widget.quote?.typeOfMove,
+          clear: false);
+      onValueSelected(Values.transit_type, widget.quote?.transitType);
+    }
     GetIt.I<CreateQuoteCubit>().load();
     super.initState();
   }
@@ -406,7 +542,8 @@ class _CreateQuoteViewState extends State<CreateQuoteView> {
                                   };
                                   if (_formKey.currentState!.validate()) {
                                     dev.log(values.toString());
-                                    values[Values.extra_contacts] = [];
+                                    values[Values.package] = [];
+                                    values[Values.customer] = state.id;
                                     if (widget.quote == null) {
                                       GetIt.I<CreateQuoteCubit>()
                                           .create(values);

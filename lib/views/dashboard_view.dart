@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
@@ -54,7 +56,8 @@ class _DashboardViewState extends State<DashboardView> {
                       return Container(
                         margin: const EdgeInsets.all(18),
                         height: MediaQuery.of(context).size.height / 4,
-                        width: MediaQuery.of(context).size.width / 4 - 60,
+                        width: max(
+                            MediaQuery.of(context).size.width / 6 - 40, 130),
                         decoration: BoxDecoration(
                             color: colors[index % colors.length],
                             borderRadius: BorderRadius.circular(14)),
