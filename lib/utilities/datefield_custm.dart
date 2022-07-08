@@ -34,6 +34,7 @@ class DateFieldCustm extends StatelessWidget {
           controller: controller,
           obscureText: obscure,
           enabled: enabled,
+          readOnly: true,
           focusNode: focusNode,
           autovalidateMode: AutovalidateMode.onUserInteraction,
           validator: validate ?? (str) => null,
@@ -50,7 +51,8 @@ class DateFieldCustm extends StatelessWidget {
               fillColor: Colors.white.withOpacity(0.6),
               filled: true,
               errorStyle: const TextStyle(color: Colors.redAccent),
-              disabledBorder: const OutlineInputBorder(),
+              disabledBorder: const OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.grey)),
               border: const OutlineInputBorder()),
         ),
       ],

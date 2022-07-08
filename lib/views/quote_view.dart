@@ -109,6 +109,9 @@ class _QuoteViewState extends State<QuoteView> {
                   title: const Text("Delete Customer"),
                   actions: [
                     OutlinedButton(
+                        style: ButtonStyle(
+                            side: MaterialStateProperty.all(
+                                const BorderSide(color: Colors.blueGrey))),
                         onPressed: () {
                           Navigator.pop(context, true);
                         },

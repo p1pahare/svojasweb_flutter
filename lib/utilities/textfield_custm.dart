@@ -33,6 +33,7 @@ class TextFieldCustm extends StatelessWidget {
           controller: controller,
           obscureText: obscure,
           enabled: enabled,
+          readOnly: !enabled,
           focusNode: focusNode,
           autovalidateMode: AutovalidateMode.onUserInteraction,
           validator: validate ?? (str) => null,
@@ -40,9 +41,11 @@ class TextFieldCustm extends StatelessWidget {
           decoration: InputDecoration(
               hintText: showLabel ? '' : label,
               fillColor: Colors.white.withOpacity(0.6),
+              labelStyle: const TextStyle(color: Colors.grey),
               filled: true,
               errorStyle: const TextStyle(color: Colors.redAccent),
-              disabledBorder: const OutlineInputBorder(),
+              disabledBorder: const OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.grey)),
               border: const OutlineInputBorder()),
         ),
       ],

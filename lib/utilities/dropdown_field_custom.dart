@@ -46,7 +46,8 @@ class DropDownFieldCustm extends StatelessWidget {
               fillColor: Colors.white.withOpacity(0.6),
               filled: true,
               errorStyle: const TextStyle(color: Colors.redAccent),
-              disabledBorder: const OutlineInputBorder(),
+              disabledBorder: const OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.grey)),
               border: const OutlineInputBorder()),
         ),
       ],

@@ -93,7 +93,7 @@ class NetworkCalls {
     }
   }
 
-  Future<ApiResponse> getAllParties(String? username, String? password) async {
+  Future<ApiResponse> getAllParties() async {
     try {
       final http.Response response =
           await http.get(Uri.parse(Values.base_url + Values.parties));
@@ -120,7 +120,7 @@ class NetworkCalls {
     }
   }
 
-  Future<ApiResponse> getAllQuotes(String? username, String? password) async {
+  Future<ApiResponse> getAllQuotes() async {
     try {
       final http.Response response = await http.get(
         Uri.parse(Values.base_url + Values.quotes),

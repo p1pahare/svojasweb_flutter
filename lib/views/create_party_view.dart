@@ -27,81 +27,41 @@ class _CreatePartyViewState extends State<CreatePartyView> {
 
   void onValueSelected(String key, String? value) {
     if (key == 'party_type' && value?.toLowerCase() != 'select') {
-      for (final element in partyFields) {
-        element.visible = false;
-        element.isLast = false;
-      }
-      partyFields[partyFields
-              .indexWhere((element) => element.keyId == Values.party_id)]
-          .visible = true;
-      partyFields[
-              partyFields.indexWhere((element) => element.keyId == Values.date)]
-          .visible = true;
-      partyFields[partyFields
-              .indexWhere((element) => element.keyId == Values.party_type)]
-          .visible = true;
-      partyFields[partyFields
-              .indexWhere((element) => element.keyId == Values.party_name)]
-          .visible = true;
-      partyFields[partyFields
-              .indexWhere((element) => element.keyId == Values.org_name)]
-          .visible = true;
-      partyFields[
-              partyFields.indexWhere((element) => element.keyId == Values.city)]
-          .visible = true;
-      partyFields[partyFields
-              .indexWhere((element) => element.keyId == Values.zip_code)]
-          .visible = true;
-      partyFields[partyFields
-              .indexWhere((element) => element.keyId == Values.phone)]
-          .visible = true;
+      partyFields.forEach((key, value) {
+        value.visible = false;
+        value.isLast = false;
+      });
 
-      partyFields[partyFields
-              .indexWhere((element) => element.keyId == Values.email_id)]
-          .visible = true;
+      partyFields[Values.party_id]?.visible = true;
+      partyFields[Values.date]?.visible = true;
+      partyFields[Values.party_type]?.visible = true;
+      partyFields[Values.party_name]?.visible = true;
+      partyFields[Values.org_name]?.visible = true;
+      partyFields[Values.city]?.visible = true;
+      partyFields[Values.zip_code]?.visible = true;
+      partyFields[Values.phone]?.visible = true;
+
+      partyFields[Values.email_id]?.visible = true;
       switch (value?.toLowerCase()) {
         case 'customer':
-          partyFields[partyFields
-                  .indexWhere((element) => element.keyId == Values.phone)]
-              .isLast = true;
+          partyFields[Values.phone]?.isLast = true;
           break;
         case 'trucker':
-          partyFields[partyFields
-                  .indexWhere((element) => element.keyId == Values.scac)]
-              .visible = true;
-          partyFields[partyFields
-                  .indexWhere((element) => element.keyId == Values.states)]
-              .visible = true;
-          partyFields[partyFields
-                  .indexWhere((element) => element.keyId == Values.haz)]
-              .visible = true;
-          partyFields[partyFields
-                  .indexWhere((element) => element.keyId == Values.overweight)]
-              .visible = true;
-          partyFields[partyFields
-                  .indexWhere((element) => element.keyId == Values.oog)]
-              .visible = true;
-          partyFields[partyFields
-                  .indexWhere((element) => element.keyId == Values.reefer)]
-              .visible = true;
-          partyFields[partyFields.indexWhere(
-                  (element) => element.keyId == Values.transload_service)]
-              .visible = true;
-          partyFields[partyFields.indexWhere(
-                  (element) => element.keyId == Values.insurance_expiry)]
-              .visible = true;
-          partyFields[partyFields.indexWhere(
-                  (element) => element.keyId == Values.motor_carrier)]
-              .visible = true;
-          partyFields[partyFields.indexWhere(
-                  (element) => element.keyId == Values.motor_carrier)]
-              .isLast = true;
+          partyFields[Values.scac]?.visible = true;
+          partyFields[Values.states]?.visible = true;
+          partyFields[Values.haz]?.visible = true;
+          partyFields[Values.overweight]?.visible = true;
+          partyFields[Values.oog]?.visible = true;
+          partyFields[Values.reefer]?.visible = true;
+          partyFields[Values.transload_service]?.visible = true;
+          partyFields[Values.insurance_expiry]?.visible = true;
+          partyFields[Values.motor_carrier]?.visible = true;
+          partyFields[Values.motor_carrier]?.isLast = true;
           break;
         case 'consignee':
         case 'shipper':
-          partyFields[partyFields.indexWhere(
-              (element) => element.keyId == Values.delivery_appointment_needed)]
-            ..visible = true
+          partyFields[Values.delivery_appointment_needed]
+            ?..visible = true
             ..isLast = true;
 
           break;
@@ -111,128 +71,127 @@ class _CreatePartyViewState extends State<CreatePartyView> {
     }
     if (key.toLowerCase() == Values.delivery_appointment_needed &&
         value?.toLowerCase() != 'select') {
-      partyFields[partyFields.indexWhere(
-              (element) => element.keyId == Values.warehouse_timings_open)]
-          .visible = true;
-      partyFields[partyFields.indexWhere(
-                  (element) => element.keyId == Values.warehouse_timings_open)]
-              .label =
+      partyFields[Values.warehouse_timings_open]?.visible = true;
+      partyFields[Values.warehouse_timings_open]?.label =
           value?.toLowerCase() == 'no'
               ? 'Warehouse Timings (Open)'
               : 'Appointment Timing';
-      partyFields[partyFields.indexWhere(
-              (element) => element.keyId == Values.warehouse_timings_close)]
-          .visible = value?.toLowerCase() == 'no' ? true : false;
+      partyFields[Values.warehouse_timings_close]?.visible =
+          value?.toLowerCase() == 'no' ? true : false;
     }
 
     setState(() {});
   }
 
   void focusOnNextVisible(int index) {
-    for (int i = index + 1; i < partyFields.length; i++) {
-      if (partyFields[i].visible) {
-        FocusScope.of(context).requestFocus(partyFields[i].focusnode);
+    for (int x = index; x < partyFields.length; x++) {
+      if (partyFields.values.toList()[x].visible) {
+        FocusScope.of(context)
+            .requestFocus(partyFields.values.toList()[x].focusnode);
         break;
       }
     }
   }
 
-  List<TextFieldEntry> partyFields = [
-    TextFieldEntry(label: 'Party ID', keyId: Values.party_id, enabled: false),
-    TextFieldEntry(label: 'Date', keyId: Values.date, enabled: false),
-    TextFieldEntry(
+  Map<String, TextFieldEntry> partyFields = {
+    Values.party_id: TextFieldEntry(
+        label: 'Party ID', keyId: Values.party_id, enabled: false),
+    Values.date:
+        TextFieldEntry(label: 'Date', keyId: Values.date, enabled: false),
+    Values.party_type: TextFieldEntry(
         fieldType: FieldType.dropdown,
         options: ['Select', 'Customer', 'Trucker', 'Consignee', 'Shipper'],
         keyId: Values.party_type),
-    TextFieldEntry(
+    Values.party_name: TextFieldEntry(
         label: 'Party Name', keyId: Values.party_name, visible: false),
-    TextFieldEntry(
+    Values.org_name: TextFieldEntry(
         label: 'Company Name', keyId: Values.org_name, visible: false),
-    TextFieldEntry(label: 'Email Id', keyId: Values.email_id, visible: false),
+    Values.email_id: TextFieldEntry(
+        label: 'Email Id', keyId: Values.email_id, visible: false),
     // "extra_contacts": List<Map<String, dynamic>>.empty(),
-    TextFieldEntry(label: 'Address', keyId: Values.address, visible: false),
-    TextFieldEntry(label: 'Zip Code', keyId: Values.zip_code, visible: false),
-    TextFieldEntry(label: 'City', keyId: Values.city, visible: false),
-    TextFieldEntry(label: 'Phone', keyId: Values.phone, visible: false),
-    TextFieldEntry(label: 'SCAC', keyId: Values.scac, visible: false),
-    TextFieldEntry(
+    Values.address:
+        TextFieldEntry(label: 'Address', keyId: Values.address, visible: false),
+    Values.zip_code: TextFieldEntry(
+        label: 'Zip Code', keyId: Values.zip_code, visible: false),
+    Values.city:
+        TextFieldEntry(label: 'City', keyId: Values.city, visible: false),
+    Values.phone:
+        TextFieldEntry(label: 'Phone', keyId: Values.phone, visible: false),
+    Values.scac: TextFieldEntry(
+      label: 'SCAC',
+      keyId: Values.scac,
+      visible: false,
+    ),
+    Values.states: TextFieldEntry(
         label: 'States Served', keyId: Values.states, visible: false),
-    TextFieldEntry(
+    Values.haz: TextFieldEntry(
         label: 'Haz',
         keyId: Values.haz,
         fieldType: FieldType.dropdown,
         options: ['Select', 'Yes', 'No'],
         visible: false),
-    TextFieldEntry(
+    Values.overweight: TextFieldEntry(
         label: 'Overweight',
         keyId: Values.overweight,
         fieldType: FieldType.dropdown,
         options: ['Select', 'Yes', 'No'],
         visible: false),
-    TextFieldEntry(
+    Values.oog: TextFieldEntry(
         label: 'OOG',
         keyId: Values.oog,
         fieldType: FieldType.dropdown,
         options: ['Select', 'Yes', 'No'],
         visible: false),
-    TextFieldEntry(
+    Values.reefer: TextFieldEntry(
         label: 'Reefer',
         keyId: Values.reefer,
         fieldType: FieldType.dropdown,
         options: ['Select', 'Yes', 'No'],
         visible: false),
-    TextFieldEntry(
+    Values.transload_service: TextFieldEntry(
         label: 'Transload Service',
         keyId: Values.transload_service,
         fieldType: FieldType.dropdown,
         options: ['Select', 'Yes', 'No'],
         visible: false),
-    TextFieldEntry(
+    Values.delivery_appointment_needed: TextFieldEntry(
         label: 'Delivery Appointment Needed',
         keyId: Values.delivery_appointment_needed,
         fieldType: FieldType.dropdown,
         options: ['Select', 'Yes', 'No'],
         visible: false),
-    TextFieldEntry(
+    Values.warehouse_timings_open: TextFieldEntry(
         label: 'Warehouse Timings (Open)',
         keyId: Values.warehouse_timings_open,
         fieldType: FieldType.date,
         isTime: true,
         visible: false),
 
-    TextFieldEntry(
+    Values.warehouse_timings_close: TextFieldEntry(
         label: 'Warehouse Timings (Close)',
         keyId: Values.warehouse_timings_close,
         fieldType: FieldType.date,
         isTime: true,
         visible: false),
-    TextFieldEntry(
+    Values.insurance_expiry: TextFieldEntry(
         label: 'Insurance Expiry',
         keyId: Values.insurance_expiry,
         fieldType: FieldType.date,
         visible: false),
-    TextFieldEntry(
+    Values.motor_carrier: TextFieldEntry(
         label: 'Motor Carrier', keyId: Values.motor_carrier, visible: false),
-  ];
+  };
 
-  List<TextFieldEntry> extraContactsFields = [
-    TextFieldEntry(label: 'Contact Name', keyId: Values.party_name),
-    TextFieldEntry(label: 'Email Id', keyId: Values.email_id),
-    TextFieldEntry(label: 'Phone', keyId: Values.phone),
-  ];
+  Map<String, TextFieldEntry> extraContactsFields = {
+    Values.party_name:
+        TextFieldEntry(label: 'Contact Name', keyId: Values.party_name),
+    Values.email_id: TextFieldEntry(label: 'Email Id', keyId: Values.email_id),
+    Values.phone: TextFieldEntry(label: 'Phone', keyId: Values.phone),
+  };
 
   @override
   void initState() {
-    // if (widget.customer != null) {
-    //   _textfields['customer_name']!.text = widget.customer!.customerName;
-    //   _textfields['company_name']!.text = widget.customer!.companyName;
-    //   _textfields['customer_type']!.text = widget.customer!.customerType;
-    //   _textfields['email']!.text = widget.customer!.emailId;
-    //   _textfields['phone']!.text = widget.customer!.phone;
-    //   _textfields['address']!.text = widget.customer!.address;
-    //   _textfields['city']!.text = widget.customer!.city;
-    //   _textfields['zip_code']!.text = widget.customer!.zipCode.toString();
-    // }
+    if (widget.party != null) {}
     GetIt.I<CreatePartyCubit>().load();
     super.initState();
   }
@@ -257,14 +216,8 @@ class _CreatePartyViewState extends State<CreatePartyView> {
                 return Text(state.errorMessage!);
               }
               if (state is CreatePartySuccess) {
-                partyFields[partyFields
-                        .indexWhere((element) => element.keyId == Values.date)]
-                    .controller
-                    ?.text = state.date ?? '';
-                partyFields[partyFields.indexWhere(
-                        (element) => element.keyId == Values.party_id)]
-                    .controller
-                    ?.text = state.id ?? '';
+                partyFields[Values.date]?.controller?.text = state.date ?? '';
+                partyFields[Values.party_id]?.controller?.text = state.id ?? '';
                 return SizedBox(
                     // width: min(MediaQuery.of(context).size.width, 480),
                     child: Form(
@@ -275,7 +228,9 @@ class _CreatePartyViewState extends State<CreatePartyView> {
                               alignment: WrapAlignment.start,
                               children: List<Widget>.generate(
                                   partyFields.length, (index) {
-                                if (!partyFields[index].visible) {
+                                if (!partyFields.values
+                                    .toList()[index]
+                                    .visible) {
                                   return const SizedBox(
                                     height: 0,
                                     width: 0,
@@ -288,7 +243,7 @@ class _CreatePartyViewState extends State<CreatePartyView> {
                                       MediaQuery.of(context).size.width - 40),
                                   child: Builder(builder: (context) {
                                     final TextFieldEntry textFieldEntry =
-                                        partyFields[index];
+                                        partyFields.values.toList()[index];
 
                                     if (textFieldEntry.fieldType ==
                                         FieldType.dropdown) {
@@ -360,8 +315,9 @@ class _CreatePartyViewState extends State<CreatePartyView> {
                                 padding: 10,
                                 function1: () {
                                   final Map<String, dynamic> values = {
-                                    for (final element in partyFields)
-                                      element.label: element.controller?.text
+                                    for (final element in partyFields.entries)
+                                      element.key:
+                                          element.value.controller?.text
                                   };
                                   if (_formKey.currentState!.validate()) {
                                     dev.log(values.toString());

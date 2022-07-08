@@ -7,7 +7,6 @@ import 'package:svojasweb/blocs/dashboard/dashboard_cubit.dart';
 import 'package:svojasweb/blocs/login/login_cubit.dart';
 import 'package:svojasweb/blocs/party/party_cubit.dart';
 import 'package:svojasweb/blocs/quote/quote_cubit.dart';
-import 'package:svojasweb/models/customer.dart';
 import 'package:svojasweb/models/party.dart';
 import 'package:svojasweb/models/quote.dart';
 import 'package:svojasweb/repositories/network_calls.dart';
@@ -48,25 +47,26 @@ class MyApp extends StatelessWidget {
             );
           } else {
             return MaterialApp(
-              theme: ThemeData(primarySwatch: Colors.blueGrey),
+              theme: ThemeData(
+                  primarySwatch: Colors.blueGrey, disabledColor: Colors.grey),
               debugShowCheckedModeBanner: false,
               onGenerateRoute: (settings) {
                 switch (settings.name) {
                   case CreatePartyView.routeName:
-                    return CupertinoPageRoute<Customer>(
+                    return CupertinoPageRoute<bool>(
                         builder: (context) => const CreatePartyView());
                   case CreatePartyView.routeNameEdit:
                     Party customer = settings.arguments as Party;
-                    return CupertinoPageRoute<Customer>(
+                    return CupertinoPageRoute<bool>(
                         builder: (context) => CreatePartyView(
                               party: customer,
                             ));
                   case CreateQuoteView.routeName:
-                    return CupertinoPageRoute<Customer>(
+                    return CupertinoPageRoute<bool>(
                         builder: (context) => const CreateQuoteView());
                   case CreateQuoteView.routeNameEdit:
                     Quote customer = settings.arguments as Quote;
-                    return CupertinoPageRoute<Customer>(
+                    return CupertinoPageRoute<bool>(
                         builder: (context) => CreateQuoteView(
                               quote: customer,
                             ));
