@@ -22,3 +22,8 @@ String? isNotBlank(String? em) {
     return null;
   }
 }
+
+String? isInteger(String? em) {
+  if (int.tryParse(em ?? '') == null) return "Value should be in numbers";
+  return null;
+}

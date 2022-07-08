@@ -18,7 +18,22 @@ class CreatePartyCubit extends Cubit<CreatePartyState> {
       final String id = apiResponse.data['reference'];
       final String date =
           DateTime.parse(apiResponse.data['date']).toLocal().toString();
-      emit(CreatePartySuccess(id: id, date: date));
+      emit(CreatePageSuccess(id: id, date: date));
+    } else {
+      emit(CreatePartyFailed(errorMessage: apiResponse.message));
+    }
+  }
+
+  create(Map<String, dynamic> party) async {
+    emit(CreatePartyLoading());
+    final ApiResponse apiResponse =
+        await GetIt.I<NetworkCalls>().createParty(party);
+    if (apiResponse.status) {
+      // GetIt.I<Preferences>().saveIsCreateParty(isCreateParty: true);
+
+      emit(CreatePartySuccess(
+          successMessage:
+              "Party Was Created Successfully. You can close the page now."));
     } else {
       emit(CreatePartyFailed(errorMessage: apiResponse.message));
     }

@@ -12,8 +12,17 @@ class CreatePartyFailed extends CreatePartyState {
   final String? errorMessage;
 }
 
-class CreatePartySuccess extends CreatePartyState {
-  CreatePartySuccess({this.id, this.date});
+class CreatePageSuccess extends CreatePartyState {
+  CreatePageSuccess({
+    this.id,
+    this.date,
+  });
   final String? id;
   final String? date;
+}
+
+class CreatePartySuccess extends CreatePartyState {
+  CreatePartySuccess({this.successMessage});
+
+  final String? successMessage;
 }

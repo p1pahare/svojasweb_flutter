@@ -12,6 +12,7 @@ import 'package:svojasweb/utilities/button_custm.dart';
 import 'package:svojasweb/utilities/datefield_custm.dart';
 import 'package:svojasweb/utilities/dropdown_field_custom.dart';
 import 'package:svojasweb/utilities/textfield_custm.dart';
+import 'package:svojasweb/utilities/validations.dart';
 
 class CreatePartyView extends StatefulWidget {
   const CreatePartyView({Key? key, this.party}) : super(key: key);
@@ -37,6 +38,7 @@ class _CreatePartyViewState extends State<CreatePartyView> {
       partyFields[Values.party_type]?.visible = true;
       partyFields[Values.party_name]?.visible = true;
       partyFields[Values.org_name]?.visible = true;
+      partyFields[Values.address]?.visible = true;
       partyFields[Values.city]?.visible = true;
       partyFields[Values.zip_code]?.visible = true;
       partyFields[Values.phone]?.visible = true;
@@ -93,105 +95,196 @@ class _CreatePartyViewState extends State<CreatePartyView> {
     }
   }
 
-  Map<String, TextFieldEntry> partyFields = {
-    Values.party_id: TextFieldEntry(
-        label: 'Party ID', keyId: Values.party_id, enabled: false),
-    Values.date:
-        TextFieldEntry(label: 'Date', keyId: Values.date, enabled: false),
-    Values.party_type: TextFieldEntry(
-        fieldType: FieldType.dropdown,
-        options: ['Select', 'Customer', 'Trucker', 'Consignee', 'Shipper'],
-        keyId: Values.party_type),
-    Values.party_name: TextFieldEntry(
-        label: 'Party Name', keyId: Values.party_name, visible: false),
-    Values.org_name: TextFieldEntry(
-        label: 'Company Name', keyId: Values.org_name, visible: false),
-    Values.email_id: TextFieldEntry(
-        label: 'Email Id', keyId: Values.email_id, visible: false),
-    // "extra_contacts": List<Map<String, dynamic>>.empty(),
-    Values.address:
-        TextFieldEntry(label: 'Address', keyId: Values.address, visible: false),
-    Values.zip_code: TextFieldEntry(
-        label: 'Zip Code', keyId: Values.zip_code, visible: false),
-    Values.city:
-        TextFieldEntry(label: 'City', keyId: Values.city, visible: false),
-    Values.phone:
-        TextFieldEntry(label: 'Phone', keyId: Values.phone, visible: false),
-    Values.scac: TextFieldEntry(
-      label: 'SCAC',
-      keyId: Values.scac,
-      visible: false,
-    ),
-    Values.states: TextFieldEntry(
-        label: 'States Served', keyId: Values.states, visible: false),
-    Values.haz: TextFieldEntry(
-        label: 'Haz',
-        keyId: Values.haz,
-        fieldType: FieldType.dropdown,
-        options: ['Select', 'Yes', 'No'],
-        visible: false),
-    Values.overweight: TextFieldEntry(
-        label: 'Overweight',
-        keyId: Values.overweight,
-        fieldType: FieldType.dropdown,
-        options: ['Select', 'Yes', 'No'],
-        visible: false),
-    Values.oog: TextFieldEntry(
-        label: 'OOG',
-        keyId: Values.oog,
-        fieldType: FieldType.dropdown,
-        options: ['Select', 'Yes', 'No'],
-        visible: false),
-    Values.reefer: TextFieldEntry(
-        label: 'Reefer',
-        keyId: Values.reefer,
-        fieldType: FieldType.dropdown,
-        options: ['Select', 'Yes', 'No'],
-        visible: false),
-    Values.transload_service: TextFieldEntry(
-        label: 'Transload Service',
-        keyId: Values.transload_service,
-        fieldType: FieldType.dropdown,
-        options: ['Select', 'Yes', 'No'],
-        visible: false),
-    Values.delivery_appointment_needed: TextFieldEntry(
-        label: 'Delivery Appointment Needed',
-        keyId: Values.delivery_appointment_needed,
-        fieldType: FieldType.dropdown,
-        options: ['Select', 'Yes', 'No'],
-        visible: false),
-    Values.warehouse_timings_open: TextFieldEntry(
-        label: 'Warehouse Timings (Open)',
-        keyId: Values.warehouse_timings_open,
-        fieldType: FieldType.date,
-        isTime: true,
-        visible: false),
+  Map<String, TextFieldEntry> partyFields = {};
 
-    Values.warehouse_timings_close: TextFieldEntry(
-        label: 'Warehouse Timings (Close)',
-        keyId: Values.warehouse_timings_close,
-        fieldType: FieldType.date,
-        isTime: true,
-        visible: false),
-    Values.insurance_expiry: TextFieldEntry(
-        label: 'Insurance Expiry',
-        keyId: Values.insurance_expiry,
-        fieldType: FieldType.date,
-        visible: false),
-    Values.motor_carrier: TextFieldEntry(
-        label: 'Motor Carrier', keyId: Values.motor_carrier, visible: false),
-  };
-
-  Map<String, TextFieldEntry> extraContactsFields = {
-    Values.party_name:
-        TextFieldEntry(label: 'Contact Name', keyId: Values.party_name),
-    Values.email_id: TextFieldEntry(label: 'Email Id', keyId: Values.email_id),
-    Values.phone: TextFieldEntry(label: 'Phone', keyId: Values.phone),
-  };
-
+  Map<String, TextFieldEntry> extraContactsFields = {};
   @override
   void initState() {
-    if (widget.party != null) {}
+    partyFields = {
+      Values.party_id: TextFieldEntry(
+          label: 'Party ID',
+          keyId: Values.party_id,
+          enabled: false,
+          controller: TextEditingController(text: widget.party?.sid)),
+      Values.date: TextFieldEntry(
+          label: 'Date',
+          keyId: Values.date,
+          enabled: false,
+          controller: TextEditingController(text: widget.party?.date)),
+      Values.party_type: TextFieldEntry(
+          fieldType: FieldType.dropdown,
+          options: ['Select', 'Customer', 'Trucker', 'Consignee', 'Shipper'],
+          keyId: Values.party_type,
+          controller: TextEditingController(text: widget.party?.partyType)),
+      Values.party_name: TextFieldEntry(
+          label: 'Party Name',
+          keyId: Values.party_name,
+          visible: false,
+          controller: TextEditingController(text: widget.party?.partyName)),
+      Values.org_name: TextFieldEntry(
+          label: 'Company Name',
+          keyId: Values.org_name,
+          visible: false,
+          controller: TextEditingController(text: widget.party?.orgName)),
+      Values.email_id: TextFieldEntry(
+          label: 'Email Id',
+          keyId: Values.email_id,
+          validate: isEmail,
+          visible: false,
+          controller: TextEditingController(text: widget.party?.emailId)),
+      // "extra_contacts": List<Map<String, dynamic>>.empty(),
+      Values.address: TextFieldEntry(
+          label: 'Address',
+          keyId: Values.address,
+          visible: false,
+          controller: TextEditingController(text: widget.party?.address)),
+      Values.zip_code: TextFieldEntry(
+          label: 'Zip Code',
+          keyId: Values.zip_code,
+          validate: isInteger,
+          visible: false,
+          controller: TextEditingController(text: widget.party?.zipCode)),
+      Values.city: TextFieldEntry(
+          label: 'City',
+          keyId: Values.city,
+          visible: false,
+          controller: TextEditingController(text: widget.party?.city)),
+      Values.phone: TextFieldEntry(
+          label: 'Phone',
+          keyId: Values.phone,
+          visible: false,
+          controller: TextEditingController(text: widget.party?.phone)),
+      Values.scac: TextFieldEntry(
+          label: 'SCAC',
+          keyId: Values.scac,
+          visible: false,
+          controller: TextEditingController(text: widget.party?.scac)),
+      Values.states: TextFieldEntry(
+          label: 'States Served',
+          keyId: Values.states,
+          visible: false,
+          controller: TextEditingController(text: widget.party?.states)),
+      Values.haz: TextFieldEntry(
+          label: 'Haz',
+          keyId: Values.haz,
+          fieldType: FieldType.dropdown,
+          options: ['Select', 'Yes', 'No'],
+          visible: false,
+          controller: TextEditingController(
+              text: widget.party?.haz == null
+                  ? ''
+                  : widget.party?.haz ?? false
+                      ? 'Yes'
+                      : 'No')),
+      Values.overweight: TextFieldEntry(
+          label: 'Overweight',
+          keyId: Values.overweight,
+          fieldType: FieldType.dropdown,
+          options: ['Select', 'Yes', 'No'],
+          visible: false,
+          controller: TextEditingController(
+              text: widget.party?.overweight == null
+                  ? ''
+                  : widget.party?.overweight ?? false
+                      ? 'Yes'
+                      : 'No')),
+      Values.oog: TextFieldEntry(
+          label: 'OOG',
+          keyId: Values.oog,
+          fieldType: FieldType.dropdown,
+          options: ['Select', 'Yes', 'No'],
+          visible: false,
+          controller: TextEditingController(
+              text: widget.party?.oog == null
+                  ? ''
+                  : widget.party?.oog ?? false
+                      ? 'Yes'
+                      : 'No')),
+      Values.reefer: TextFieldEntry(
+          label: 'Reefer',
+          keyId: Values.reefer,
+          fieldType: FieldType.dropdown,
+          options: ['Select', 'Yes', 'No'],
+          visible: false,
+          controller: TextEditingController(
+              text: widget.party?.reefer == null
+                  ? ''
+                  : widget.party?.reefer ?? false
+                      ? 'Yes'
+                      : 'No')),
+      Values.transload_service: TextFieldEntry(
+          label: 'Transload Service',
+          keyId: Values.transload_service,
+          fieldType: FieldType.dropdown,
+          options: ['Select', 'Yes', 'No'],
+          visible: false,
+          controller: TextEditingController(
+              text: widget.party?.transloadService == null
+                  ? ''
+                  : widget.party?.transloadService ?? false
+                      ? 'Yes'
+                      : 'No')),
+      Values.delivery_appointment_needed: TextFieldEntry(
+          label: 'Delivery Appointment Needed',
+          keyId: Values.delivery_appointment_needed,
+          fieldType: FieldType.dropdown,
+          options: ['Select', 'Yes', 'No'],
+          visible: false,
+          controller: TextEditingController(
+              text: widget.party?.deliveryAppointmentNeeded == null
+                  ? ''
+                  : widget.party?.deliveryAppointmentNeeded ?? false
+                      ? 'Yes'
+                      : 'No')),
+      Values.warehouse_timings_open: TextFieldEntry(
+          label: 'Warehouse Timings (Open)',
+          keyId: Values.warehouse_timings_open,
+          fieldType: FieldType.date,
+          isTime: true,
+          visible: false,
+          controller:
+              TextEditingController(text: widget.party?.warehouseTimingsOpen)),
+
+      Values.warehouse_timings_close: TextFieldEntry(
+          label: 'Warehouse Timings (Close)',
+          keyId: Values.warehouse_timings_close,
+          fieldType: FieldType.date,
+          isTime: true,
+          visible: false,
+          controller:
+              TextEditingController(text: widget.party?.warehouseTimingsClose)),
+      Values.insurance_expiry: TextFieldEntry(
+          label: 'Insurance Expiry',
+          keyId: Values.insurance_expiry,
+          fieldType: FieldType.date,
+          visible: false,
+          controller:
+              TextEditingController(text: widget.party?.insuranceExpiry)),
+      Values.motor_carrier: TextFieldEntry(
+          label: 'Motor Carrier',
+          keyId: Values.motor_carrier,
+          visible: false,
+          controller: TextEditingController(text: widget.party?.motorCarrier)),
+    };
+
+    extraContactsFields = {
+      Values.party_name:
+          TextFieldEntry(label: 'Contact Name', keyId: Values.party_name),
+      Values.email_id:
+          TextFieldEntry(label: 'Email Id', keyId: Values.email_id),
+      Values.phone: TextFieldEntry(label: 'Phone', keyId: Values.phone),
+    };
+
+    if (widget.party != null) {
+      onValueSelected(Values.party_type, widget.party?.partyType);
+      onValueSelected(
+          Values.delivery_appointment_needed,
+          widget.party?.deliveryAppointmentNeeded == null
+              ? ''
+              : widget.party?.deliveryAppointmentNeeded ?? false
+                  ? 'Yes'
+                  : 'No');
+    }
     GetIt.I<CreatePartyCubit>().load();
     super.initState();
   }
@@ -208,16 +301,37 @@ class _CreatePartyViewState extends State<CreatePartyView> {
             bloc: GetIt.I<CreatePartyCubit>(),
             builder: (context, state) {
               if (state is CreatePartyLoading) {
-                return const CircularProgressIndicator(
-                  backgroundColor: Colors.white,
+                return const Center(
+                  child: CircularProgressIndicator(
+                    backgroundColor: Colors.white,
+                  ),
                 );
               }
               if (state is CreatePartyFailed) {
                 return Text(state.errorMessage!);
               }
+
               if (state is CreatePartySuccess) {
+                return Column(
+                  children: [
+                    Text(state.successMessage!),
+                    Padding(
+                      padding: const EdgeInsets.all(12.0),
+                      child: ButtonCustm(
+                        label: "Close",
+                        padding: 10,
+                        function1: () {
+                          Navigator.pop(context, true);
+                        },
+                      ),
+                    )
+                  ],
+                );
+              }
+              if (state is CreatePageSuccess) {
                 partyFields[Values.date]?.controller?.text = state.date ?? '';
-                partyFields[Values.party_id]?.controller?.text = state.id ?? '';
+                partyFields[Values.party_id]?.controller?.text =
+                    widget.party?.sid ?? state.id ?? '';
                 return SizedBox(
                     // width: min(MediaQuery.of(context).size.width, 480),
                     child: Form(
@@ -316,11 +430,22 @@ class _CreatePartyViewState extends State<CreatePartyView> {
                                 function1: () {
                                   final Map<String, dynamic> values = {
                                     for (final element in partyFields.entries)
-                                      element.key:
-                                          element.value.controller?.text
+                                      if (element.value.controller?.text
+                                              .isNotEmpty ??
+                                          false)
+                                        element.key: element
+                                                    .value.controller?.text ==
+                                                'Yes'
+                                            ? true
+                                            : element.value.controller?.text ==
+                                                    'No'
+                                                ? false
+                                                : element.value.controller?.text
                                   };
                                   if (_formKey.currentState!.validate()) {
                                     dev.log(values.toString());
+                                    values[Values.extra_contacts] = [];
+                                    GetIt.I<CreatePartyCubit>().create(values);
                                   }
                                 },
                               ),

@@ -24,31 +24,31 @@ class Party {
     required this.warehouseTimingsOpen,
     required this.warehouseTimingsClose,
   });
-  late final String sid;
-  late final String date;
-  late final String partyName;
-  late final String orgName;
-  late final String emailId;
-  late final String partyType;
-  late final String address;
-  late final String city;
-  late final String zipCode;
-  late final String phone;
+  late final String? sid;
+  late final String? date;
+  late final String? partyName;
+  late final String? orgName;
+  late final String? emailId;
+  late final String? partyType;
+  late final String? address;
+  late final String? city;
+  late final String? zipCode;
+  late final String? phone;
   late final List<ExtraContacts> extraContacts;
-  late final String scac;
-  late final String states;
-  late final bool haz;
-  late final bool overweight;
-  late final bool oog;
-  late final bool reefer;
-  late final bool transloadService;
-  late final String insuranceExpiry;
-  late final String motorCarrier;
-  late final bool deliveryAppointmentNeeded;
-  late final String warehouseTimingsOpen;
-  late final String warehouseTimingsClose;
+  late final String? scac;
+  late final String? states;
+  late final bool? haz;
+  late final bool? overweight;
+  late final bool? oog;
+  late final bool? reefer;
+  late final bool? transloadService;
+  late final String? insuranceExpiry;
+  late final String? motorCarrier;
+  late final bool? deliveryAppointmentNeeded;
+  late final String? warehouseTimingsOpen;
+  late final String? warehouseTimingsClose;
 
-  Party.fromJson(Map<String, dynamic> json) {
+  Party.fromJson(Map<String?, dynamic> json) {
     sid = json['_id'];
     date = json['date'];
     partyName = json['party_name'];
@@ -76,8 +76,8 @@ class Party {
     warehouseTimingsClose = json['warehouse_timings_close'];
   }
 
-  Map<String, dynamic> toJson() {
-    final _data = <String, dynamic>{};
+  Map<String?, dynamic> toJson() {
+    final _data = <String?, dynamic>{};
     _data['_id'] = sid;
     _data['date'] = date;
     _data['party_name'] = partyName;
@@ -111,18 +111,18 @@ class ExtraContacts {
     required this.emailId,
     required this.phone,
   });
-  late final String partyName;
-  late final String emailId;
-  late final String phone;
+  late final String? partyName;
+  late final String? emailId;
+  late final String? phone;
 
-  ExtraContacts.fromJson(Map<String, dynamic> json) {
+  ExtraContacts.fromJson(Map<String?, dynamic> json) {
     partyName = json['party_name'];
     emailId = json['email_id'];
     phone = json['phone'];
   }
 
-  Map<String, dynamic> toJson() {
-    final _data = <String, dynamic>{};
+  Map<String?, dynamic> toJson() {
+    final _data = <String?, dynamic>{};
     _data['party_name'] = partyName;
     _data['email_id'] = emailId;
     _data['phone'] = phone;

@@ -148,72 +148,18 @@ class NetworkCalls {
     }
   }
 
-  Future<ApiResponse> createParty(
-      {String? partyId,
-      String? partyName,
-      String? orgName,
-      String? emailId,
-      String? date,
-      String? partyType,
-      List<Map<String, String>>? extraContacts,
-      String? address,
-      int? zipCode,
-      String? city,
-      String? phone,
-      String? scac,
-      String? states,
-      bool? haz,
-      bool? overweight,
-      bool? oog,
-      bool? reefer,
-      bool? transloadService,
-      bool? deliveryAppointmentNeeded,
-      String? warehouseTimingsOpen,
-      String? warehouseTimingsClose,
-      String? insuranceExpiry,
-      String? motorCarrier}) async {
+  Future<ApiResponse> createParty(Map<String, dynamic> party) async {
     try {
-      final http.Response response =
-          await http.post(Uri.parse(Values.base_url + Values.party),
-              body: jsonEncode({
-                "party_id": partyId,
-                "party_name": partyName,
-                "org_name": orgName,
-                "email_id": emailId,
-                "date": date,
-                "party_type": partyType,
-                "extra_contacts": extraContacts ?? [],
-                "address": address ?? '',
-                "zip_code": zipCode ?? 0,
-                "city": city ?? '',
-                "phone": phone ?? '',
-                "scac": scac ?? '',
-                "states": states ?? '',
-                "haz": haz ?? false,
-                "overweight": overweight ?? false,
-                "oog": oog ?? false,
-                "reefer": reefer ?? false,
-                "transload_service": transloadService ?? false,
-                "delivery_appointment_needed":
-                    deliveryAppointmentNeeded ?? false,
-                "warehouse_timings_open": warehouseTimingsOpen ??
-                    DateTime.fromMillisecondsSinceEpoch(946691200)
-                        .toIso8601String(),
-                "warehouse_timings_close": warehouseTimingsClose ??
-                    DateTime.fromMillisecondsSinceEpoch(946691200)
-                        .toIso8601String(),
-                "insurance_expiry": insuranceExpiry ??
-                    DateTime.fromMillisecondsSinceEpoch(946691200)
-                        .toIso8601String(),
-                "motor_carrier": motorCarrier ?? ''
-              }));
+      final http.Response response = await http.post(
+          Uri.parse(Values.base_url + Values.party),
+          body: jsonEncode(party));
       if (response.statusCode == 200) {
         final String body = response.body;
         log(body);
         return ApiResponse.fromJson(
             {"status": true, "message": "", "data": jsonDecode(body)});
       } else {
-        String message = response.reasonPhrase ?? 'Something Went Wrong';
+        String message = response.body;
         log(message);
         return ApiResponse.fromJson({"status": false, "message": message});
       }
@@ -367,8 +313,10 @@ class NetworkCalls {
       if (response.statusCode == 200) {
         final String body = response.body;
         log(body);
-        return ApiResponse.fromJson(
-            {"status": true, "message": "", "data": jsonDecode(body)});
+        return ApiResponse.fromJson({
+          "status": true,
+          "message": "Party was updated successfully",
+        });
       } else {
         String message = response.reasonPhrase ?? 'Something Went Wrong';
         log(message);
@@ -449,8 +397,10 @@ class NetworkCalls {
       if (response.statusCode == 200) {
         final String body = response.body;
         log(body);
-        return ApiResponse.fromJson(
-            {"status": true, "message": "", "data": jsonDecode(body)});
+        return ApiResponse.fromJson({
+          "status": true,
+          "message": "Quote was updated successfully",
+        });
       } else {
         String message = response.reasonPhrase ?? 'Something Went Wrong';
         log(message);
@@ -538,7 +488,6 @@ class NetworkCalls {
         return ApiResponse.fromJson({
           "status": true,
           "message": "The party was deleted successfully",
-          "data": jsonDecode(body)
         });
       } else {
         String message = response.reasonPhrase ?? 'Something Went Wrong';
@@ -569,7 +518,6 @@ class NetworkCalls {
         return ApiResponse.fromJson({
           "status": true,
           "message": "The quote was deleted successfully",
-          "data": jsonDecode(body)
         });
       } else {
         String message = response.reasonPhrase ?? 'Something Went Wrong';

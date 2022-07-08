@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:svojasweb/blocs/party/party_cubit.dart';
+import 'package:svojasweb/models/api_response.dart';
 import 'package:svojasweb/models/party.dart';
+import 'package:svojasweb/repositories/network_calls.dart';
 import 'package:svojasweb/views/create_party_view.dart';
 import 'package:svojasweb/views/drawer_view.dart';
 
@@ -96,7 +98,7 @@ class _PartyViewState extends State<PartyView> {
                           color: Theme.of(context).colorScheme.onPrimary,
                         ),
                       ),
-                      onPressed: () => deleteCustomer(row.sid)),
+                      onPressed: () => deleteCustomer(row.sid!)),
                 ],
               )),
     ]);
@@ -155,32 +157,33 @@ class _PartyViewState extends State<PartyView> {
   }
 
   deleteCustomer(String sId) async {
-    bool delete = (await showDialog<bool?>(
-            context: context,
-            builder: (context) {
-              return AlertDialog(
-                  title: const Text("Delete Party"),
-                  actions: [
-                    OutlinedButton(
-                        style: ButtonStyle(
-                            side: MaterialStateProperty.all(
-                                const BorderSide(color: Colors.blueGrey))),
-                        onPressed: () {
-                          Navigator.pop(context, true);
-                        },
-                        child: const Text("Yes")),
-                    OutlinedButton(
-                        onPressed: () {
-                          Navigator.pop(context, false);
-                        },
-                        child: const Text("Cancel")),
-                  ],
-                  content: const Text(
-                    "Do you really want to delete this Party",
-                  ));
-            })) ??
-        false;
-    if (delete) {
+    bool? delete = await showDialog<bool?>(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+              title: const Text("Delete Party"),
+              actions: [
+                OutlinedButton(
+                    style: ButtonStyle(
+                        side: MaterialStateProperty.all(
+                            const BorderSide(color: Colors.blueGrey))),
+                    onPressed: () async {
+                      ApiResponse apiResponse =
+                          await GetIt.I<NetworkCalls>().deleteParty(sId);
+                      Navigator.pop(context, apiResponse.status);
+                    },
+                    child: const Text("Yes")),
+                OutlinedButton(
+                    onPressed: () {
+                      Navigator.pop(context, false);
+                    },
+                    child: const Text("Cancel")),
+              ],
+              content: const Text(
+                "Do you really want to delete this Party",
+              ));
+        });
+    if (delete != null && delete) {
       loadPage();
     }
   }
