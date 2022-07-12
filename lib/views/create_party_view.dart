@@ -9,9 +9,7 @@ import 'package:svojasweb/models/party.dart';
 import 'package:svojasweb/models/textfield_entry.dart';
 import 'package:svojasweb/repositories/values.dart';
 import 'package:svojasweb/utilities/button_custm.dart';
-import 'package:svojasweb/utilities/datefield_custm.dart';
-import 'package:svojasweb/utilities/dropdown_field_custom.dart';
-import 'package:svojasweb/utilities/textfield_custm.dart';
+import 'package:svojasweb/utilities/textfield_entry_builder.dart';
 import 'package:svojasweb/utilities/validations.dart';
 
 class CreatePartyView extends StatefulWidget {
@@ -85,21 +83,21 @@ class _CreatePartyViewState extends State<CreatePartyView> {
     setState(() {});
   }
 
-  void focusOnNextVisible(int index) {
-    for (int x = index + 1; x < partyFields.length; x++) {
-      if (partyFields.values.toList()[x].visible) {
+  void focusOnNextVisible(int index, Map<String, TextFieldEntry> fields) {
+    for (int x = index + 1; x < fields.length; x++) {
+      if (fields.values.toList()[x].visible) {
         FocusScope.of(context)
-            .requestFocus(partyFields.values.toList()[x].focusnode);
+            .requestFocus(fields.values.toList()[x].focusnode);
         break;
       }
     }
   }
 
   Map<String, TextFieldEntry> partyFields = {};
-
   Map<String, TextFieldEntry> extraContactsFields = {};
-  @override
-  void initState() {
+  List<Map<String, TextFieldEntry>> extraContacts = [];
+
+  void initParty() {
     partyFields = {
       Values.party_id: TextFieldEntry(
           label: 'Party ID',
@@ -267,15 +265,23 @@ class _CreatePartyViewState extends State<CreatePartyView> {
           visible: false,
           controller: TextEditingController(text: widget.party?.motorCarrier)),
     };
+  }
 
+  void initExtraContacts() {
     extraContactsFields = {
       Values.party_name:
           TextFieldEntry(label: 'Contact Name', keyId: Values.party_name),
-      Values.email_id:
-          TextFieldEntry(label: 'Email Id', keyId: Values.email_id),
-      Values.phone: TextFieldEntry(label: 'Phone', keyId: Values.phone),
+      Values.email_id: TextFieldEntry(
+          label: 'Email Id', keyId: Values.email_id, validate: isEmail),
+      Values.phone:
+          TextFieldEntry(label: 'Phone', keyId: Values.phone, isLast: true),
     };
+  }
 
+  @override
+  void initState() {
+    initParty();
+    initExtraContacts();
     if (widget.party != null) {
       onValueSelected(Values.party_type, widget.party?.partyType);
       onValueSelected(
@@ -343,86 +349,152 @@ class _CreatePartyViewState extends State<CreatePartyView> {
                               alignment: WrapAlignment.start,
                               children: List<Widget>.generate(
                                   partyFields.length, (index) {
-                                if (!partyFields.values
-                                    .toList()[index]
-                                    .visible) {
-                                  return const SizedBox(
-                                    height: 0,
-                                    width: 0,
-                                  );
-                                }
-                                return Container(
-                                  margin: const EdgeInsets.symmetric(
-                                      horizontal: 20),
-                                  width: min(460,
-                                      MediaQuery.of(context).size.width - 40),
-                                  child: Builder(builder: (context) {
-                                    final TextFieldEntry textFieldEntry =
-                                        partyFields.values.toList()[index];
-
-                                    if (textFieldEntry.fieldType ==
-                                        FieldType.dropdown) {
-                                      return DropDownFieldCustm(
-                                        options: textFieldEntry.options,
-                                        controller: textFieldEntry.controller!,
-                                        focusNode: textFieldEntry.focusnode!,
-                                        onDone: (str) {
-                                          onValueSelected(
-                                              textFieldEntry.keyId, str);
-                                          textFieldEntry.isLast
-                                              ? FocusScope.of(context).unfocus()
-                                              : focusOnNextVisible(index);
-                                        },
-                                        validate: textFieldEntry.validate,
-                                        label: textFieldEntry.label,
-                                        showLabel: true,
-                                      );
-                                    }
-                                    if (textFieldEntry.fieldType ==
-                                        FieldType.text) {
-                                      return TextFieldCustm(
-                                        controller: textFieldEntry.controller!,
-                                        enabled: textFieldEntry.enabled,
-                                        focusNode: textFieldEntry.focusnode!,
-                                        onDone: (str) {
-                                          onValueSelected(
-                                              textFieldEntry.keyId, str);
-                                          textFieldEntry.isLast
-                                              ? FocusScope.of(context).unfocus()
-                                              : focusOnNextVisible(index);
-                                        },
-                                        validate: textFieldEntry.validate,
-                                        label: textFieldEntry.label,
-                                        showLabel: true,
-                                      );
-                                    }
-                                    if (textFieldEntry.fieldType ==
-                                        FieldType.date) {
-                                      return DateFieldCustm(
-                                        controller: textFieldEntry.controller!,
-                                        enabled: textFieldEntry.enabled,
-                                        focusNode: textFieldEntry.focusnode!,
-                                        isTime: textFieldEntry.isTime,
-                                        onDone: (str) {
-                                          onValueSelected(textFieldEntry.keyId,
-                                              str?.toString());
-                                          textFieldEntry.isLast
-                                              ? FocusScope.of(context).unfocus()
-                                              : focusOnNextVisible(index);
-                                        },
-                                        validate: textFieldEntry.validate,
-                                        label: textFieldEntry.label,
-                                        showLabel: true,
-                                      );
-                                    }
-                                    return const SizedBox(
-                                      height: 0,
-                                      width: 0,
-                                    );
-                                  }),
+                                return TextFieldEntryBuilder(
+                                  textFieldEntry:
+                                      partyFields.values.toList()[index],
+                                  onValueSelected: (key, value) =>
+                                      onValueSelected(key!, value),
+                                  focusHandler: (isLast) {
+                                    isLast
+                                        ? FocusScope.of(context).unfocus()
+                                        : focusOnNextVisible(
+                                            index, partyFields);
+                                  },
                                 );
                               }),
                             ),
+                            Container(
+                              margin: const EdgeInsets.all(40),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const Text(
+                                    "Extra Contact",
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 22),
+                                  ),
+                                  Expanded(
+                                    child: SizedBox(
+                                      width: MediaQuery.of(context).size.width *
+                                          0.5,
+                                    ),
+                                  ),
+                                  TextButton(
+                                      style: TextButton.styleFrom(
+                                        backgroundColor: Theme.of(context)
+                                            .colorScheme
+                                            .primary,
+                                        shape: const CircleBorder(),
+                                      ),
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(4.0),
+                                        child: Icon(
+                                          Icons.add_rounded,
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .onPrimary,
+                                        ),
+                                      ),
+                                      onPressed: () {
+                                        setState(() {
+                                          extraContacts
+                                              .add(extraContactsFields);
+                                          initExtraContacts();
+                                        });
+                                      }),
+                                ],
+                              ),
+                            ),
+                            ListView.builder(
+                                shrinkWrap: true,
+                                physics: const NeverScrollableScrollPhysics(),
+                                itemCount: extraContacts.length,
+                                itemBuilder: (context, index0) {
+                                  return Container(
+                                      margin: const EdgeInsets.symmetric(
+                                          horizontal: 20),
+                                      width: min(
+                                          460,
+                                          MediaQuery.of(context).size.width -
+                                              40),
+                                      child: Card(
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(16)),
+                                          child: Container(
+                                            padding: const EdgeInsets.all(12),
+                                            child: ListView.builder(
+                                                shrinkWrap: true,
+                                                physics:
+                                                    const NeverScrollableScrollPhysics(),
+                                                itemCount:
+                                                    extraContactsFields.length +
+                                                        1,
+                                                itemBuilder: (context, index) {
+                                                  if (index ==
+                                                      extraContactsFields
+                                                          .length) {
+                                                    return Padding(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              8.0),
+                                                      child: TextButton(
+                                                          style: TextButton
+                                                              .styleFrom(
+                                                            backgroundColor:
+                                                                Theme.of(
+                                                                        context)
+                                                                    .colorScheme
+                                                                    .primary,
+                                                            shape:
+                                                                const CircleBorder(),
+                                                          ),
+                                                          child: Padding(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                    .all(4.0),
+                                                            child: Icon(
+                                                              Icons
+                                                                  .remove_circle_rounded,
+                                                              color: Theme.of(
+                                                                      context)
+                                                                  .colorScheme
+                                                                  .onPrimary,
+                                                            ),
+                                                          ),
+                                                          onPressed: () {
+                                                            setState(() {
+                                                              extraContacts
+                                                                  .removeAt(
+                                                                      index0);
+                                                            });
+                                                          }),
+                                                    );
+                                                  }
+                                                  return TextFieldEntryBuilder(
+                                                    textFieldEntry:
+                                                        extraContacts[index0]
+                                                            .values
+                                                            .toList()[index],
+                                                    onValueSelected: (key,
+                                                            value) =>
+                                                        onValueSelected(
+                                                            key!, value),
+                                                    focusHandler: (isLast) {
+                                                      isLast
+                                                          ? FocusScope.of(
+                                                                  context)
+                                                              .unfocus()
+                                                          : focusOnNextVisible(
+                                                              index,
+                                                              extraContacts[
+                                                                  index0]);
+                                                    },
+                                                  );
+                                                }),
+                                          )));
+                                }),
                             Padding(
                               padding: const EdgeInsets.all(12.0),
                               child: ButtonCustm(

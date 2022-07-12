@@ -27,3 +27,10 @@ String? isInteger(String? em) {
   if (int.tryParse(em ?? '') == null) return "Value should be in numbers";
   return null;
 }
+
+String? isDouble(String? em) {
+  if (double.tryParse(em ?? '') == null) {
+    return "Value should be in decimal numbers";
+  }
+  return null;
+}

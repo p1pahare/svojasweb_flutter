@@ -1,5 +1,5 @@
-import 'dart:math';
 import 'dart:developer' as dev;
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
@@ -8,9 +8,7 @@ import 'package:svojasweb/models/quote.dart';
 import 'package:svojasweb/models/textfield_entry.dart';
 import 'package:svojasweb/repositories/values.dart';
 import 'package:svojasweb/utilities/button_custm.dart';
-import 'package:svojasweb/utilities/datefield_custm.dart';
-import 'package:svojasweb/utilities/dropdown_field_custom.dart';
-import 'package:svojasweb/utilities/textfield_custm.dart';
+import 'package:svojasweb/utilities/textfield_entry_builder.dart';
 import 'package:svojasweb/utilities/validations.dart';
 
 class CreateQuoteView extends StatefulWidget {
@@ -155,15 +153,47 @@ class _CreateQuoteViewState extends State<CreateQuoteView> {
         }
 
         break;
+      case Values.haz:
+        if (value == 'Yes') {
+          quoteFields[Values.haz_un_number]?.visible = true;
+          quoteFields[Values.haz_class]?.visible = true;
+          quoteFields[Values.haz_proper_shipping_name]?.visible = true;
+          if (quoteFields[Values.reefer]?.controller?.text == 'Yes') {
+            quoteFields[Values.reefer_temp]?.isLast = true;
+            quoteFields[Values.haz_proper_shipping_name]?.isLast = false;
+          }
+          if (quoteFields[Values.reefer]?.controller?.text == 'No') {
+            quoteFields[Values.reefer_temp]?.isLast = false;
+            quoteFields[Values.haz_proper_shipping_name]?.isLast = true;
+          }
+        }
+        if (value == 'No') {
+          quoteFields[Values.haz_un_number]?.visible = false;
+          quoteFields[Values.haz_class]?.visible = false;
+          quoteFields[Values.haz_proper_shipping_name]?.visible = false;
+        }
+        break;
+      case Values.reefer:
+        if (value == 'Yes') {
+          quoteFields[Values.reefer_temp]?.visible = true;
+          quoteFields[Values.reefer_temp]?.isLast = true;
+          quoteFields[Values.haz_proper_shipping_name]?.isLast = false;
+        }
+        if (value == 'No') {
+          quoteFields[Values.reefer_temp]?.visible = false;
+          quoteFields[Values.reefer_temp]?.isLast = false;
+          quoteFields[Values.haz_proper_shipping_name]?.isLast = true;
+        }
+        break;
       default:
     }
   }
 
-  void focusOnNextVisible(int index) {
-    for (int x = index + 1; x < quoteFields.length; x++) {
-      if (quoteFields.values.toList()[x].visible) {
+  void focusOnNextVisible(int index, Map<String, TextFieldEntry> fields) {
+    for (int x = index + 1; x < fields.length; x++) {
+      if (fields.values.toList()[x].visible) {
         FocusScope.of(context)
-            .requestFocus(quoteFields.values.toList()[x].focusnode);
+            .requestFocus(fields.values.toList()[x].focusnode);
         break;
       }
     }
@@ -171,9 +201,9 @@ class _CreateQuoteViewState extends State<CreateQuoteView> {
 
   Map<String, TextFieldEntry> quoteFields = {};
   Map<String, TextFieldEntry> packageFields = {};
+  List<Map<String, TextFieldEntry>> packages = [];
 
-  @override
-  void initState() {
+  void initQuote() {
     quoteFields = {
       Values.date: TextFieldEntry(
           label: 'Date',
@@ -374,7 +404,38 @@ class _CreateQuoteViewState extends State<CreateQuoteView> {
           controller:
               TextEditingController(text: widget.quote?.typeOfEquipment)),
     };
-    packageFields = {};
+  }
+
+  void initPackage() {
+    packageFields = {
+      Values.package_no: TextFieldEntry(
+          label: 'Package Number',
+          keyId: Values.package_no,
+          enabled: false,
+          controller:
+              TextEditingController(text: (packages.length + 1).toString())),
+      Values.height: TextFieldEntry(
+          label: 'Package Height (H)',
+          keyId: Values.height,
+          validate: isDouble),
+      Values.length: TextFieldEntry(
+          label: 'Package Length (L)',
+          keyId: Values.length,
+          validate: isDouble),
+      Values.width: TextFieldEntry(
+          label: 'Package Width (W)', keyId: Values.width, validate: isDouble),
+      Values.weight: TextFieldEntry(
+          label: 'Package Weight (in Grams)',
+          keyId: Values.weight,
+          validate: isDouble,
+          isLast: true),
+    };
+  }
+
+  @override
+  void initState() {
+    initQuote();
+    initPackage();
 
     if (widget.quote != null) {
       dev.log(
@@ -440,86 +501,147 @@ class _CreateQuoteViewState extends State<CreateQuoteView> {
                               alignment: WrapAlignment.start,
                               children: List<Widget>.generate(
                                   quoteFields.length, (index) {
-                                if (!quoteFields.values
-                                    .toList()[index]
-                                    .visible) {
-                                  return const SizedBox(
-                                    height: 0,
-                                    width: 0,
-                                  );
-                                }
-                                return Container(
-                                  margin: const EdgeInsets.symmetric(
-                                      horizontal: 20),
-                                  width: min(460,
-                                      MediaQuery.of(context).size.width - 40),
-                                  child: Builder(builder: (context) {
-                                    final TextFieldEntry textFieldEntry =
-                                        quoteFields.values.toList()[index];
-
-                                    if (textFieldEntry.fieldType ==
-                                        FieldType.dropdown) {
-                                      return DropDownFieldCustm(
-                                        options: textFieldEntry.options,
-                                        controller: textFieldEntry.controller!,
-                                        focusNode: textFieldEntry.focusnode!,
-                                        onDone: (str) {
-                                          onValueSelected(
-                                              textFieldEntry.keyId, str);
-                                          textFieldEntry.isLast
-                                              ? FocusScope.of(context).unfocus()
-                                              : focusOnNextVisible(index);
-                                        },
-                                        validate: textFieldEntry.validate,
-                                        label: textFieldEntry.label,
-                                        showLabel: true,
-                                      );
-                                    }
-                                    if (textFieldEntry.fieldType ==
-                                        FieldType.text) {
-                                      return TextFieldCustm(
-                                        controller: textFieldEntry.controller!,
-                                        enabled: textFieldEntry.enabled,
-                                        focusNode: textFieldEntry.focusnode!,
-                                        onDone: (str) {
-                                          onValueSelected(
-                                              textFieldEntry.keyId, str);
-                                          textFieldEntry.isLast
-                                              ? FocusScope.of(context).unfocus()
-                                              : focusOnNextVisible(index);
-                                        },
-                                        validate: textFieldEntry.validate,
-                                        label: textFieldEntry.label,
-                                        showLabel: true,
-                                      );
-                                    }
-                                    if (textFieldEntry.fieldType ==
-                                        FieldType.date) {
-                                      return DateFieldCustm(
-                                        controller: textFieldEntry.controller!,
-                                        enabled: textFieldEntry.enabled,
-                                        focusNode: textFieldEntry.focusnode!,
-                                        isTime: textFieldEntry.isTime,
-                                        onDone: (str) {
-                                          onValueSelected(textFieldEntry.keyId,
-                                              str?.toString());
-                                          textFieldEntry.isLast
-                                              ? FocusScope.of(context).unfocus()
-                                              : focusOnNextVisible(index);
-                                        },
-                                        validate: textFieldEntry.validate,
-                                        label: textFieldEntry.label,
-                                        showLabel: true,
-                                      );
-                                    }
-                                    return const SizedBox(
-                                      height: 0,
-                                      width: 0,
-                                    );
-                                  }),
+                                return TextFieldEntryBuilder(
+                                  textFieldEntry:
+                                      quoteFields.values.toList()[index],
+                                  onValueSelected: (key, value) =>
+                                      onValueSelected(key!, value),
+                                  focusHandler: (isLast) {
+                                    isLast
+                                        ? FocusScope.of(context).unfocus()
+                                        : focusOnNextVisible(
+                                            index, quoteFields);
+                                  },
                                 );
                               }),
                             ),
+                            Container(
+                              margin: const EdgeInsets.all(40),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const Text(
+                                    "Package Details",
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 22),
+                                  ),
+                                  Expanded(
+                                    child: SizedBox(
+                                      width: MediaQuery.of(context).size.width *
+                                          0.5,
+                                    ),
+                                  ),
+                                  TextButton(
+                                      style: TextButton.styleFrom(
+                                        backgroundColor: Theme.of(context)
+                                            .colorScheme
+                                            .primary,
+                                        shape: const CircleBorder(),
+                                      ),
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(4.0),
+                                        child: Icon(
+                                          Icons.add_rounded,
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .onPrimary,
+                                        ),
+                                      ),
+                                      onPressed: () {
+                                        setState(() {
+                                          packages.add(packageFields);
+                                          initPackage();
+                                        });
+                                      }),
+                                ],
+                              ),
+                            ),
+                            ListView.builder(
+                                shrinkWrap: true,
+                                physics: const NeverScrollableScrollPhysics(),
+                                itemCount: packages.length,
+                                itemBuilder: (context, index0) {
+                                  return Container(
+                                      margin: const EdgeInsets.symmetric(
+                                          horizontal: 20),
+                                      width: min(
+                                          460,
+                                          MediaQuery.of(context).size.width -
+                                              40),
+                                      child: Card(
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(16)),
+                                          child: Container(
+                                            padding: const EdgeInsets.all(12),
+                                            child: ListView.builder(
+                                                shrinkWrap: true,
+                                                physics:
+                                                    const NeverScrollableScrollPhysics(),
+                                                itemCount:
+                                                    packageFields.length + 1,
+                                                itemBuilder: (context, index) {
+                                                  if (index ==
+                                                      packageFields.length) {
+                                                    return Padding(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              8.0),
+                                                      child: TextButton(
+                                                          style: TextButton
+                                                              .styleFrom(
+                                                            backgroundColor:
+                                                                Theme.of(
+                                                                        context)
+                                                                    .colorScheme
+                                                                    .primary,
+                                                            shape:
+                                                                const CircleBorder(),
+                                                          ),
+                                                          child: Padding(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                    .all(4.0),
+                                                            child: Icon(
+                                                              Icons
+                                                                  .remove_circle_rounded,
+                                                              color: Theme.of(
+                                                                      context)
+                                                                  .colorScheme
+                                                                  .onPrimary,
+                                                            ),
+                                                          ),
+                                                          onPressed: () {
+                                                            setState(() {
+                                                              packages.removeAt(
+                                                                  index0);
+                                                            });
+                                                          }),
+                                                    );
+                                                  }
+                                                  return TextFieldEntryBuilder(
+                                                    textFieldEntry:
+                                                        packages[index0]
+                                                            .values
+                                                            .toList()[index],
+                                                    onValueSelected: (key,
+                                                            value) =>
+                                                        onValueSelected(
+                                                            key!, value),
+                                                    focusHandler: (isLast) {
+                                                      isLast
+                                                          ? FocusScope.of(
+                                                                  context)
+                                                              .unfocus()
+                                                          : focusOnNextVisible(
+                                                              index,
+                                                              packages[index0]);
+                                                    },
+                                                  );
+                                                }),
+                                          )));
+                                }),
                             Padding(
                               padding: const EdgeInsets.all(12.0),
                               child: ButtonCustm(
