@@ -34,6 +34,12 @@ class _CreateQuoteViewState extends State<CreateQuoteView> {
           }
         });
         if (value == 'Ocean') {
+          quoteFields[Values.gross_weight]?.enabled = true;
+
+          quoteFields[Values.gross_weight]?.fieldType =
+              quoteFields[Values.gross_weight]!.controller!.text.isEmpty
+                  ? FieldType.dropdown
+                  : FieldType.text;
           quoteFields[Values.transit_type]?.visible = true;
           if (clear) {
             quoteFields[Values.transit_type]?.controller?.clear();
@@ -45,6 +51,9 @@ class _CreateQuoteViewState extends State<CreateQuoteView> {
           ];
         }
         if (value == 'Air') {
+          quoteFields[Values.gross_weight]?.enabled = false;
+
+          quoteFields[Values.gross_weight]?.fieldType = FieldType.text;
           quoteFields[Values.transit_type]?.visible = true;
           if (clear) {
             quoteFields[Values.transit_type]?.controller?.clear();
@@ -56,6 +65,8 @@ class _CreateQuoteViewState extends State<CreateQuoteView> {
           ];
         }
         if (value == 'Inland') {
+          quoteFields[Values.gross_weight]?.enabled = false;
+          quoteFields[Values.gross_weight]?.fieldType = FieldType.text;
           quoteFields[Values.transit_type]?.visible = true;
           if (clear) {
             quoteFields[Values.transit_type]?.controller?.clear();
@@ -185,8 +196,17 @@ class _CreateQuoteViewState extends State<CreateQuoteView> {
           quoteFields[Values.haz_proper_shipping_name]?.isLast = true;
         }
         break;
+      case Values.gross_weight:
+        if (value?.toLowerCase().contains('manual') ?? false) {
+          quoteFields[Values.gross_weight]?.enabled = true;
+          quoteFields[Values.gross_weight]?.fieldType = FieldType.text;
+          quoteFields[Values.gross_weight]?.controller?.clear();
+          quoteFields[Values.transit_type]?.visible = true;
+        }
+        break;
       default:
     }
+    setState(() {});
   }
 
   void focusOnNextVisible(int index, Map<String, TextFieldEntry> fields) {
@@ -340,6 +360,7 @@ class _CreateQuoteViewState extends State<CreateQuoteView> {
       Values.gross_weight: TextFieldEntry(
           label: 'Gross Weight',
           keyId: Values.gross_weight,
+          enabled: false,
           fieldType:
               ['', 'Legal', 'Overweight'].contains(widget.quote?.grossWeight)
                   ? FieldType.dropdown
@@ -515,48 +536,50 @@ class _CreateQuoteViewState extends State<CreateQuoteView> {
                                 );
                               }),
                             ),
-                            Container(
-                              margin: const EdgeInsets.all(40),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  const Text(
-                                    "Package Details",
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: 22),
-                                  ),
-                                  Expanded(
-                                    child: SizedBox(
-                                      width: MediaQuery.of(context).size.width *
-                                          0.5,
+                            if (!quoteFields[Values.gross_weight]!.enabled)
+                              Container(
+                                margin: const EdgeInsets.all(40),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    const Text(
+                                      "Package Details",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 22),
                                     ),
-                                  ),
-                                  TextButton(
-                                      style: TextButton.styleFrom(
-                                        backgroundColor: Theme.of(context)
-                                            .colorScheme
-                                            .primary,
-                                        shape: const CircleBorder(),
+                                    Expanded(
+                                      child: SizedBox(
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                0.5,
                                       ),
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(4.0),
-                                        child: Icon(
-                                          Icons.add_rounded,
-                                          color: Theme.of(context)
+                                    ),
+                                    TextButton(
+                                        style: TextButton.styleFrom(
+                                          backgroundColor: Theme.of(context)
                                               .colorScheme
-                                              .onPrimary,
+                                              .primary,
+                                          shape: const CircleBorder(),
                                         ),
-                                      ),
-                                      onPressed: () {
-                                        setState(() {
-                                          packages.add(packageFields);
-                                          initPackage();
-                                        });
-                                      }),
-                                ],
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(4.0),
+                                          child: Icon(
+                                            Icons.add_rounded,
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .onPrimary,
+                                          ),
+                                        ),
+                                        onPressed: () {
+                                          setState(() {
+                                            packages.add(packageFields);
+                                            initPackage();
+                                          });
+                                        }),
+                                  ],
+                                ),
                               ),
-                            ),
                             ListView.builder(
                                 shrinkWrap: true,
                                 physics: const NeverScrollableScrollPhysics(),

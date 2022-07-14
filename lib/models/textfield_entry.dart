@@ -27,7 +27,7 @@ class TextFieldEntry {
     };
   }
   late final String keyId;
-  late final FieldType fieldType;
+  late FieldType fieldType;
   late String label;
   late bool enabled;
   late bool obscure;
@@ -41,4 +41,4 @@ class TextFieldEntry {
   late void Function(String?)? onDone;
 }
 
-enum FieldType { text, dropdown, date, table }
+enum FieldType { text, dropdown, date, checkbox }
