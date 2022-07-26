@@ -48,9 +48,11 @@ class TextFieldEntryBuilder extends StatelessWidget {
           }
           if (textFieldEntry?.fieldType == FieldType.autocomplete) {
             return AutoCompleteDemo<Party>(
+              label: 'Select Customer',
               onSelect: (party) {
                 textFieldEntry?.controller?.text = party.partyName ?? "";
                 textFieldEntry?.object = party;
+                focusHandler!(textFieldEntry!.isLast);
               },
               optionListing: (textValue) =>
                   GetIt.I<CreateQuoteCubit>().getParties(textValue),

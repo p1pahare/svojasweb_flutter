@@ -27,8 +27,12 @@ class _CreateQuoteViewState extends State<CreateQuoteView> {
     switch (key) {
       case Values.type_of_move:
         quoteFields.forEach((key, value) {
-          if (![Values.date, Values.quote_number, Values.type_of_move]
-              .contains(key)) {
+          if (![
+            Values.date,
+            Values.quote_number,
+            Values.type_of_move,
+            Values.customer
+          ].contains(key)) {
             value.visible = false;
             value.isLast = false;
           }
