@@ -5,6 +5,7 @@ class Party {
     required this.partyName,
     required this.orgName,
     required this.emailId,
+    required this.state,
     required this.partyType,
     required this.address,
     required this.city,
@@ -32,6 +33,7 @@ class Party {
   late final String? partyType;
   late final String? address;
   late final String? city;
+  late final String? state;
   late final String? zipCode;
   late final String? phone;
   late final List<ExtraContacts> extraContacts;
@@ -58,6 +60,7 @@ class Party {
     address = json['address'];
     city = json['city'];
     zipCode = json['zip_code'];
+    state = json['state'];
     phone = json['phone'];
     extraContacts = List.from(json['extra_contacts'])
         .map((e) => ExtraContacts.fromJson(e))
@@ -86,6 +89,7 @@ class Party {
     _data['party_type'] = partyType;
     _data['address'] = address;
     _data['city'] = city;
+    _data['state'] = state;
     _data['zip_code'] = zipCode;
     _data['phone'] = phone;
     _data['extra_contacts'] = extraContacts.map((e) => e.toJson()).toList();

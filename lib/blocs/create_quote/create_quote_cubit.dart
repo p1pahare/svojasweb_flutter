@@ -2,6 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:meta/meta.dart';
 import 'package:svojasweb/models/api_response.dart';
+import 'package:svojasweb/models/party.dart';
 import 'package:svojasweb/repositories/network_calls.dart';
 
 part 'create_quote_state.dart';
@@ -51,6 +52,21 @@ class CreateQuoteCubit extends Cubit<CreateQuoteState> {
               "Quote Was Updated Successfully. You can close the page now."));
     } else {
       emit(CreateQuoteFailed(errorMessage: apiResponse.message));
+    }
+  }
+
+  Future<Iterable<Party>> getParties(String partyName) async {
+    if (partyName.isEmpty) {
+      return [];
+    }
+    final ApiResponse apiResponse =
+        await GetIt.I<NetworkCalls>().getPartyByName(partyName);
+    if (apiResponse.status) {
+      return (apiResponse.data as List<dynamic>)
+          .map((e) => Party.fromJson(e))
+          .toList();
+    } else {
+      return [];
     }
   }
 }

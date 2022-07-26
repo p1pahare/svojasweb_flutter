@@ -16,6 +16,7 @@ class TextFieldEntry {
       this.isTime = false,
       this.focusnode,
       this.isLast = false,
+      this.object,
       this.validate,
       this.onDone}) {
     controller ??= TextEditingController();
@@ -38,7 +39,8 @@ class TextFieldEntry {
   late FocusNode? focusnode;
   late bool isLast;
   late final bool isTime;
+  late final dynamic object;
   late void Function(String?)? onDone;
 }
 
-enum FieldType { text, dropdown, date, checkbox }
+enum FieldType { text, dropdown, date, checkbox, autocomplete }

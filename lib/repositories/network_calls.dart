@@ -296,10 +296,67 @@ class NetworkCalls {
     }
   }
 
+  Future<ApiResponse> getPartyByName(
+    String? partyName,
+  ) async {
+    try {
+      final http.Response response = await http.get(
+        Uri.parse(Values.base_url + Values.party + '/name/' + partyName!),
+      );
+      if (response.statusCode == 200) {
+        final String body = response.body;
+        log(body);
+        return ApiResponse.fromJson(
+            {"status": true, "message": "", "data": jsonDecode(body)});
+      } else {
+        String message = response.reasonPhrase ?? 'Something Went Wrong';
+        log(message);
+        return ApiResponse.fromJson({"status": false, "message": message});
+      }
+    } catch (e) {
+      if (e is SocketException) {
+        return ApiResponse(
+            status: false,
+            message:
+                "Network Problem Occurred. Kindly check your internet connection.");
+      } else {
+        return ApiResponse(status: false, message: e.toString());
+      }
+    }
+  }
+
   Future<ApiResponse> getQuote(String? quoteNumber) async {
     try {
       final http.Response response = await http.put(
         Uri.parse(Values.base_url + Values.quote + '/' + quoteNumber!),
+      );
+
+      if (response.statusCode == 200) {
+        final String body = response.body;
+        log(body);
+        return ApiResponse.fromJson(
+            {"status": true, "message": "", "data": jsonDecode(body)});
+      } else {
+        String message = response.reasonPhrase ?? 'Something Went Wrong';
+        log(message);
+        return ApiResponse.fromJson({"status": false, "message": message});
+      }
+    } catch (e) {
+      if (e is SocketException) {
+        return ApiResponse(
+            status: false,
+            message:
+                "Network Problem Occurred. Kindly check your internet connection.");
+      } else {
+        return ApiResponse(status: false, message: e.toString());
+      }
+    }
+  }
+
+  Future<ApiResponse> getQuoteByQuoteID(String? quoteID) async {
+    try {
+      final http.Response response = await http.put(
+        Uri.parse(Values.base_url + Values.quote + '/quote_id/' + quoteID!),
       );
 
       if (response.statusCode == 200) {

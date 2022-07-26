@@ -23,6 +23,7 @@ class Values {
   static const phone = "phone";
   static const scac = "scac";
   static const states = "states";
+  static const state = 'state';
   static const haz = "haz";
   static const overweight = "overweight";
   static const oog = "oog";

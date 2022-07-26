@@ -1,7 +1,11 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
+import 'package:svojasweb/blocs/create_quote/create_quote_cubit.dart';
+import 'package:svojasweb/models/party.dart';
 import 'package:svojasweb/models/textfield_entry.dart';
+import 'package:svojasweb/utilities/autocomplete_demo.dart';
 import 'package:svojasweb/utilities/datefield_custm.dart';
 import 'package:svojasweb/utilities/dropdown_field_custom.dart';
 import 'package:svojasweb/utilities/textfield_custm.dart';
@@ -40,6 +44,16 @@ class TextFieldEntryBuilder extends StatelessWidget {
               validate: textFieldEntry?.validate,
               label: textFieldEntry?.label ?? '',
               showLabel: true,
+            );
+          }
+          if (textFieldEntry?.fieldType == FieldType.autocomplete) {
+            return AutoCompleteDemo<Party>(
+              onSelect: (party) {
+                textFieldEntry?.controller?.text = party.partyName ?? "";
+                textFieldEntry?.object = party;
+              },
+              optionListing: (textValue) =>
+                  GetIt.I<CreateQuoteCubit>().getParties(textValue),
             );
           }
           if (textFieldEntry?.fieldType == FieldType.text) {

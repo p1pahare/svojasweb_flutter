@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
+import 'package:intl/intl.dart';
 import 'package:svojasweb/blocs/create_party/create_party_cubit.dart';
 import 'package:svojasweb/models/party.dart';
 import 'package:svojasweb/models/textfield_entry.dart';
@@ -38,6 +39,7 @@ class _CreatePartyViewState extends State<CreatePartyView> {
       partyFields[Values.org_name]?.visible = true;
       partyFields[Values.address]?.visible = true;
       partyFields[Values.city]?.visible = true;
+      partyFields[Values.state]?.visible = true;
       partyFields[Values.zip_code]?.visible = true;
       partyFields[Values.phone]?.visible = true;
 
@@ -142,6 +144,11 @@ class _CreatePartyViewState extends State<CreatePartyView> {
           keyId: Values.city,
           visible: false,
           controller: TextEditingController(text: widget.party?.city)),
+      Values.state: TextFieldEntry(
+          label: 'State',
+          keyId: Values.state,
+          visible: false,
+          controller: TextEditingController(text: widget.party?.state)),
       Values.zip_code: TextFieldEntry(
           label: 'Zip Code',
           keyId: Values.zip_code,
@@ -267,14 +274,22 @@ class _CreatePartyViewState extends State<CreatePartyView> {
     };
   }
 
-  void initExtraContacts() {
+  void initExtraContacts({ExtraContacts? extraContact}) {
     extraContactsFields = {
-      Values.party_name:
-          TextFieldEntry(label: 'Contact Name', keyId: Values.party_name),
+      Values.party_name: TextFieldEntry(
+          label: 'Contact Name',
+          keyId: Values.party_name,
+          controller: TextEditingController(text: extraContact?.partyName)),
       Values.email_id: TextFieldEntry(
-          label: 'Email Id', keyId: Values.email_id, validate: isEmail),
-      Values.phone:
-          TextFieldEntry(label: 'Phone', keyId: Values.phone, isLast: true),
+          label: 'Email Id',
+          keyId: Values.email_id,
+          validate: isEmail,
+          controller: TextEditingController(text: extraContact?.emailId)),
+      Values.phone: TextFieldEntry(
+          label: 'Phone',
+          keyId: Values.phone,
+          isLast: true,
+          controller: TextEditingController(text: extraContact?.phone)),
     };
   }
 
@@ -291,6 +306,12 @@ class _CreatePartyViewState extends State<CreatePartyView> {
               : widget.party?.deliveryAppointmentNeeded ?? false
                   ? 'Yes'
                   : 'No');
+      if (widget.party?.extraContacts.isNotEmpty ?? false) {
+        for (final extraC in widget.party!.extraContacts) {
+          initExtraContacts(extraContact: extraC);
+          extraContacts.add(extraContactsFields);
+        }
+      }
     }
     GetIt.I<CreatePartyCubit>().load();
     super.initState();
@@ -503,21 +524,45 @@ class _CreatePartyViewState extends State<CreatePartyView> {
                                 function1: () {
                                   final Map<String, dynamic> values = {
                                     for (final element in partyFields.entries)
-                                      if (element.value.controller?.text
-                                              .isNotEmpty ??
-                                          false)
-                                        element.key: element
-                                                    .value.controller?.text ==
-                                                'Yes'
-                                            ? true
-                                            : element.value.controller?.text ==
-                                                    'No'
-                                                ? false
-                                                : element.value.controller?.text
+                                      if ((element.value.controller?.text
+                                                  .isNotEmpty ??
+                                              false) &&
+                                          element.value.visible)
+                                        if (element.value.fieldType ==
+                                            FieldType.dropdown)
+                                          element.key:
+                                              element.value.controller?.text ==
+                                                      'Yes'
+                                                  ? true
+                                                  : element.value.controller
+                                                              ?.text ==
+                                                          'No'
+                                                      ? false
+                                                      : element.value.controller
+                                                          ?.text
+                                        else if (element.value.fieldType ==
+                                            FieldType.date)
+                                          element.key: DateFormat("h:mm a")
+                                              .parse(element
+                                                      .value.controller?.text ??
+                                                  '12 AM')
+                                              .toIso8601String()
+                                        else
+                                          element.key:
+                                              element.value.controller?.text
                                   };
                                   if (_formKey.currentState!.validate()) {
                                     dev.log(values.toString());
-                                    values[Values.extra_contacts] = [];
+                                    values[Values.extra_contacts] =
+                                        extraContacts
+                                            .map<Map<String, dynamic>>((e) =>
+                                                e.map<String, dynamic>(
+                                                    (key, value) =>
+                                                        MapEntry(
+                                                            key,
+                                                            value.controller
+                                                                ?.text)))
+                                            .toList();
                                     if (widget.party == null) {
                                       GetIt.I<CreatePartyCubit>()
                                           .create(values);

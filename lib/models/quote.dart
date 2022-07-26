@@ -127,22 +127,19 @@ class Package {
     required this.width,
     required this.length,
     required this.weight,
-    required this.quantity,
   });
   late final int packageNo;
   late final double? height;
   late final double? width;
   late final double? length;
   late final double? weight;
-  late final int quantity;
 
   Package.fromJson(Map<String, dynamic> json) {
-    packageNo = json['package_no'];
+    packageNo = int.tryParse(json['package_no']) ?? 0;
     height = double.tryParse(json['height'].toString());
     width = double.tryParse(json['width'].toString());
     length = double.tryParse(json['length'].toString());
     weight = double.tryParse(json['weight'].toString());
-    quantity = json['quantity'];
   }
 
   Map<String, dynamic> toJson() {
@@ -152,7 +149,6 @@ class Package {
     _data['width'] = width;
     _data['length'] = length;
     _data['weight'] = weight;
-    _data['quantity'] = quantity;
     return _data;
   }
 }

@@ -204,6 +204,18 @@ class _CreateQuoteViewState extends State<CreateQuoteView> {
           quoteFields[Values.transit_type]?.visible = true;
         }
         break;
+      case Values.weight:
+      case Values.package_no:
+        double grossWeight = 0;
+        for (final map in packages) {
+          grossWeight +=
+              (double.tryParse(map[Values.weight]!.controller!.text) ?? 0) *
+                  (double.tryParse(map[Values.package_no]!.controller!.text) ??
+                      0);
+        }
+        quoteFields[Values.gross_weight]?.controller?.text =
+            grossWeight.toString();
+        break;
       default:
     }
     setState(() {});
@@ -225,6 +237,12 @@ class _CreateQuoteViewState extends State<CreateQuoteView> {
 
   void initQuote() {
     quoteFields = {
+      Values.customer: TextFieldEntry(
+          fieldType: FieldType.autocomplete,
+          label: 'Select Customer',
+          keyId: Values.customer,
+          enabled: true,
+          controller: TextEditingController(text: '')),
       Values.date: TextFieldEntry(
           label: 'Date',
           keyId: Values.date,
@@ -348,7 +366,7 @@ class _CreateQuoteViewState extends State<CreateQuoteView> {
           visible: false,
           options: [
             'Select',
-            'Standart',
+            'Standard',
             'High Cube',
             'Reefer',
             'Open Top',
@@ -427,26 +445,33 @@ class _CreateQuoteViewState extends State<CreateQuoteView> {
     };
   }
 
-  void initPackage() {
+  void initPackage({Package? package}) {
     packageFields = {
       Values.package_no: TextFieldEntry(
-          label: 'Package Number',
+          label: 'Package Quantity',
           keyId: Values.package_no,
-          enabled: false,
+          enabled: true,
+          validate: isInteger,
           controller:
-              TextEditingController(text: (packages.length + 1).toString())),
+              TextEditingController(text: package?.packageNo.toString())),
       Values.height: TextFieldEntry(
           label: 'Package Height (H)',
           keyId: Values.height,
+          controller: TextEditingController(text: package?.height.toString()),
           validate: isDouble),
       Values.length: TextFieldEntry(
           label: 'Package Length (L)',
           keyId: Values.length,
+          controller: TextEditingController(text: package?.length.toString()),
           validate: isDouble),
       Values.width: TextFieldEntry(
-          label: 'Package Width (W)', keyId: Values.width, validate: isDouble),
+          controller: TextEditingController(text: package?.width.toString()),
+          label: 'Package Width (W)',
+          keyId: Values.width,
+          validate: isDouble),
       Values.weight: TextFieldEntry(
           label: 'Package Weight (in Grams)',
+          controller: TextEditingController(text: package?.weight.toString()),
           keyId: Values.weight,
           validate: isDouble,
           isLast: true),
@@ -464,6 +489,12 @@ class _CreateQuoteViewState extends State<CreateQuoteView> {
       onValueSelected(Values.type_of_move, widget.quote?.typeOfMove,
           clear: false);
       onValueSelected(Values.transit_type, widget.quote?.transitType);
+      if (widget.quote?.package?.isNotEmpty ?? false) {
+        for (final pack in widget.quote!.package!) {
+          initPackage(package: pack);
+          packages.add(packageFields);
+        }
+      }
     }
     GetIt.I<CreateQuoteCubit>().load();
     super.initState();
@@ -512,6 +543,7 @@ class _CreateQuoteViewState extends State<CreateQuoteView> {
                 quoteFields[Values.date]?.controller?.text = state.date ?? '';
                 quoteFields[Values.quote_number]?.controller?.text =
                     widget.quote?.sid ?? state.id ?? '';
+
                 return SizedBox(
                     // width: min(MediaQuery.of(context).size.width, 480),
                     child: Form(
@@ -673,9 +705,10 @@ class _CreateQuoteViewState extends State<CreateQuoteView> {
                                 function1: () {
                                   final Map<String, dynamic> values = {
                                     for (final element in quoteFields.entries)
-                                      if (element.value.controller?.text
-                                              .isNotEmpty ??
-                                          false)
+                                      if ((element.value.controller?.text
+                                                  .isNotEmpty ??
+                                              false) &&
+                                          element.value.visible)
                                         element.key: element
                                                     .value.controller?.text ==
                                                 'Yes'
@@ -687,7 +720,12 @@ class _CreateQuoteViewState extends State<CreateQuoteView> {
                                   };
                                   if (_formKey.currentState!.validate()) {
                                     dev.log(values.toString());
-                                    values[Values.package] = [];
+                                    values[Values.package] = packages
+                                        .map<Map<String, dynamic>>((e) =>
+                                            e.map<String, dynamic>(
+                                                (key, value) => MapEntry(key,
+                                                    value.controller?.text)))
+                                        .toList();
                                     values[Values.customer] = state.id;
                                     if (widget.quote == null) {
                                       GetIt.I<CreateQuoteCubit>()
