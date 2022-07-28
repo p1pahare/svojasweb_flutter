@@ -218,6 +218,9 @@ class _CreateQuotecViewState extends State<CreateQuotecView> {
                 );
               }
               if (state is CreatePageSuccess) {
+                quotecFields[Values.date]?.controller?.text = state.date ?? '';
+                quotecFields[Values.sid]?.controller?.text =
+                    widget.quotec?.sId ?? state.id ?? '';
                 return SizedBox(
                     // width: min(MediaQuery.of(context).size.width, 480),
                     child: Form(
