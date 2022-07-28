@@ -3,20 +3,25 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:svojasweb/blocs/create_party/create_party_cubit.dart';
 import 'package:svojasweb/blocs/create_quote/create_quote_cubit.dart';
+import 'package:svojasweb/blocs/create_quotec/create_quotec_cubit.dart';
 import 'package:svojasweb/blocs/dashboard/dashboard_cubit.dart';
 import 'package:svojasweb/blocs/login/login_cubit.dart';
 import 'package:svojasweb/blocs/party/party_cubit.dart';
 import 'package:svojasweb/blocs/quote/quote_cubit.dart';
+import 'package:svojasweb/blocs/quotec/quotec_cubit.dart';
 import 'package:svojasweb/models/party.dart';
 import 'package:svojasweb/models/quote.dart';
+import 'package:svojasweb/models/quotec.dart';
 import 'package:svojasweb/repositories/network_calls.dart';
 import 'package:svojasweb/services/preferences.dart';
 import 'package:svojasweb/views/create_party_view.dart';
 import 'package:svojasweb/views/create_quote_view.dart';
+import 'package:svojasweb/views/create_quotec_view.dart';
 import 'package:svojasweb/views/dashboard_view.dart';
 import 'package:svojasweb/views/login_view.dart';
 import 'package:svojasweb/views/party_view.dart';
 import 'package:svojasweb/views/quote_view.dart';
+import 'package:svojasweb/views/quotec_view.dart';
 
 void main() {
   runApp(const MyApp());
@@ -33,6 +38,8 @@ class MyApp extends StatelessWidget {
     GetIt.I.registerSingleton(CreatePartyCubit());
     GetIt.I.registerSingleton(QuoteCubit());
     GetIt.I.registerSingleton(CreateQuoteCubit());
+    GetIt.I.registerSingleton(QuotecCubit());
+    GetIt.I.registerSingleton(CreateQuotecCubit());
   }
 
   @override
@@ -70,6 +77,15 @@ class MyApp extends StatelessWidget {
                         builder: (context) => CreateQuoteView(
                               quote: customer,
                             ));
+                  case CreateQuotecView.routeName:
+                    return CupertinoPageRoute<bool>(
+                        builder: (context) => const CreateQuotecView());
+                  case CreateQuotecView.routeNameEdit:
+                    QuoteC customer = settings.arguments as QuoteC;
+                    return CupertinoPageRoute<bool>(
+                        builder: (context) => CreateQuotecView(
+                              quotec: customer,
+                            ));
                   case DashboardView.routeName:
                     return CupertinoPageRoute(
                         builder: (context) => const DashboardView(
@@ -84,6 +100,11 @@ class MyApp extends StatelessWidget {
                     return CupertinoPageRoute(
                         builder: (context) => const QuoteView(
                               title: 'Quote Management',
+                            ));
+                  case QuotecView.routeName:
+                    return CupertinoPageRoute(
+                        builder: (context) => const QuotecView(
+                              title: 'Quote Confirmation Management',
                             ));
                   case LoginView.routeName:
                     return CupertinoPageRoute(

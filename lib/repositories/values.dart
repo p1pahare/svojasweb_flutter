@@ -7,6 +7,7 @@ class Values {
   static const get_date_and_reference = 'get_date_and_reference';
   static const parties = 'parties';
   static const quotes = 'quotes';
+  static const quotecs = 'quotecs';
   static const party = 'party';
   static const quote = 'quote';
   static const quote_number = 'quote_number';
@@ -63,4 +64,18 @@ class Values {
   static const length = 'length';
   static const weight = 'weight';
   static const quantity = 'quantity';
+  static const quotec = 'quotec';
+  static const drayage_fuel = 'drayage_fuel';
+  static const chassis = 'chassis';
+  static const pre_pull = 'pre_pull';
+  static const yard_storage = 'yard_storage';
+  static const port_congestion = 'port_congestion';
+  static const stop_off = 'stop_off';
+  static const reefer_monitoring_fee = 'reefer_monitoring_fee';
+  static const chassis_split = 'chassis_split';
+  static const detention = 'detention';
+  static const tolls = 'tolls';
+  static const drop_and_pick = 'drop_and_pick';
+  static const hazmat = 'hazmat';
+  static const sid = '_id';
 }

@@ -2,24 +2,25 @@ import 'package:easy_table/easy_table.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
-import 'package:svojasweb/blocs/party/party_cubit.dart';
+import 'package:svojasweb/blocs/quotec/quotec_cubit.dart';
 import 'package:svojasweb/models/api_response.dart';
-import 'package:svojasweb/models/party.dart';
+import 'package:svojasweb/models/quotec.dart';
 import 'package:svojasweb/repositories/network_calls.dart';
-import 'package:svojasweb/views/create_party_view.dart';
+import 'package:svojasweb/views/create_quotec_view.dart';
 import 'package:svojasweb/views/drawer_view.dart';
 
-class PartyView extends StatefulWidget {
-  const PartyView({Key? key, required this.title}) : super(key: key);
-  static const routeName = '/PartyView';
+class QuotecView extends StatefulWidget {
+  const QuotecView({Key? key, required this.title}) : super(key: key);
+  static const routeName = '/QuotecView';
   final String title;
 
   @override
-  State<PartyView> createState() => _PartyViewState();
+  State<QuotecView> createState() => _QuotecViewState();
 }
 
-class _PartyViewState extends State<PartyView> {
-  late EasyTableModel<Party>? _model;
+class _QuotecViewState extends State<QuotecView> {
+  EasyTableModel<QuoteC>? _model;
+
   @override
   void initState() {
     loadPage();
@@ -27,36 +28,34 @@ class _PartyViewState extends State<PartyView> {
   }
 
   loadPage() {
-    GetIt.I<PartyCubit>().load();
+    GetIt.I<QuotecCubit>().load();
   }
 
-  loadModel(BuildContext context, List<Party> parties) {
+  loadModel(BuildContext context, List<QuoteC> quotecs) {
     double width = (MediaQuery.of(context).size.width - 170) / 100;
-    _model = EasyTableModel<Party>(rows: parties, columns: [
+    _model = EasyTableModel<QuoteC>(rows: quotecs, columns: [
       EasyTableColumn(
-        name: 'Reference Id',
-        stringValue: (row) => row.sid,
+        name: 'Quote Number',
+        stringValue: (row) => row.quoteNumber,
         width: width * 15,
       ),
       EasyTableColumn(
-          name: 'Customer Type',
-          stringValue: (row) => row.partyType,
-          width: width * 15),
+          name: 'Date', stringValue: (row) => row.date, width: width * 15),
       EasyTableColumn(
-          name: 'Party Name',
-          stringValue: (row) => row.partyName,
+          name: 'Quote Number',
+          stringValue: (row) => row.quoteNumber,
           width: width * 20),
       EasyTableColumn(
-          name: 'Company Name',
-          stringValue: (row) => row.orgName,
-          width: width * 20),
+          name: 'Chassis',
+          stringValue: (row) => row.chassis,
+          width: width * 10),
       EasyTableColumn(
-          name: 'Email Id',
-          stringValue: (row) => row.emailId,
+          name: 'Drayage Fuel',
+          stringValue: (row) => row.drayageFuel,
           width: width * 15),
       EasyTableColumn(
-          name: 'Contact Number',
-          stringValue: (row) => row.phone,
+          name: 'pre PULL',
+          stringValue: (row) => row.prePull,
           width: width * 15),
       EasyTableColumn(
           name: 'Options',
@@ -77,7 +76,7 @@ class _PartyViewState extends State<PartyView> {
                       ),
                       onPressed: () async {
                         final bool? change = await Navigator.pushNamed(
-                            context, CreatePartyView.routeNameEdit,
+                            context, CreateQuotecView.routeNameEdit,
                             arguments: row);
                         if (change ?? false) {
                           loadPage();
@@ -98,7 +97,7 @@ class _PartyViewState extends State<PartyView> {
                           color: Theme.of(context).colorScheme.onPrimary,
                         ),
                       ),
-                      onPressed: () => deleteCustomer(row.sid!)),
+                      onPressed: () => deleteCustomer(row.sId)),
                 ],
               )),
     ]);
@@ -108,23 +107,23 @@ class _PartyViewState extends State<PartyView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text(widget.title)),
-      body: BlocBuilder<PartyCubit, PartyState>(
-        bloc: GetIt.I<PartyCubit>(),
+      body: BlocBuilder<QuotecCubit, QuotecState>(
+        bloc: GetIt.I<QuotecCubit>(),
         builder: (context, state) {
-          if (state is PartyLoading) {
+          if (state is QuotecLoading) {
             return const Center(
               child: CircularProgressIndicator(
                 backgroundColor: Colors.white,
               ),
             );
           }
-          if (state is PartyFailed) {
+          if (state is QuotecFailed) {
             return Text(state.errorMessage!);
           }
-          if (state is PartySuccess) {
-            loadModel(context, state.parties!);
+          if (state is QuotecSuccess) {
+            loadModel(context, state.quotecs!);
             return EasyTableTheme(
-                child: EasyTable<Party>(
+                child: EasyTable<QuoteC>(
                   _model,
                 ),
                 data: const EasyTableThemeData(
@@ -149,7 +148,7 @@ class _PartyViewState extends State<PartyView> {
         mini: true,
         onPressed: () async {
           final bool? change =
-              await Navigator.pushNamed(context, CreatePartyView.routeName);
+              await Navigator.pushNamed(context, CreateQuotecView.routeName);
           if (change ?? false) {
             loadPage();
           }
@@ -164,7 +163,7 @@ class _PartyViewState extends State<PartyView> {
         context: context,
         builder: (context) {
           return AlertDialog(
-              title: const Text("Delete Party"),
+              title: const Text("Delete Quote Confirmation"),
               actions: [
                 OutlinedButton(
                     style: ButtonStyle(
@@ -172,7 +171,7 @@ class _PartyViewState extends State<PartyView> {
                             const BorderSide(color: Colors.blueGrey))),
                     onPressed: () async {
                       ApiResponse apiResponse =
-                          await GetIt.I<NetworkCalls>().deleteParty(sId);
+                          await GetIt.I<NetworkCalls>().deleteQuoteC(sId);
                       Navigator.pop(context, apiResponse.status);
                     },
                     child: const Text("Yes")),
@@ -183,7 +182,7 @@ class _PartyViewState extends State<PartyView> {
                     child: const Text("Cancel")),
               ],
               content: const Text(
-                "Do you really want to delete this Party",
+                "Do you really want to delete this Quote",
               ));
         });
     if (delete != null && delete) {

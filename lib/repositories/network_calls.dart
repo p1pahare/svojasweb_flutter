@@ -148,6 +148,34 @@ class NetworkCalls {
     }
   }
 
+  Future<ApiResponse> getAllQuotecs() async {
+    try {
+      final http.Response response = await http.get(
+        Uri.parse(Values.base_url + Values.quotecs),
+      );
+
+      if (response.statusCode == 200) {
+        final String body = response.body;
+        log(body);
+        return ApiResponse.fromJson(
+            {"status": true, "message": "", "data": jsonDecode(body)});
+      } else {
+        String message = response.reasonPhrase ?? 'Something Went Wrong';
+        log(message);
+        return ApiResponse.fromJson({"status": false, "message": message});
+      }
+    } catch (e) {
+      if (e is SocketException) {
+        return ApiResponse(
+            status: false,
+            message:
+                "Network Problem Occurred. Kindly check your internet connection.");
+      } else {
+        return ApiResponse(status: false, message: e.toString());
+      }
+    }
+  }
+
   Future<ApiResponse> createParty(Map<String, dynamic> party) async {
     try {
       final http.Response response = await http.post(
@@ -179,6 +207,34 @@ class NetworkCalls {
     try {
       final http.Response response = await http.post(
           Uri.parse(Values.base_url + Values.quote),
+          body: jsonEncode(quote));
+
+      if (response.statusCode == 200) {
+        final String body = response.body;
+        log(body);
+        return ApiResponse.fromJson(
+            {"status": true, "message": "", "data": jsonDecode(body)});
+      } else {
+        String message = response.body;
+        log(message);
+        return ApiResponse.fromJson({"status": false, "message": message});
+      }
+    } catch (e) {
+      if (e is SocketException) {
+        return ApiResponse(
+            status: false,
+            message:
+                "Network Problem Occurred. Kindly check your internet connection.");
+      } else {
+        return ApiResponse(status: false, message: e.toString());
+      }
+    }
+  }
+
+  Future<ApiResponse> createQuoteC(Map<String, dynamic> quote) async {
+    try {
+      final http.Response response = await http.post(
+          Uri.parse(Values.base_url + Values.quotec),
           body: jsonEncode(quote));
 
       if (response.statusCode == 200) {
@@ -249,6 +305,38 @@ class NetworkCalls {
         return ApiResponse.fromJson({
           "status": true,
           "message": "Quote was updated successfully",
+        });
+      } else {
+        String message = response.body;
+        log(message);
+        return ApiResponse.fromJson({"status": false, "message": message});
+      }
+    } catch (e) {
+      if (e is SocketException) {
+        return ApiResponse(
+            status: false,
+            message:
+                "Network Problem Occurred. Kindly check your internet connection.");
+      } else {
+        return ApiResponse(status: false, message: e.toString());
+      }
+    }
+  }
+
+  Future<ApiResponse> editQuoteC(Map<String, dynamic> quoteC) async {
+    try {
+      String quoteNumber = quoteC['_id'];
+
+      final http.Response response = await http.put(
+          Uri.parse(Values.base_url + Values.quotec + '/' + quoteNumber),
+          body: jsonEncode(quoteC));
+
+      if (response.statusCode == 200) {
+        final String body = response.body;
+        log(body);
+        return ApiResponse.fromJson({
+          "status": true,
+          "message": "Quote Confirmation was updated successfully",
         });
       } else {
         String message = response.body;
@@ -353,6 +441,34 @@ class NetworkCalls {
     }
   }
 
+  Future<ApiResponse> getQuoteC(String? sId) async {
+    try {
+      final http.Response response = await http.put(
+        Uri.parse(Values.base_url + Values.quotec + '/' + sId!),
+      );
+
+      if (response.statusCode == 200) {
+        final String body = response.body;
+        log(body);
+        return ApiResponse.fromJson(
+            {"status": true, "message": "", "data": jsonDecode(body)});
+      } else {
+        String message = response.reasonPhrase ?? 'Something Went Wrong';
+        log(message);
+        return ApiResponse.fromJson({"status": false, "message": message});
+      }
+    } catch (e) {
+      if (e is SocketException) {
+        return ApiResponse(
+            status: false,
+            message:
+                "Network Problem Occurred. Kindly check your internet connection.");
+      } else {
+        return ApiResponse(status: false, message: e.toString());
+      }
+    }
+  }
+
   Future<ApiResponse> getQuoteByQuoteID(String? quoteID) async {
     try {
       final http.Response response = await http.put(
@@ -424,6 +540,36 @@ class NetworkCalls {
         return ApiResponse.fromJson({
           "status": true,
           "message": "The quote was deleted successfully",
+        });
+      } else {
+        String message = response.reasonPhrase ?? 'Something Went Wrong';
+        log(message);
+        return ApiResponse.fromJson({"status": false, "message": message});
+      }
+    } catch (e) {
+      if (e is SocketException) {
+        return ApiResponse(
+            status: false,
+            message:
+                "Network Problem Occurred. Kindly check your internet connection.");
+      } else {
+        return ApiResponse(status: false, message: e.toString());
+      }
+    }
+  }
+
+  Future<ApiResponse> deleteQuoteC(String? sId) async {
+    try {
+      final http.Response response = await http.delete(
+        Uri.parse(Values.base_url + Values.quotec + '/' + sId!),
+      );
+
+      if (response.statusCode == 200) {
+        final String body = response.body;
+        log(body);
+        return ApiResponse.fromJson({
+          "status": true,
+          "message": "The quote confirmation was deleted successfully",
         });
       } else {
         String message = response.reasonPhrase ?? 'Something Went Wrong';

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:svojasweb/utilities/textfield_custm.dart';
 
 class CheckboxFieldCustm extends StatelessWidget {
   const CheckboxFieldCustm(
@@ -6,6 +7,7 @@ class CheckboxFieldCustm extends StatelessWidget {
       required this.controller,
       this.label = '',
       this.showLabel = false,
+      this.defValue,
       required this.focusNode,
       this.enabled = true,
       this.onDone})
@@ -14,20 +16,32 @@ class CheckboxFieldCustm extends StatelessWidget {
   final String label;
   final bool enabled;
   final bool showLabel;
+  final String? defValue;
   final FocusNode focusNode;
   final void Function(String?)? onDone;
   @override
   Widget build(BuildContext context) {
     return CheckboxListTile(
-      value: controller.text == 'Yes',
+      value: controller.text.isNotEmpty,
       onChanged: (isYes) {
         if (enabled) {
-          (isYes ?? false) ? controller.text = 'Yes' : 'No';
+          controller.text = (isYes ?? false) ? defValue ?? '.' : '';
         }
         onDone?.call(controller.text);
       },
       focusNode: focusNode,
-      title: Text(showLabel ? label : ''),
+      title: controller.text.isNotEmpty
+          ? TextFieldCustm(
+              controller: controller,
+              label: label,
+              focusNode: FocusNode(),
+              showLabel: true,
+              onDone: onDone,
+            )
+          : Text(
+              showLabel ? label : '',
+              style: const TextStyle(color: Colors.black),
+            ),
     );
   }
 }

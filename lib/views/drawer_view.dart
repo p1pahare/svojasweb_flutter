@@ -5,6 +5,7 @@ import 'package:svojasweb/views/dashboard_view.dart';
 import 'package:svojasweb/views/login_view.dart';
 import 'package:svojasweb/views/party_view.dart';
 import 'package:svojasweb/views/quote_view.dart';
+import 'package:svojasweb/views/quotec_view.dart';
 
 class DrawerView extends StatelessWidget {
   const DrawerView({Key? key}) : super(key: key);
@@ -41,6 +42,14 @@ class DrawerView extends StatelessWidget {
             onTap: () {
               Navigator.pop(context);
               Navigator.popAndPushNamed(context, QuoteView.routeName);
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.api),
+            title: const Text('Quote Confirm'),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.popAndPushNamed(context, QuotecView.routeName);
             },
           ),
           ListTile(

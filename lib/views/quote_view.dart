@@ -129,6 +129,9 @@ class _QuoteViewState extends State<QuoteView> {
                 data: const EasyTableThemeData(
                     columnDividerThickness: 0,
                     columnDividerColor: Colors.blue,
+                    cell: CellThemeData(
+                      textStyle: TextStyle(color: Colors.black),
+                    ),
                     scrollbar: TableScrollbarThemeData(),
                     row: RowThemeData(
                         dividerThickness: 2, dividerColor: Colors.green)));

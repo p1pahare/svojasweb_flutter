@@ -6,6 +6,7 @@ import 'package:svojasweb/blocs/create_quote/create_quote_cubit.dart';
 import 'package:svojasweb/models/party.dart';
 import 'package:svojasweb/models/textfield_entry.dart';
 import 'package:svojasweb/utilities/autocomplete_demo.dart';
+import 'package:svojasweb/utilities/checkfield_custm.dart';
 import 'package:svojasweb/utilities/datefield_custm.dart';
 import 'package:svojasweb/utilities/dropdown_field_custom.dart';
 import 'package:svojasweb/utilities/textfield_custm.dart';
@@ -72,6 +73,15 @@ class TextFieldEntryBuilder extends StatelessWidget {
               },
               validate: textFieldEntry?.validate,
               label: textFieldEntry!.label,
+              showLabel: true,
+            );
+          }
+          if (textFieldEntry?.fieldType == FieldType.checkbox) {
+            return CheckboxFieldCustm(
+              controller: textFieldEntry!.controller!,
+              focusNode: textFieldEntry!.focusnode!,
+              label: textFieldEntry!.label,
+              onDone: (str) => onValueSelected!(textFieldEntry?.keyId, str),
               showLabel: true,
             );
           }

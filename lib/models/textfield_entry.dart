@@ -39,7 +39,7 @@ class TextFieldEntry {
   late FocusNode? focusnode;
   late bool isLast;
   late final bool isTime;
-  late final dynamic object;
+  late dynamic object;
   late void Function(String?)? onDone;
 }
 
