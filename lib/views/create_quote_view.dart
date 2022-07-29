@@ -246,6 +246,8 @@ class _CreateQuoteViewState extends State<CreateQuoteView> {
           label: 'Select Customer',
           keyId: Values.customer,
           enabled: true,
+          optionListing: (textValue) =>
+              GetIt.I<CreateQuoteCubit>().getParties(textValue),
           controller: TextEditingController(text: '')),
       Values.date: TextFieldEntry(
           label: 'Date',

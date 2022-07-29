@@ -325,10 +325,10 @@ class NetworkCalls {
 
   Future<ApiResponse> editQuoteC(Map<String, dynamic> quoteC) async {
     try {
-      String quoteNumber = quoteC['_id'];
-
+      String quoteCid = quoteC['_id'];
+      quoteC.remove(Values.sid);
       final http.Response response = await http.put(
-          Uri.parse(Values.base_url + Values.quotec + '/' + quoteNumber),
+          Uri.parse(Values.base_url + Values.quotec + '/' + quoteCid),
           body: jsonEncode(quoteC));
 
       if (response.statusCode == 200) {
@@ -471,7 +471,7 @@ class NetworkCalls {
 
   Future<ApiResponse> getQuoteByQuoteID(String? quoteID) async {
     try {
-      final http.Response response = await http.put(
+      final http.Response response = await http.get(
         Uri.parse(Values.base_url + Values.quote + '/quote_id/' + quoteID!),
       );
 

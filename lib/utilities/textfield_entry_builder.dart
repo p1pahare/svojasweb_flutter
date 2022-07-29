@@ -1,9 +1,5 @@
 import 'dart:math';
-
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
-import 'package:svojasweb/blocs/create_quote/create_quote_cubit.dart';
-import 'package:svojasweb/models/party.dart';
 import 'package:svojasweb/models/textfield_entry.dart';
 import 'package:svojasweb/utilities/autocomplete_demo.dart';
 import 'package:svojasweb/utilities/checkfield_custm.dart';
@@ -12,11 +8,15 @@ import 'package:svojasweb/utilities/dropdown_field_custom.dart';
 import 'package:svojasweb/utilities/textfield_custm.dart';
 
 class TextFieldEntryBuilder extends StatelessWidget {
-  const TextFieldEntryBuilder(
-      {Key? key, this.textFieldEntry, this.onValueSelected, this.focusHandler})
-      : super(key: key);
+  const TextFieldEntryBuilder({
+    Key? key,
+    this.textFieldEntry,
+    this.onValueSelected,
+    this.focusHandler,
+  }) : super(key: key);
   final TextFieldEntry? textFieldEntry;
   final void Function(String?, String?)? onValueSelected;
+
   final void Function(bool)? focusHandler;
   @override
   Widget build(BuildContext context) {
@@ -48,15 +48,13 @@ class TextFieldEntryBuilder extends StatelessWidget {
             );
           }
           if (textFieldEntry?.fieldType == FieldType.autocomplete) {
-            return AutoCompleteDemo<Party>(
-              label: 'Select Customer',
-              onSelect: (party) {
-                textFieldEntry?.controller?.text = party.partyName ?? "";
-                textFieldEntry?.object = party;
+            return AutoCompleteDemo(
+              label: textFieldEntry!.label,
+              onSelect: (object) {
+                textFieldEntry?.object = object;
                 focusHandler!(textFieldEntry!.isLast);
               },
-              optionListing: (textValue) =>
-                  GetIt.I<CreateQuoteCubit>().getParties(textValue),
+              optionListing: textFieldEntry!.optionListing,
             );
           }
           if (textFieldEntry?.fieldType == FieldType.text) {

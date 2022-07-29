@@ -14,6 +14,7 @@ class TextFieldEntry {
       this.obscure = false,
       this.options,
       this.isTime = false,
+      this.optionListing,
       this.focusnode,
       this.isLast = false,
       this.object,
@@ -23,6 +24,7 @@ class TextFieldEntry {
     options ??= ['Select'];
     focusnode ??= FocusNode();
     validate ??= isNotBlank;
+
     onDone ??= (value) {
       log("onDone not set");
     };
@@ -32,6 +34,7 @@ class TextFieldEntry {
   late String label;
   late bool enabled;
   late bool obscure;
+  late final Future<Iterable> Function(String)? optionListing;
   late bool visible;
   late List<String>? options;
   late TextEditingController? controller;

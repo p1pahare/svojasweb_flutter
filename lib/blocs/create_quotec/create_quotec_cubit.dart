@@ -2,7 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:meta/meta.dart';
 import 'package:svojasweb/models/api_response.dart';
-import 'package:svojasweb/models/party.dart';
+import 'package:svojasweb/models/quote.dart';
 import 'package:svojasweb/repositories/network_calls.dart';
 
 part 'create_quotec_state.dart';
@@ -25,10 +25,10 @@ class CreateQuotecCubit extends Cubit<CreateQuotecState> {
     }
   }
 
-  create(Map<String, dynamic> quote) async {
+  create(Map<String, dynamic> quotec) async {
     emit(CreateQuotecLoading());
     final ApiResponse apiResponse =
-        await GetIt.I<NetworkCalls>().createQuote(quote);
+        await GetIt.I<NetworkCalls>().createQuoteC(quotec);
     if (apiResponse.status) {
       // GetIt.I<Preferences>().saveIsCreateQuote(isCreateQuote: true);
 
@@ -40,10 +40,10 @@ class CreateQuotecCubit extends Cubit<CreateQuotecState> {
     }
   }
 
-  edit(Map<String, dynamic> quote) async {
+  edit(Map<String, dynamic> quotec) async {
     emit(CreateQuotecLoading());
     final ApiResponse apiResponse =
-        await GetIt.I<NetworkCalls>().editQuote(quote);
+        await GetIt.I<NetworkCalls>().editQuoteC(quotec);
     if (apiResponse.status) {
       // GetIt.I<Preferences>().saveIsCreateQuote(isCreateQuote: true);
 
@@ -55,15 +55,15 @@ class CreateQuotecCubit extends Cubit<CreateQuotecState> {
     }
   }
 
-  Future<Iterable<Party>> getParties(String partyName) async {
-    if (partyName.isEmpty) {
+  Future<Iterable<Quote>> getQuotes(String quoteId) async {
+    if (quoteId.isEmpty) {
       return [];
     }
     final ApiResponse apiResponse =
-        await GetIt.I<NetworkCalls>().getPartyByName(partyName);
+        await GetIt.I<NetworkCalls>().getQuoteByQuoteID(quoteId);
     if (apiResponse.status) {
       return (apiResponse.data as List<dynamic>)
-          .map((e) => Party.fromJson(e))
+          .map((e) => Quote.fromJson(e))
           .toList();
     } else {
       return [];

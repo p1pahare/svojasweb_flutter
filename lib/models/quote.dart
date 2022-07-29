@@ -30,6 +30,7 @@ class Quote {
   });
   late final String date;
   late final String sid;
+  late final String? quoteId;
   late final String customer;
   late final String typeOfMove;
   late final String transitType;
@@ -63,6 +64,7 @@ class Quote {
     typeOfMove = json['type_of_move'];
     transitType = json['transit_type'];
     pickupRamp = json['pickup_ramp'];
+    quoteId = json['quote_id'];
     deliveryRamp = json['delivery_ramp'];
     deliveryAddress = json['delivery_address'];
     deliveryCity = json['delivery_city'];
@@ -104,6 +106,7 @@ class Quote {
     _data['pickup_city'] = pickupCity;
     _data['pickup_state'] = pickupState;
     _data['pickup_zip'] = pickupZip;
+    _data['quote_id'] = quoteId;
     _data['size_of_container'] = sizeOfContainer;
     _data['type_of_container'] = typeOfContainer;
     _data['gross_weight'] = grossWeight;

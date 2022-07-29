@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:svojasweb/models/party.dart';
+import 'package:svojasweb/utilities/helper_functions.dart';
 
 class AutoCompleteDemo<T extends Object> extends StatelessWidget {
-  final Future<Iterable<T>> Function(String)? optionListing;
+  final Future<Iterable<dynamic>> Function(String)? optionListing;
   final void Function(T)? onSelect;
   final String? label;
   const AutoCompleteDemo(
@@ -21,10 +21,9 @@ class AutoCompleteDemo<T extends Object> extends StatelessWidget {
         if (showLabel) Text(label ?? ''),
         Autocomplete<T>(
           optionsBuilder: (TextEditingValue textEditingValue) {
-            return optionListing!(textEditingValue.text);
+            return optionListing!(textEditingValue.text) as Future<Iterable<T>>;
           },
-          displayStringForOption: (T option) =>
-              option is Party ? "${option.partyName}" : "",
+          displayStringForOption: getNameFromObject,
           fieldViewBuilder: (BuildContext context,
               TextEditingController fieldTextEditingController,
               FocusNode ffocusNode,
@@ -63,10 +62,7 @@ class AutoCompleteDemo<T extends Object> extends StatelessWidget {
                           onSelected(option);
                         },
                         child: ListTile(
-                          title: Text(
-                              option is Party
-                                  ? option.partyName ?? ""
-                                  : "option.name",
+                          title: Text(getNameFromObject(option),
                               style: const TextStyle(color: Colors.white)),
                         ),
                       );

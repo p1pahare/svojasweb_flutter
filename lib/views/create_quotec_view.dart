@@ -42,6 +42,14 @@ class _CreateQuotecViewState extends State<CreateQuotecView> {
 
   void initQuote() {
     quotecFields = {
+      Values.quote_number: TextFieldEntry(
+          fieldType: FieldType.autocomplete,
+          label: 'Select Quote Id',
+          keyId: Values.quote_number,
+          enabled: true,
+          optionListing: (textValue) =>
+              GetIt.I<CreateQuotecCubit>().getQuotes(textValue),
+          controller: TextEditingController(text: '')),
       Values.date: TextFieldEntry(
           label: 'Date',
           keyId: Values.date,
@@ -64,99 +72,75 @@ class _CreateQuotecViewState extends State<CreateQuotecView> {
           isLast: false),
       Values.pre_pull: TextFieldEntry(
           label: 'Pre Pull',
-          fieldType: widget.quotec?.prePull == null
-              ? FieldType.checkbox
-              : FieldType.text,
+          fieldType: FieldType.checkbox,
           controller: TextEditingController(text: widget.quotec?.prePull),
           keyId: Values.pre_pull,
           isLast: false),
       Values.yard_storage: TextFieldEntry(
           label: 'Yard Storage',
-          fieldType: widget.quotec?.yardStorage == null
-              ? FieldType.checkbox
-              : FieldType.text,
+          fieldType: FieldType.checkbox,
           controller: TextEditingController(text: widget.quotec?.yardStorage),
           keyId: Values.yard_storage,
           isLast: false),
       Values.port_congestion: TextFieldEntry(
           label: 'Port Congestion',
-          fieldType: widget.quotec?.portCongestion == null
-              ? FieldType.checkbox
-              : FieldType.text,
+          fieldType: FieldType.checkbox,
           controller:
               TextEditingController(text: widget.quotec?.portCongestion),
           keyId: Values.port_congestion,
           isLast: false),
       Values.stop_off: TextFieldEntry(
           label: 'Stop-Off',
-          fieldType: widget.quotec?.stopOff == null
-              ? FieldType.checkbox
-              : FieldType.text,
+          fieldType: FieldType.checkbox,
           controller: TextEditingController(text: widget.quotec?.stopOff),
           keyId: Values.stop_off,
           isLast: false),
       Values.overweight: TextFieldEntry(
           label: 'Overweight',
-          fieldType: widget.quotec?.overweight == null
-              ? FieldType.checkbox
-              : FieldType.text,
+          fieldType: FieldType.checkbox,
           controller: TextEditingController(text: widget.quotec?.overweight),
           keyId: Values.overweight,
           isLast: false),
       Values.reefer: TextFieldEntry(
           label: 'Reefer',
-          fieldType: widget.quotec?.reefer == null
-              ? FieldType.checkbox
-              : FieldType.text,
+          fieldType: FieldType.checkbox,
           controller: TextEditingController(text: widget.quotec?.reefer),
           keyId: Values.reefer,
           isLast: false),
       Values.reefer_monitoring_fee: TextFieldEntry(
           label: 'Refer Monitoring Fee',
-          fieldType: widget.quotec?.reeferMonitoringFee == null
-              ? FieldType.checkbox
-              : FieldType.text,
+          fieldType: FieldType.checkbox,
           controller:
               TextEditingController(text: widget.quotec?.reeferMonitoringFee),
           keyId: Values.reefer_monitoring_fee,
           isLast: false),
       Values.chassis_split: TextFieldEntry(
           label: 'Chassis Split',
-          fieldType: widget.quotec?.chassisSplit == null
-              ? FieldType.checkbox
-              : FieldType.text,
+          fieldType: FieldType.checkbox,
           controller: TextEditingController(text: widget.quotec?.chassisSplit),
           keyId: Values.chassis_split,
           isLast: false),
       Values.detention: TextFieldEntry(
           label: 'Detention',
-          fieldType: widget.quotec?.detention == null
-              ? FieldType.checkbox
-              : FieldType.text,
+          fieldType: FieldType.checkbox,
           controller: TextEditingController(text: widget.quotec?.detention),
           keyId: Values.detention,
           isLast: false),
       Values.tolls: TextFieldEntry(
           label: 'Tolls',
-          fieldType: widget.quotec?.tolls == null
-              ? FieldType.checkbox
-              : FieldType.text,
+          fieldType: FieldType.checkbox,
           controller: TextEditingController(text: widget.quotec?.tolls),
           keyId: Values.tolls,
           isLast: false),
       Values.drop_and_pick: TextFieldEntry(
           label: 'Drop and Pick',
-          fieldType: widget.quotec?.dropAndPick == null
-              ? FieldType.checkbox
-              : FieldType.text,
+          fieldType: FieldType.checkbox,
           controller: TextEditingController(text: widget.quotec?.dropAndPick),
           keyId: Values.drop_and_pick,
           isLast: false),
       Values.hazmat: TextFieldEntry(
           label: 'Hazmat',
-          fieldType: widget.quotec?.hazmat == null
-              ? FieldType.checkbox
-              : FieldType.text,
+          fieldType: FieldType.checkbox,
           controller: TextEditingController(text: widget.quotec?.hazmat),
           keyId: Values.hazmat,
           isLast: false),
@@ -269,7 +253,7 @@ class _CreateQuotecViewState extends State<CreateQuotecView> {
                                   if (_formKey.currentState!.validate()) {
                                     dev.log(values.toString());
 
-                                    values[Values.customer] = state.id;
+                                    // values[Values.quote_number] = state.id;
                                     if (widget.quotec == null) {
                                       GetIt.I<CreateQuotecCubit>()
                                           .create(values);
