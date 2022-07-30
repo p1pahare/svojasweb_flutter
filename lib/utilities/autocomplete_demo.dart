@@ -5,11 +5,13 @@ class AutoCompleteDemo<T extends Object> extends StatelessWidget {
   final Future<Iterable<dynamic>> Function(String)? optionListing;
   final void Function(T)? onSelect;
   final String? label;
+  final String? Function(String?)? validate;
   const AutoCompleteDemo(
       {Key? key,
       required this.optionListing,
       this.label,
       this.onSelect,
+      this.validate,
       this.showLabel = true})
       : super(key: key);
   final bool showLabel;
@@ -28,9 +30,11 @@ class AutoCompleteDemo<T extends Object> extends StatelessWidget {
               TextEditingController fieldTextEditingController,
               FocusNode ffocusNode,
               VoidCallback onFieldSubmitted) {
-            return TextField(
+            return TextFormField(
               controller: fieldTextEditingController,
               focusNode: ffocusNode,
+              autovalidateMode: AutovalidateMode.onUserInteraction,
+              validator: validate,
               style: const TextStyle(fontWeight: FontWeight.bold),
               decoration: InputDecoration(
                   hintText: label,

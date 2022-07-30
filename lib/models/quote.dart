@@ -1,3 +1,5 @@
+import 'package:svojasweb/models/party.dart';
+
 class Quote {
   Quote({
     required this.date,
@@ -27,6 +29,7 @@ class Quote {
     required this.reeferTemp,
     required this.typeOfEquipment,
     required this.package,
+    required this.party,
   });
   late final String date;
   late final String sid;
@@ -56,6 +59,7 @@ class Quote {
   late final String? reeferTemp;
   late final String? typeOfEquipment;
   late final List<Package>? package;
+  late final List<Party> party;
 
   Quote.fromJson(Map<String, dynamic> json) {
     date = json['date'];
@@ -87,6 +91,8 @@ class Quote {
     typeOfEquipment = json['type_of_equipment'];
     package =
         List.from(json['package']).map((e) => Package.fromJson(e)).toList();
+    party =
+        List.from(json['party'] ?? []).map((e) => Party.fromJson(e)).toList();
   }
 
   Map<String, dynamic> toJson() {
@@ -109,6 +115,7 @@ class Quote {
     _data['quote_id'] = quoteId;
     _data['size_of_container'] = sizeOfContainer;
     _data['type_of_container'] = typeOfContainer;
+    _data['party'] = party.map((e) => e.toJson()).toList();
     _data['gross_weight'] = grossWeight;
     _data['commodity'] = commodity;
     _data['haz'] = haz;

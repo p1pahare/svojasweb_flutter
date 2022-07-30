@@ -8,6 +8,7 @@ import 'package:svojasweb/models/quotec.dart';
 import 'package:svojasweb/repositories/network_calls.dart';
 import 'package:svojasweb/views/create_quotec_view.dart';
 import 'package:svojasweb/views/drawer_view.dart';
+import 'package:svojasweb/views/subviews/view_quotec.dart';
 
 class QuotecView extends StatefulWidget {
   const QuotecView({Key? key, required this.title}) : super(key: key);
@@ -20,7 +21,7 @@ class QuotecView extends StatefulWidget {
 
 class _QuotecViewState extends State<QuotecView> {
   EasyTableModel<QuoteC>? _model;
-
+  final GlobalKey<ScaffoldState> _scaff = GlobalKey();
   @override
   void initState() {
     loadPage();
@@ -107,6 +108,7 @@ class _QuotecViewState extends State<QuotecView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text(widget.title)),
+      key: _scaff,
       body: BlocBuilder<QuotecCubit, QuotecState>(
         bloc: GetIt.I<QuotecCubit>(),
         builder: (context, state) {
@@ -125,6 +127,7 @@ class _QuotecViewState extends State<QuotecView> {
             return EasyTableTheme(
                 child: EasyTable<QuoteC>(
                   _model,
+                  onRowTap: selectCustomer,
                 ),
                 data: const EasyTableThemeData(
                     columnDividerThickness: 0,
@@ -156,6 +159,47 @@ class _QuotecViewState extends State<QuotecView> {
       ),
       drawer: const DrawerView(),
     );
+  }
+
+  void selectCustomer(QuoteC quotec) {
+    _scaff.currentState?.showBottomSheet(
+        (context) => Column(
+              children: [
+                Expanded(
+                  child: Container(
+                      decoration: const BoxDecoration(
+                          color: Colors.lightBlueAccent,
+                          borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(20),
+                              topRight: Radius.circular(20))),
+                      child: SingleChildScrollView(
+                          child: ViewQuotec(quoteC: quotec))),
+                ),
+                Container(
+                  color: Colors.lightBlueAccent,
+                  padding: const EdgeInsets.all(15),
+                  child: Center(
+                    child: TextButton(
+                        style: TextButton.styleFrom(
+                          backgroundColor:
+                              Theme.of(context).colorScheme.primary,
+                          shape: const CircleBorder(),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Icon(
+                            Icons.arrow_drop_down_sharp,
+                            color: Theme.of(context).colorScheme.onPrimary,
+                          ),
+                        ),
+                        onPressed: () => Navigator.pop(context)),
+                  ),
+                ),
+              ],
+            ),
+        backgroundColor: Colors.white,
+        constraints: BoxConstraints.tight(
+            Size.fromHeight(MediaQuery.of(context).size.height / 2)));
   }
 
   deleteCustomer(String sId) async {

@@ -1,3 +1,5 @@
+import 'package:svojasweb/models/quote.dart';
+
 class QuoteC {
   QuoteC({
     required this.date,
@@ -15,6 +17,7 @@ class QuoteC {
     required this.detention,
     required this.tolls,
     required this.dropAndPick,
+    required this.quote,
     required this.hazmat,
     required this.sId,
   });
@@ -26,6 +29,7 @@ class QuoteC {
   late final String? yardStorage;
   late final String? portCongestion;
   late final String? stopOff;
+  late final List<Quote> quote;
   late final String? overweight;
   late final String? reefer;
   late final String? reeferMonitoringFee;
@@ -50,6 +54,8 @@ class QuoteC {
     reeferMonitoringFee = json['reefer_monitoring_fee'];
     chassisSplit = json['chassis_split'];
     detention = json['detention'];
+    quote =
+        List.from(json['quote'] ?? []).map((e) => Quote.fromJson(e)).toList();
     tolls = json['tolls'];
     dropAndPick = json['drop_and_pick'];
     hazmat = json['hazmat'];
@@ -65,6 +71,7 @@ class QuoteC {
     _data['pre_pull'] = prePull;
     _data['yard_storage'] = yardStorage;
     _data['port_congestion'] = portCongestion;
+    _data['quote'] = quote.map((e) => e.toJson()).toList();
     _data['stop_off'] = stopOff;
     _data['overweight'] = overweight;
     _data['reefer'] = reefer;

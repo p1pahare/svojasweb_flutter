@@ -50,6 +50,7 @@ class TextFieldEntryBuilder extends StatelessWidget {
           if (textFieldEntry?.fieldType == FieldType.autocomplete) {
             return AutoCompleteDemo(
               label: textFieldEntry!.label,
+              validate: textFieldEntry?.validate,
               onSelect: (object) {
                 textFieldEntry?.object = object;
                 focusHandler!(textFieldEntry!.isLast);

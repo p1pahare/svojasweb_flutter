@@ -8,6 +8,7 @@ import 'package:svojasweb/models/party.dart';
 import 'package:svojasweb/repositories/network_calls.dart';
 import 'package:svojasweb/views/create_party_view.dart';
 import 'package:svojasweb/views/drawer_view.dart';
+import 'package:svojasweb/views/subviews/view_party.dart';
 
 class PartyView extends StatefulWidget {
   const PartyView({Key? key, required this.title}) : super(key: key);
@@ -20,6 +21,7 @@ class PartyView extends StatefulWidget {
 
 class _PartyViewState extends State<PartyView> {
   late EasyTableModel<Party>? _model;
+  final GlobalKey<ScaffoldState> _scaff = GlobalKey();
   @override
   void initState() {
     loadPage();
@@ -108,6 +110,7 @@ class _PartyViewState extends State<PartyView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text(widget.title)),
+      key: _scaff,
       body: BlocBuilder<PartyCubit, PartyState>(
         bloc: GetIt.I<PartyCubit>(),
         builder: (context, state) {
@@ -124,9 +127,7 @@ class _PartyViewState extends State<PartyView> {
           if (state is PartySuccess) {
             loadModel(context, state.parties!);
             return EasyTableTheme(
-                child: EasyTable<Party>(
-                  _model,
-                ),
+                child: EasyTable<Party>(_model, onRowTap: selectCustomer),
                 data: const EasyTableThemeData(
                     columnDividerThickness: 0,
                     columnDividerColor: Colors.blue,
@@ -157,6 +158,46 @@ class _PartyViewState extends State<PartyView> {
       ),
       drawer: const DrawerView(),
     );
+  }
+
+  void selectCustomer(Party party) {
+    _scaff.currentState?.showBottomSheet(
+        (context) => Column(
+              children: [
+                Expanded(
+                    child: Container(
+                        decoration: const BoxDecoration(
+                            color: Colors.lightBlueAccent,
+                            borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(20),
+                                topRight: Radius.circular(20))),
+                        child: SingleChildScrollView(
+                            child: ViewParty(party: party)))),
+                Container(
+                  color: Colors.lightBlueAccent,
+                  padding: const EdgeInsets.all(15),
+                  child: Center(
+                    child: TextButton(
+                        style: TextButton.styleFrom(
+                          backgroundColor:
+                              Theme.of(context).colorScheme.primary,
+                          shape: const CircleBorder(),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Icon(
+                            Icons.arrow_drop_down_sharp,
+                            color: Theme.of(context).colorScheme.onPrimary,
+                          ),
+                        ),
+                        onPressed: () => Navigator.pop(context)),
+                  ),
+                ),
+              ],
+            ),
+        backgroundColor: Colors.white,
+        constraints: BoxConstraints.tight(
+            Size.fromHeight(MediaQuery.of(context).size.height / 2)));
   }
 
   deleteCustomer(String sId) async {

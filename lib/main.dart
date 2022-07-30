@@ -45,6 +45,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     setup();
+
     return FutureBuilder<bool>(
         future: GetIt.I<Preferences>().readIslogin(),
         builder: (context, futureShot) {

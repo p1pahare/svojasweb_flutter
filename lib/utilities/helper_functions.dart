@@ -8,3 +8,7 @@ String getNameFromObject(dynamic object) {
           ? object.quoteId!
           : "";
 }
+
+extension Better on bool {
+  String toBetterString() => this ? "Yes" : "No";
+}
