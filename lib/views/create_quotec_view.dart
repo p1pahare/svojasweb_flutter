@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:svojasweb/blocs/create_quotec/create_quotec_cubit.dart';
+import 'package:svojasweb/models/quote.dart';
 import 'package:svojasweb/models/quotec.dart';
 import 'package:svojasweb/models/textfield_entry.dart';
 import 'package:svojasweb/repositories/values.dart';
@@ -47,9 +48,15 @@ class _CreateQuotecViewState extends State<CreateQuotecView> {
           label: 'Select Quote Id',
           keyId: Values.quote_number,
           enabled: true,
+          object: (widget.quotec?.quote.isEmpty ?? false)
+              ? null
+              : widget.quotec?.quote.first,
           optionListing: (textValue) =>
               GetIt.I<CreateQuotecCubit>().getQuotes(textValue),
-          controller: TextEditingController(text: '')),
+          controller: TextEditingController(
+              text: (widget.quotec?.quote.isNotEmpty) ?? false
+                  ? widget.quotec?.quote.first.quoteId
+                  : '')),
       Values.date: TextFieldEntry(
           label: 'Date',
           keyId: Values.date,
@@ -252,7 +259,14 @@ class _CreateQuotecViewState extends State<CreateQuotecView> {
                                   };
                                   if (_formKey.currentState!.validate()) {
                                     dev.log(values.toString());
-
+                                    if ((quotecFields[Values.quote_number]
+                                            ?.object as Quote?) !=
+                                        null) {
+                                      values[Values.quote_number] =
+                                          (quotecFields[Values.quote_number]
+                                                  ?.object as Quote?)
+                                              ?.sid;
+                                    }
                                     // values[Values.quote_number] = state.id;
                                     if (widget.quotec == null) {
                                       GetIt.I<CreateQuotecCubit>()

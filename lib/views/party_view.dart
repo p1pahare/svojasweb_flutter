@@ -33,76 +33,84 @@ class _PartyViewState extends State<PartyView> {
   }
 
   loadModel(BuildContext context, List<Party> parties) {
-    double width = (MediaQuery.of(context).size.width - 170) / 100;
+    double width = (MediaQuery.of(context).size.width - 170);
     _model = EasyTableModel<Party>(rows: parties, columns: [
-      EasyTableColumn(
-        name: 'Reference Id',
-        stringValue: (row) => row.sid,
-        width: width * 15,
-      ),
-      EasyTableColumn(
-          name: 'Customer Type',
-          stringValue: (row) => row.partyType,
-          width: width * 15),
-      EasyTableColumn(
-          name: 'Party Name',
-          stringValue: (row) => row.partyName,
-          width: width * 20),
-      EasyTableColumn(
-          name: 'Company Name',
-          stringValue: (row) => row.orgName,
-          width: width * 20),
-      EasyTableColumn(
-          name: 'Email Id',
-          stringValue: (row) => row.emailId,
-          width: width * 15),
-      EasyTableColumn(
-          name: 'Contact Number',
-          stringValue: (row) => row.phone,
-          width: width * 15),
-      EasyTableColumn(
-          name: 'Options',
-          width: 150,
-          cellBuilder: (context, row, index) => Row(
-                children: [
-                  TextButton(
-                      style: TextButton.styleFrom(
-                        backgroundColor: Theme.of(context).colorScheme.primary,
-                        shape: const CircleBorder(),
+      if (width > 460)
+        EasyTableColumn(
+          name: 'Reference Id',
+          stringValue: (row) => row.sid,
+          width: 130,
+        ),
+      if (width > 330)
+        EasyTableColumn(
+            name: 'Customer Type',
+            stringValue: (row) => row.partyType,
+            width: 130),
+      if (width > 610)
+        EasyTableColumn(
+            name: 'Party Name',
+            stringValue: (row) => row.partyName,
+            width: 150),
+      if (width > 760)
+        EasyTableColumn(
+            name: 'Company Name',
+            stringValue: (row) => row.orgName,
+            width: 150),
+      if (width > 910)
+        EasyTableColumn(
+            name: 'Email Id', stringValue: (row) => row.emailId, width: 150),
+      if (width > 1060)
+        EasyTableColumn(
+            name: 'Contact Number',
+            stringValue: (row) => row.phone,
+            width: 140),
+      if (width > 200)
+        if (width > 200)
+          EasyTableColumn(
+              name: 'Options',
+              width: 150,
+              cellBuilder: (context, row, index) => Row(
+                    children: [
+                      TextButton(
+                          style: TextButton.styleFrom(
+                            backgroundColor:
+                                Theme.of(context).colorScheme.primary,
+                            shape: const CircleBorder(),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(4.0),
+                            child: Icon(
+                              Icons.edit_sharp,
+                              color: Theme.of(context).colorScheme.onPrimary,
+                            ),
+                          ),
+                          onPressed: () async {
+                            final bool? change = await Navigator.pushNamed(
+                                context, CreatePartyView.routeNameEdit,
+                                arguments: row);
+                            if (change ?? false) {
+                              loadPage();
+                            }
+                          }),
+                      const SizedBox(
+                        width: 10,
                       ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(4.0),
-                        child: Icon(
-                          Icons.edit_sharp,
-                          color: Theme.of(context).colorScheme.onPrimary,
-                        ),
-                      ),
-                      onPressed: () async {
-                        final bool? change = await Navigator.pushNamed(
-                            context, CreatePartyView.routeNameEdit,
-                            arguments: row);
-                        if (change ?? false) {
-                          loadPage();
-                        }
-                      }),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  TextButton(
-                      style: TextButton.styleFrom(
-                        backgroundColor: Theme.of(context).colorScheme.primary,
-                        shape: const CircleBorder(),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(4.0),
-                        child: Icon(
-                          Icons.dangerous_rounded,
-                          color: Theme.of(context).colorScheme.onPrimary,
-                        ),
-                      ),
-                      onPressed: () => deleteCustomer(row.sid!)),
-                ],
-              )),
+                      TextButton(
+                          style: TextButton.styleFrom(
+                            backgroundColor:
+                                Theme.of(context).colorScheme.primary,
+                            shape: const CircleBorder(),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(4.0),
+                            child: Icon(
+                              Icons.dangerous_rounded,
+                              color: Theme.of(context).colorScheme.onPrimary,
+                            ),
+                          ),
+                          onPressed: () => deleteCustomer(row.sid!)),
+                    ],
+                  )),
     ]);
   }
 
@@ -127,7 +135,11 @@ class _PartyViewState extends State<PartyView> {
           if (state is PartySuccess) {
             loadModel(context, state.parties!);
             return EasyTableTheme(
-                child: EasyTable<Party>(_model, onRowTap: selectCustomer),
+                child: EasyTable<Party>(
+                  _model,
+                  onRowTap: selectCustomer,
+                  columnsFit: true,
+                ),
                 data: const EasyTableThemeData(
                     columnDividerThickness: 0,
                     columnDividerColor: Colors.blue,

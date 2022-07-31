@@ -33,74 +33,77 @@ class _QuotecViewState extends State<QuotecView> {
   }
 
   loadModel(BuildContext context, List<QuoteC> quotecs) {
-    double width = (MediaQuery.of(context).size.width - 170) / 100;
+    double width = (MediaQuery.of(context).size.width - 60);
     _model = EasyTableModel<QuoteC>(rows: quotecs, columns: [
-      EasyTableColumn(
-        name: 'Quote Number',
-        stringValue: (row) => row.quoteNumber,
-        width: width * 15,
-      ),
-      EasyTableColumn(
-          name: 'Date', stringValue: (row) => row.date, width: width * 15),
-      EasyTableColumn(
+      if (width > 300)
+        EasyTableColumn(
           name: 'Quote Number',
           stringValue: (row) => row.quoteNumber,
-          width: width * 20),
-      EasyTableColumn(
-          name: 'Chassis',
-          stringValue: (row) => row.chassis,
-          width: width * 10),
-      EasyTableColumn(
-          name: 'Drayage Fuel',
-          stringValue: (row) => row.drayageFuel,
-          width: width * 15),
-      EasyTableColumn(
-          name: 'pre PULL',
-          stringValue: (row) => row.prePull,
-          width: width * 15),
-      EasyTableColumn(
-          name: 'Options',
-          width: 150,
-          cellBuilder: (context, row, index) => Row(
-                children: [
-                  TextButton(
-                      style: TextButton.styleFrom(
-                        backgroundColor: Theme.of(context).colorScheme.primary,
-                        shape: const CircleBorder(),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(4.0),
-                        child: Icon(
-                          Icons.edit_sharp,
-                          color: Theme.of(context).colorScheme.onPrimary,
+          width: 120,
+        ),
+      if (width > 440)
+        EasyTableColumn(
+            name: 'Quote Id',
+            stringValue: (row) =>
+                row.quote.isEmpty ? "Deleted" : row.quote[0].quoteId,
+            width: 140),
+      if (width > 560)
+        EasyTableColumn(
+            name: 'Chassis', stringValue: (row) => row.chassis, width: 120),
+      if (width > 680)
+        EasyTableColumn(
+            name: 'Drayage Fuel',
+            stringValue: (row) => row.drayageFuel,
+            width: 120),
+      if (width > 800)
+        EasyTableColumn(
+            name: 'Date', stringValue: (row) => row.date, width: 120),
+      if (width > 150)
+        EasyTableColumn(
+            name: 'Options',
+            width: 150,
+            cellBuilder: (context, row, index) => Row(
+                  children: [
+                    TextButton(
+                        style: TextButton.styleFrom(
+                          backgroundColor:
+                              Theme.of(context).colorScheme.primary,
+                          shape: const CircleBorder(),
                         ),
-                      ),
-                      onPressed: () async {
-                        final bool? change = await Navigator.pushNamed(
-                            context, CreateQuotecView.routeNameEdit,
-                            arguments: row);
-                        if (change ?? false) {
-                          loadPage();
-                        }
-                      }),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  TextButton(
-                      style: TextButton.styleFrom(
-                        backgroundColor: Theme.of(context).colorScheme.primary,
-                        shape: const CircleBorder(),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(4.0),
-                        child: Icon(
-                          Icons.dangerous_rounded,
-                          color: Theme.of(context).colorScheme.onPrimary,
+                        child: Padding(
+                          padding: const EdgeInsets.all(4.0),
+                          child: Icon(
+                            Icons.edit_sharp,
+                            color: Theme.of(context).colorScheme.onPrimary,
+                          ),
                         ),
-                      ),
-                      onPressed: () => deleteCustomer(row.sId)),
-                ],
-              )),
+                        onPressed: () async {
+                          final bool? change = await Navigator.pushNamed(
+                              context, CreateQuotecView.routeNameEdit,
+                              arguments: row);
+                          if (change ?? false) {
+                            loadPage();
+                          }
+                        }),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    TextButton(
+                        style: TextButton.styleFrom(
+                          backgroundColor:
+                              Theme.of(context).colorScheme.primary,
+                          shape: const CircleBorder(),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(4.0),
+                          child: Icon(
+                            Icons.dangerous_rounded,
+                            color: Theme.of(context).colorScheme.onPrimary,
+                          ),
+                        ),
+                        onPressed: () => deleteCustomer(row.sId)),
+                  ],
+                )),
     ]);
   }
 
@@ -128,6 +131,7 @@ class _QuotecViewState extends State<QuotecView> {
                 child: EasyTable<QuoteC>(
                   _model,
                   onRowTap: selectCustomer,
+                  columnsFit: true,
                 ),
                 data: const EasyTableThemeData(
                     columnDividerThickness: 0,
@@ -174,7 +178,6 @@ class _QuotecViewState extends State<QuotecView> {
                           child: ViewQuotec(quoteC: quotec))),
                 ),
                 Container(
-                  color: Colors.blueGrey.withAlpha(170),
                   padding: const EdgeInsets.all(15),
                   child: Center(
                     child: TextButton(

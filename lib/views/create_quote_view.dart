@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:svojasweb/blocs/create_quote/create_quote_cubit.dart';
+import 'package:svojasweb/models/party.dart';
 import 'package:svojasweb/models/quote.dart';
 import 'package:svojasweb/models/textfield_entry.dart';
 import 'package:svojasweb/repositories/values.dart';
@@ -28,6 +29,7 @@ class _CreateQuoteViewState extends State<CreateQuoteView> {
       case Values.type_of_move:
         quoteFields.forEach((key, value) {
           if (![
+            Values.customer,
             Values.date,
             Values.quote_number,
             Values.type_of_move,
@@ -82,6 +84,7 @@ class _CreateQuoteViewState extends State<CreateQuoteView> {
         quoteFields[Values.transit_type]?.visible = true;
         quoteFields.forEach((key, value) {
           if (![
+            Values.customer,
             Values.date,
             Values.quote_number,
             Values.type_of_move,
@@ -246,9 +249,15 @@ class _CreateQuoteViewState extends State<CreateQuoteView> {
           label: 'Select Customer',
           keyId: Values.customer,
           enabled: true,
+          object: (widget.quote?.party.isEmpty ?? false)
+              ? null
+              : widget.quote?.party.first,
           optionListing: (textValue) =>
               GetIt.I<CreateQuoteCubit>().getParties(textValue),
-          controller: TextEditingController(text: '')),
+          controller: TextEditingController(
+              text: (widget.quote?.party.isNotEmpty) ?? false
+                  ? widget.quote?.party.first.partyName
+                  : '')),
       Values.date: TextFieldEntry(
           label: 'Date',
           keyId: Values.date,
@@ -732,7 +741,14 @@ class _CreateQuoteViewState extends State<CreateQuoteView> {
                                                 (key, value) => MapEntry(key,
                                                     value.controller?.text)))
                                         .toList();
-                                    values[Values.customer] = state.id;
+                                    if ((quoteFields[Values.customer]?.object
+                                            as Party?) !=
+                                        null) {
+                                      values[Values.customer] =
+                                          (quoteFields[Values.customer]?.object
+                                                  as Party?)
+                                              ?.sid;
+                                    }
                                     if (widget.quote == null) {
                                       GetIt.I<CreateQuoteCubit>()
                                           .create(values);

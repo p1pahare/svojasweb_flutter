@@ -33,74 +33,84 @@ class _QuoteViewState extends State<QuoteView> {
   }
 
   loadModel(BuildContext context, List<Quote> quotes) {
-    double width = (MediaQuery.of(context).size.width - 170) / 100;
+    double width = (MediaQuery.of(context).size.width - 170);
     _model = EasyTableModel<Quote>(rows: quotes, columns: [
-      EasyTableColumn(
-        name: 'Quote Number',
-        stringValue: (row) => row.sid,
-        width: width * 15,
-      ),
-      EasyTableColumn(
-          name: 'Date', stringValue: (row) => row.date, width: width * 15),
-      EasyTableColumn(
-          name: 'Customer',
-          stringValue: (row) => row.customer,
-          width: width * 20),
-      EasyTableColumn(
-          name: 'Type of Move',
-          stringValue: (row) => row.typeOfMove,
-          width: width * 10),
-      EasyTableColumn(
-          name: 'Transit Type',
-          stringValue: (row) => row.transitType,
-          width: width * 15),
-      EasyTableColumn(
-          name: 'Gross Weight',
-          stringValue: (row) => row.grossWeight,
-          width: width * 15),
-      EasyTableColumn(
-          name: 'Options',
-          width: 150,
-          cellBuilder: (context, row, index) => Row(
-                children: [
-                  TextButton(
-                      style: TextButton.styleFrom(
-                        backgroundColor: Theme.of(context).colorScheme.primary,
-                        shape: const CircleBorder(),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(4.0),
-                        child: Icon(
-                          Icons.edit_sharp,
-                          color: Theme.of(context).colorScheme.onPrimary,
+      if (width > 300)
+        EasyTableColumn(
+          name: 'Quote ID',
+          stringValue: (row) => row.quoteId,
+          width: 120,
+        ),
+      if (width > 440)
+        EasyTableColumn(
+            name: 'Date', stringValue: (row) => row.date, width: 140),
+      if (width > 560)
+        EasyTableColumn(
+            name: 'Customer',
+            stringValue: (row) =>
+                row.party.isEmpty ? "Deleted" : row.party[0].partyName,
+            width: 120),
+      if (width > 700)
+        EasyTableColumn(
+            name: 'Type of Move',
+            stringValue: (row) => row.typeOfMove,
+            width: 130),
+      if (width > 830)
+        EasyTableColumn(
+            name: 'Transit Type',
+            stringValue: (row) => row.transitType,
+            width: 130),
+      if (width > 960)
+        EasyTableColumn(
+            name: 'Gross Weight',
+            stringValue: (row) => row.grossWeight,
+            width: 130),
+      if (width > 150)
+        EasyTableColumn(
+            name: 'Options',
+            width: 150,
+            cellBuilder: (context, row, index) => Row(
+                  children: [
+                    TextButton(
+                        style: TextButton.styleFrom(
+                          backgroundColor:
+                              Theme.of(context).colorScheme.primary,
+                          shape: const CircleBorder(),
                         ),
-                      ),
-                      onPressed: () async {
-                        final bool? change = await Navigator.pushNamed(
-                            context, CreateQuoteView.routeNameEdit,
-                            arguments: row);
-                        if (change ?? false) {
-                          loadPage();
-                        }
-                      }),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  TextButton(
-                      style: TextButton.styleFrom(
-                        backgroundColor: Theme.of(context).colorScheme.primary,
-                        shape: const CircleBorder(),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(4.0),
-                        child: Icon(
-                          Icons.dangerous_rounded,
-                          color: Theme.of(context).colorScheme.onPrimary,
+                        child: Padding(
+                          padding: const EdgeInsets.all(4.0),
+                          child: Icon(
+                            Icons.edit_sharp,
+                            color: Theme.of(context).colorScheme.onPrimary,
+                          ),
                         ),
-                      ),
-                      onPressed: () => deleteCustomer(row.sid)),
-                ],
-              )),
+                        onPressed: () async {
+                          final bool? change = await Navigator.pushNamed(
+                              context, CreateQuoteView.routeNameEdit,
+                              arguments: row);
+                          if (change ?? false) {
+                            loadPage();
+                          }
+                        }),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    TextButton(
+                        style: TextButton.styleFrom(
+                          backgroundColor:
+                              Theme.of(context).colorScheme.primary,
+                          shape: const CircleBorder(),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(4.0),
+                          child: Icon(
+                            Icons.dangerous_rounded,
+                            color: Theme.of(context).colorScheme.onPrimary,
+                          ),
+                        ),
+                        onPressed: () => deleteCustomer(row.sid)),
+                  ],
+                )),
     ]);
   }
 
@@ -128,6 +138,7 @@ class _QuoteViewState extends State<QuoteView> {
                 child: EasyTable<Quote>(
                   _model,
                   onRowTap: selectCustomer,
+                  columnsFit: true,
                 ),
                 data: const EasyTableThemeData(
                     columnDividerThickness: 0,
