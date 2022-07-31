@@ -167,16 +167,14 @@ class _QuotecViewState extends State<QuotecView> {
               children: [
                 Expanded(
                   child: Container(
-                      decoration: const BoxDecoration(
-                          color: Colors.lightBlueAccent,
-                          borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(20),
-                              topRight: Radius.circular(20))),
+                      padding: const EdgeInsets.symmetric(horizontal: 30),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20)),
                       child: SingleChildScrollView(
                           child: ViewQuotec(quoteC: quotec))),
                 ),
                 Container(
-                  color: Colors.lightBlueAccent,
+                  color: Colors.blueGrey.withAlpha(170),
                   padding: const EdgeInsets.all(15),
                   child: Center(
                     child: TextButton(
@@ -199,7 +197,7 @@ class _QuotecViewState extends State<QuotecView> {
             ),
         backgroundColor: Colors.white,
         constraints: BoxConstraints.tight(
-            Size.fromHeight(MediaQuery.of(context).size.height / 2)));
+            Size.fromHeight(MediaQuery.of(context).size.height * 0.75)));
   }
 
   deleteCustomer(String sId) async {

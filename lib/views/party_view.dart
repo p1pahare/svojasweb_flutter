@@ -166,15 +166,12 @@ class _PartyViewState extends State<PartyView> {
               children: [
                 Expanded(
                     child: Container(
-                        decoration: const BoxDecoration(
-                            color: Colors.lightBlueAccent,
-                            borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(20),
-                                topRight: Radius.circular(20))),
+                        padding: const EdgeInsets.symmetric(horizontal: 30),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20)),
                         child: SingleChildScrollView(
                             child: ViewParty(party: party)))),
                 Container(
-                  color: Colors.lightBlueAccent,
                   padding: const EdgeInsets.all(15),
                   child: Center(
                     child: TextButton(
@@ -195,9 +192,8 @@ class _PartyViewState extends State<PartyView> {
                 ),
               ],
             ),
-        backgroundColor: Colors.white,
         constraints: BoxConstraints.tight(
-            Size.fromHeight(MediaQuery.of(context).size.height / 2)));
+            Size.fromHeight(MediaQuery.of(context).size.height * 0.75)));
   }
 
   deleteCustomer(String sId) async {

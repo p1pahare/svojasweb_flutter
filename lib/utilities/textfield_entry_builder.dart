@@ -1,11 +1,18 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:svojasweb/models/party.dart';
+import 'package:svojasweb/models/quote.dart';
+import 'package:svojasweb/models/quotec.dart';
 import 'package:svojasweb/models/textfield_entry.dart';
 import 'package:svojasweb/utilities/autocomplete_demo.dart';
 import 'package:svojasweb/utilities/checkfield_custm.dart';
 import 'package:svojasweb/utilities/datefield_custm.dart';
 import 'package:svojasweb/utilities/dropdown_field_custom.dart';
+import 'package:svojasweb/utilities/helper_functions.dart';
 import 'package:svojasweb/utilities/textfield_custm.dart';
+import 'package:svojasweb/views/subviews/view_party.dart';
+import 'package:svojasweb/views/subviews/view_quote.dart';
+import 'package:svojasweb/views/subviews/view_quotec.dart';
 
 class TextFieldEntryBuilder extends StatelessWidget {
   const TextFieldEntryBuilder({
@@ -48,14 +55,27 @@ class TextFieldEntryBuilder extends StatelessWidget {
             );
           }
           if (textFieldEntry?.fieldType == FieldType.autocomplete) {
-            return AutoCompleteDemo(
-              label: textFieldEntry!.label,
-              validate: textFieldEntry?.validate,
-              onSelect: (object) {
-                textFieldEntry?.object = object;
-                focusHandler!(textFieldEntry!.isLast);
-              },
-              optionListing: textFieldEntry!.optionListing,
+            return Column(
+              children: [
+                AutoCompleteDemo(
+                  label: textFieldEntry!.label,
+                  validate: textFieldEntry?.validate,
+                  onSelect: (object) {
+                    textFieldEntry?.object = object;
+                    focusHandler!(textFieldEntry!.isLast);
+                    onValueSelected!(
+                        textFieldEntry?.keyId, getNameFromObject(object));
+                  },
+                  optionListing: textFieldEntry!.optionListing,
+                ),
+                if (textFieldEntry!.object != null)
+                  if (textFieldEntry!.object is Party)
+                    ViewParty(party: textFieldEntry!.object)
+                  else if (textFieldEntry!.object is Quote)
+                    ViewQuote(quote: textFieldEntry!.object)
+                  else if (textFieldEntry!.object is QuoteC)
+                    ViewQuotec(quoteC: textFieldEntry!.object)
+              ],
             );
           }
           if (textFieldEntry?.fieldType == FieldType.text) {

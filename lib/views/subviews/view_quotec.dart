@@ -9,7 +9,9 @@ class ViewQuotec extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.lightBlueAccent,
+      decoration: BoxDecoration(
+          color: Colors.blueGrey.withAlpha(170),
+          borderRadius: BorderRadius.circular(20)),
       child: Wrap(
         children: [
           SizedBox(
