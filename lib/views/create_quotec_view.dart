@@ -62,11 +62,6 @@ class _CreateQuotecViewState extends State<CreateQuotecView> {
           keyId: Values.date,
           enabled: false,
           controller: TextEditingController(text: widget.quotec?.date)),
-      Values.sid: TextFieldEntry(
-          label: 'id',
-          keyId: Values.sid,
-          enabled: false,
-          controller: TextEditingController(text: widget.quotec?.sId)),
       Values.drayage_fuel: TextFieldEntry(
           label: 'Drayage Fuel',
           controller: TextEditingController(text: widget.quotec?.drayageFuel),

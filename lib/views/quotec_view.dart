@@ -35,27 +35,27 @@ class _QuotecViewState extends State<QuotecView> {
   loadModel(BuildContext context, List<QuoteC> quotecs) {
     double width = (MediaQuery.of(context).size.width - 60);
     _model = EasyTableModel<QuoteC>(rows: quotecs, columns: [
-      if (width > 300)
+      if (width > 270)
         EasyTableColumn(
           name: 'Quote Number',
           stringValue: (row) => row.quoteNumber,
           width: 120,
         ),
-      if (width > 440)
+      if (width > 410)
         EasyTableColumn(
             name: 'Quote Id',
             stringValue: (row) =>
                 row.quote.isEmpty ? "Deleted" : row.quote[0].quoteId,
             width: 140),
-      if (width > 560)
+      if (width > 530)
         EasyTableColumn(
             name: 'Chassis', stringValue: (row) => row.chassis, width: 120),
-      if (width > 680)
+      if (width > 650)
         EasyTableColumn(
             name: 'Drayage Fuel',
             stringValue: (row) => row.drayageFuel,
             width: 120),
-      if (width > 800)
+      if (width > 770)
         EasyTableColumn(
             name: 'Date', stringValue: (row) => row.date, width: 120),
       if (width > 150)

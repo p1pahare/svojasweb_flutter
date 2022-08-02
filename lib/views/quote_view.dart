@@ -35,32 +35,32 @@ class _QuoteViewState extends State<QuoteView> {
   loadModel(BuildContext context, List<Quote> quotes) {
     double width = (MediaQuery.of(context).size.width - 170);
     _model = EasyTableModel<Quote>(rows: quotes, columns: [
-      if (width > 300)
+      if (width > 270)
         EasyTableColumn(
           name: 'Quote ID',
           stringValue: (row) => row.quoteId,
           width: 120,
         ),
-      if (width > 440)
+      if (width > 410)
         EasyTableColumn(
             name: 'Date', stringValue: (row) => row.date, width: 140),
-      if (width > 560)
+      if (width > 430)
         EasyTableColumn(
             name: 'Customer',
             stringValue: (row) =>
                 row.party.isEmpty ? "Deleted" : row.party[0].partyName,
             width: 120),
-      if (width > 700)
+      if (width > 670)
         EasyTableColumn(
             name: 'Type of Move',
             stringValue: (row) => row.typeOfMove,
             width: 130),
-      if (width > 830)
+      if (width > 800)
         EasyTableColumn(
             name: 'Transit Type',
             stringValue: (row) => row.transitType,
             width: 130),
-      if (width > 960)
+      if (width > 930)
         EasyTableColumn(
             name: 'Gross Weight',
             stringValue: (row) => row.grossWeight,
