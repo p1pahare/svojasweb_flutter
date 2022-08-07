@@ -275,7 +275,7 @@ class _CreateQuoteViewState extends State<CreateQuoteView> {
           options: ['Select', 'Ocean', 'Air', 'Inland'],
           controller: TextEditingController(text: widget.quote?.typeOfMove)),
       Values.transit_type: TextFieldEntry(
-          label: 'Transit Type',
+          label: 'Shipment Mode',
           keyId: Values.transit_type,
           fieldType: FieldType.dropdown,
           visible: false,
@@ -288,29 +288,33 @@ class _CreateQuoteViewState extends State<CreateQuoteView> {
           ],
           controller: TextEditingController(text: widget.quote?.transitType)),
       Values.pickup_ramp: TextFieldEntry(
-          label: 'Pickup Port',
+          label: quoteFields[Values.type_of_move]!.controller!.text == 'Air'
+              ? 'Pickup Airport'
+              : 'Pickup Port',
           keyId: Values.pickup_ramp,
           fieldType: FieldType.dropdown,
           visible: false,
           options: [
             'Select',
-            'Airport 1',
-            'Airport 2',
-            'Airport 3',
-            'Airport 4',
+            'Entry 1',
+            'Entry 2',
+            'Entry 3',
+            'Entry 4',
           ],
           controller: TextEditingController(text: widget.quote?.pickupRamp)),
       Values.delivery_ramp: TextFieldEntry(
-          label: 'Delivery Port',
+          label: quoteFields[Values.type_of_move]!.controller!.text == 'Air'
+              ? 'Delivery Airport'
+              : 'Delivery Port',
           keyId: Values.delivery_ramp,
           fieldType: FieldType.dropdown,
           visible: false,
           options: [
             'Select',
-            'Airport 1',
-            'Airport 2',
-            'Airport 3',
-            'Airport 4',
+            'Entry 1',
+            'Entry 2',
+            'Entry 3',
+            'Entry 4',
           ],
           controller: TextEditingController(text: widget.quote?.deliveryRamp)),
       Values.delivery_address: TextFieldEntry(
@@ -375,7 +379,7 @@ class _CreateQuoteViewState extends State<CreateQuoteView> {
           controller:
               TextEditingController(text: widget.quote?.sizeOfContainer)),
       Values.type_of_container: TextFieldEntry(
-          label: 'Size of Container',
+          label: 'Type of Container (High Cube, Reefer)',
           keyId: Values.type_of_container,
           fieldType: FieldType.dropdown,
           visible: false,

@@ -89,8 +89,9 @@ class Quote {
     hazProperShippingName = json['haz_proper_shipping_name'];
     reeferTemp = json['reefer_temp'];
     typeOfEquipment = json['type_of_equipment'];
-    package =
-        List.from(json['package']).map((e) => Package.fromJson(e)).toList();
+    package = List.from(json['package'] ?? [])
+        .map((e) => Package.fromJson(e))
+        .toList();
     party =
         List.from(json['party'] ?? []).map((e) => Party.fromJson(e)).toList();
   }

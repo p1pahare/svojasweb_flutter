@@ -57,7 +57,7 @@ class _QuoteViewState extends State<QuoteView> {
             width: 130),
       if (width > 800)
         EasyTableColumn(
-            name: 'Transit Type',
+            name: 'Shipment Mode',
             stringValue: (row) => row.transitType,
             width: 130),
       if (width > 930)
