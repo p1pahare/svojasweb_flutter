@@ -19,10 +19,8 @@ class CreateQuotecSuccess extends CreateQuotecState {
 }
 
 class CreatePageSuccess extends CreateQuotecState {
-  CreatePageSuccess({
-    this.id,
-    this.date,
-  });
+  CreatePageSuccess({this.id, this.date, this.quoteC});
   final String? id;
   final String? date;
+  final QuoteC? quoteC;
 }

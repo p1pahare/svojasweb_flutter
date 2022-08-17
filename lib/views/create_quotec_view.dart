@@ -207,6 +207,25 @@ class _CreateQuotecViewState extends State<CreateQuotecView> {
                 quotecFields[Values.date]?.controller?.text = state.date ?? '';
                 quotecFields[Values.sid]?.controller?.text =
                     widget.quotec?.sId ?? state.id ?? '';
+                quotecFields[Values.pre_pull]?.object = state.quoteC?.prePull;
+                quotecFields[Values.yard_storage]?.object =
+                    state.quoteC?.yardStorage;
+                quotecFields[Values.port_congestion]?.object =
+                    state.quoteC?.portCongestion;
+                quotecFields[Values.stop_off]?.object = state.quoteC?.stopOff;
+                quotecFields[Values.overweight]?.object =
+                    state.quoteC?.overweight;
+                quotecFields[Values.reefer]?.object = state.quoteC?.reefer;
+                quotecFields[Values.reefer_monitoring_fee]?.object =
+                    state.quoteC?.reeferMonitoringFee;
+                quotecFields[Values.chassis_split]?.object =
+                    state.quoteC?.chassisSplit;
+                quotecFields[Values.detention]?.object =
+                    state.quoteC?.detention;
+                quotecFields[Values.tolls]?.object = state.quoteC?.tolls;
+                quotecFields[Values.drop_and_pick]?.object =
+                    state.quoteC?.dropAndPick;
+                quotecFields[Values.hazmat]?.object = state.quoteC?.hazmat;
                 return SizedBox(
                     // width: min(MediaQuery.of(context).size.width, 480),
                     child: Form(

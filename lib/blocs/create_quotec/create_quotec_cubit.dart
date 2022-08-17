@@ -3,6 +3,7 @@ import 'package:get_it/get_it.dart';
 import 'package:meta/meta.dart';
 import 'package:svojasweb/models/api_response.dart';
 import 'package:svojasweb/models/quote.dart';
+import 'package:svojasweb/models/quotec.dart';
 import 'package:svojasweb/repositories/network_calls.dart';
 
 part 'create_quotec_state.dart';
@@ -14,12 +15,15 @@ class CreateQuotecCubit extends Cubit<CreateQuotecState> {
     emit(CreateQuotecLoading());
     final ApiResponse apiResponse =
         await GetIt.I<NetworkCalls>().getDateAndReference();
-    if (apiResponse.status) {
+    final ApiResponse apiResponse2 =
+        await GetIt.I<NetworkCalls>().getQuoteC("62fc7c3ac17bff21c42dfc87");
+    if (apiResponse.status && apiResponse2.status) {
       // GetIt.I<Preferences>().saveIsCreateQuote(isCreateQuote: true);
       final String id = apiResponse.data['reference'];
       final String date =
           DateTime.parse(apiResponse.data['date']).toLocal().toString();
-      emit(CreatePageSuccess(id: id, date: date));
+      final QuoteC quoteC = QuoteC.fromJson(apiResponse2.data);
+      emit(CreatePageSuccess(id: id, date: date, quoteC: quoteC));
     } else {
       emit(CreateQuotecFailed(errorMessage: apiResponse.message));
     }

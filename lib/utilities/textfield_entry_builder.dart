@@ -102,6 +102,7 @@ class TextFieldEntryBuilder extends StatelessWidget {
               label: textFieldEntry!.label,
               onDone: (str) => onValueSelected!(textFieldEntry?.keyId, str),
               showLabel: true,
+              defValue: textFieldEntry?.object,
             );
           }
           if (textFieldEntry?.fieldType == FieldType.date) {

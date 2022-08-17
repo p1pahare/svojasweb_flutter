@@ -443,7 +443,7 @@ class NetworkCalls {
 
   Future<ApiResponse> getQuoteC(String? sId) async {
     try {
-      final http.Response response = await http.put(
+      final http.Response response = await http.get(
         Uri.parse(Values.base_url + Values.quotec + '/' + sId!),
       );
 
