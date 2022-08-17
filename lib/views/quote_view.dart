@@ -134,21 +134,55 @@ class _QuoteViewState extends State<QuoteView> {
           }
           if (state is QuoteSuccess) {
             loadModel(context, state.quotes!);
-            return EasyTableTheme(
-                child: EasyTable<Quote>(
-                  _model,
-                  onRowTap: selectCustomer,
-                  columnsFit: true,
+            return Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    if (GetIt.I<QuoteCubit>().isPrevious())
+                      MaterialButton(
+                        child: const Icon(Icons.arrow_back_ios_new),
+                        onPressed: () {
+                          GetIt.I<QuoteCubit>().prviousPage();
+                        },
+                      )
+                    else
+                      const SizedBox(
+                        width: 60,
+                      ),
+                    if (state.quotes?.isNotEmpty ?? false)
+                      MaterialButton(
+                        child: const Icon(Icons.arrow_forward_ios_rounded),
+                        onPressed: () {
+                          GetIt.I<QuoteCubit>().nextPage();
+                        },
+                      )
+                    else
+                      const SizedBox(
+                        width: 60,
+                      ),
+                  ],
                 ),
-                data: const EasyTableThemeData(
-                    columnDividerThickness: 0,
-                    columnDividerColor: Colors.blue,
-                    cell: CellThemeData(
-                      textStyle: TextStyle(color: Colors.black),
-                    ),
-                    scrollbar: TableScrollbarThemeData(),
-                    row: RowThemeData(
-                        dividerThickness: 2, dividerColor: Colors.green)));
+                Expanded(
+                  child: EasyTableTheme(
+                      child: EasyTable<Quote>(
+                        _model,
+                        onRowTap: selectCustomer,
+                        columnsFit: true,
+                      ),
+                      data: const EasyTableThemeData(
+                          columnDividerThickness: 0,
+                          columnDividerColor: Colors.blue,
+                          cell: CellThemeData(
+                            textStyle: TextStyle(color: Colors.black),
+                          ),
+                          scrollbar: TableScrollbarThemeData(),
+                          row: RowThemeData(
+                              dividerThickness: 2,
+                              dividerColor: Colors.green))),
+                ),
+              ],
+            );
           }
           return const SizedBox(
             height: 0,

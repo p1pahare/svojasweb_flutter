@@ -127,21 +127,55 @@ class _QuotecViewState extends State<QuotecView> {
           }
           if (state is QuotecSuccess) {
             loadModel(context, state.quotecs!);
-            return EasyTableTheme(
-                child: EasyTable<QuoteC>(
-                  _model,
-                  onRowTap: selectCustomer,
-                  columnsFit: true,
+            return Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    if (GetIt.I<QuotecCubit>().isPrevious())
+                      MaterialButton(
+                        child: const Icon(Icons.arrow_back_ios_new),
+                        onPressed: () {
+                          GetIt.I<QuotecCubit>().prviousPage();
+                        },
+                      )
+                    else
+                      const SizedBox(
+                        width: 60,
+                      ),
+                    if (state.quotecs?.isNotEmpty ?? false)
+                      MaterialButton(
+                        child: const Icon(Icons.arrow_forward_ios_rounded),
+                        onPressed: () {
+                          GetIt.I<QuotecCubit>().nextPage();
+                        },
+                      )
+                    else
+                      const SizedBox(
+                        width: 60,
+                      ),
+                  ],
                 ),
-                data: const EasyTableThemeData(
-                    columnDividerThickness: 0,
-                    columnDividerColor: Colors.blue,
-                    cell: CellThemeData(
-                      textStyle: TextStyle(color: Colors.black),
-                    ),
-                    scrollbar: TableScrollbarThemeData(),
-                    row: RowThemeData(
-                        dividerThickness: 2, dividerColor: Colors.green)));
+                Expanded(
+                  child: EasyTableTheme(
+                      child: EasyTable<QuoteC>(
+                        _model,
+                        onRowTap: selectCustomer,
+                        columnsFit: true,
+                      ),
+                      data: const EasyTableThemeData(
+                          columnDividerThickness: 0,
+                          columnDividerColor: Colors.blue,
+                          cell: CellThemeData(
+                            textStyle: TextStyle(color: Colors.black),
+                          ),
+                          scrollbar: TableScrollbarThemeData(),
+                          row: RowThemeData(
+                              dividerThickness: 2,
+                              dividerColor: Colors.green))),
+                ),
+              ],
+            );
           }
           return const SizedBox(
             height: 0,

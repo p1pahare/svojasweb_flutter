@@ -93,10 +93,10 @@ class NetworkCalls {
     }
   }
 
-  Future<ApiResponse> getAllParties() async {
+  Future<ApiResponse> getAllParties({int pageNumber = 1}) async {
     try {
-      final http.Response response =
-          await http.get(Uri.parse(Values.base_url + Values.parties));
+      final http.Response response = await http.get(
+          Uri.parse(Values.base_url + Values.parties + '?page=$pageNumber'));
 
       if (response.statusCode == 200) {
         final String body = response.body;
@@ -120,10 +120,10 @@ class NetworkCalls {
     }
   }
 
-  Future<ApiResponse> getAllQuotes() async {
+  Future<ApiResponse> getAllQuotes({int pageNumber = 1}) async {
     try {
       final http.Response response = await http.get(
-        Uri.parse(Values.base_url + Values.quotes),
+        Uri.parse(Values.base_url + Values.quotes + '?page=$pageNumber'),
       );
 
       if (response.statusCode == 200) {
@@ -148,10 +148,10 @@ class NetworkCalls {
     }
   }
 
-  Future<ApiResponse> getAllQuotecs() async {
+  Future<ApiResponse> getAllQuotecs({int pageNumber = 1}) async {
     try {
       final http.Response response = await http.get(
-        Uri.parse(Values.base_url + Values.quotecs),
+        Uri.parse(Values.base_url + Values.quotecs + '?page=$pageNumber'),
       );
 
       if (response.statusCode == 200) {

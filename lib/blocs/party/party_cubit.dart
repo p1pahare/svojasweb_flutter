@@ -9,11 +9,26 @@ part 'party_state.dart';
 
 class PartyCubit extends Cubit<PartyState> {
   PartyCubit() : super(PartyInitial());
+  int pageNumber = 1;
+
+  bool isPrevious() => pageNumber != 1;
+  prviousPage() {
+    if (pageNumber != 1) {
+      pageNumber -= 1;
+    }
+    load();
+  }
+
+  nextPage() {
+    pageNumber += 1;
+
+    load();
+  }
 
   load() async {
     emit(PartyLoading());
     final ApiResponse apiResponse =
-        await GetIt.I<NetworkCalls>().getAllParties();
+        await GetIt.I<NetworkCalls>().getAllParties(pageNumber: pageNumber);
     if (apiResponse.status) {
       List<Party> parties = (apiResponse.data as List<dynamic>)
           .map<Party>((e) => Party.fromJson(e))
