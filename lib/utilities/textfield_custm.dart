@@ -34,6 +34,7 @@ class TextFieldCustm extends StatelessWidget {
           obscureText: obscure,
           enabled: enabled,
           readOnly: !enabled,
+          keyboardType: TextInputType.text,
           focusNode: focusNode,
           autovalidateMode: AutovalidateMode.onUserInteraction,
           validator: validate ?? (str) => null,

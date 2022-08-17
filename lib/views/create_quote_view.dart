@@ -288,7 +288,7 @@ class _CreateQuoteViewState extends State<CreateQuoteView> {
           ],
           controller: TextEditingController(text: widget.quote?.transitType)),
       Values.pickup_ramp: TextFieldEntry(
-          label: quoteFields[Values.type_of_move]!.controller!.text == 'Air'
+          label: quoteFields[Values.type_of_move]?.controller?.text == 'Air'
               ? 'Pickup Airport'
               : 'Pickup Port',
           keyId: Values.pickup_ramp,
@@ -303,7 +303,7 @@ class _CreateQuoteViewState extends State<CreateQuoteView> {
           ],
           controller: TextEditingController(text: widget.quote?.pickupRamp)),
       Values.delivery_ramp: TextFieldEntry(
-          label: quoteFields[Values.type_of_move]!.controller!.text == 'Air'
+          label: quoteFields[Values.type_of_move]?.controller?.text == 'Air'
               ? 'Delivery Airport'
               : 'Delivery Port',
           keyId: Values.delivery_ramp,

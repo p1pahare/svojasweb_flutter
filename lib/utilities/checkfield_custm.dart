@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:svojasweb/utilities/textfield_custm.dart';
+import 'package:svojasweb/utilities/validations.dart';
 
 class CheckboxFieldCustm extends StatelessWidget {
   const CheckboxFieldCustm(
@@ -29,14 +30,14 @@ class CheckboxFieldCustm extends StatelessWidget {
         }
         onDone?.call(controller.text);
       },
-      focusNode: focusNode,
       title: controller.text.isNotEmpty
           ? TextFieldCustm(
               controller: controller,
               label: label,
-              focusNode: FocusNode(),
+              focusNode: focusNode,
               showLabel: true,
               onDone: onDone,
+              validate: isNotBlank,
             )
           : Text(
               showLabel ? label : '',
