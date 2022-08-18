@@ -69,17 +69,40 @@ class Party {
         : [];
     scac = json['scac'];
     states = json['states'];
-    haz = json['haz'] is bool ? json['haz'] : false;
-    overweight = json['overweight'] is bool ? json['overweight'] : false;
-    oog = json['oog'] is bool ? json['oog'] : false;
-    reefer = json['reefer'] is bool ? json['reefer'] : false;
-    transloadService =
-        json['transload_service'] is bool ? json['transload_service'] : false;
+    haz = json['haz'] is bool
+        ? json['haz']
+        : (json['haz'] is String && json['haz'] == 'Yes')
+            ? true
+            : false;
+    overweight = json['overweight'] is bool
+        ? json['overweight']
+        : (json['overweight'] is String && json['overweight'] == 'Yes')
+            ? true
+            : false;
+    oog = json['oog'] is bool
+        ? json['oog']
+        : (json['oog'] is String && json['oog'] == 'Yes')
+            ? true
+            : false;
+    reefer = json['reefer'] is bool
+        ? json['reefer']
+        : (json['reefer'] is String && json['reefer'] == 'Yes')
+            ? true
+            : false;
+    transloadService = json['transload_service'] is bool
+        ? json['transload_service']
+        : (json['transload_service'] is String &&
+                json['transload_service'] == 'Yes')
+            ? true
+            : false;
     insuranceExpiry = json['insurance_expiry'];
     motorCarrier = json['motor_carrier'];
     deliveryAppointmentNeeded = json['delivery_appointment_needed'] is bool
         ? json['delivery_appointment_needed']
-        : false;
+        : (json['delivery_appointment_needed'] is String &&
+                json['delivery_appointment_needed'] == 'Yes')
+            ? true
+            : false;
     warehouseTimingsOpen = json['warehouse_timings_open'];
     warehouseTimingsClose = json['warehouse_timings_close'];
   }
