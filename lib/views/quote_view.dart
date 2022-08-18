@@ -207,40 +207,39 @@ class _QuoteViewState extends State<QuoteView> {
   }
 
   void selectCustomer(Quote quote) {
-    _scaff.currentState?.showBottomSheet(
-        (context) => Column(
-              children: [
-                Expanded(
-                    child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 30),
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20)),
-                        child: SingleChildScrollView(
-                            child: ViewQuote(quote: quote)))),
-                Container(
-                  padding: const EdgeInsets.all(15),
-                  child: Center(
-                    child: TextButton(
-                        style: TextButton.styleFrom(
-                          backgroundColor:
-                              Theme.of(context).colorScheme.primary,
-                          shape: const CircleBorder(),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Icon(
-                            Icons.arrow_drop_down_sharp,
-                            color: Theme.of(context).colorScheme.onPrimary,
-                          ),
-                        ),
-                        onPressed: () => Navigator.pop(context)),
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (context) => Column(
+        children: [
+          Expanded(
+              child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
                   ),
-                ),
-              ],
+                  child:
+                      SingleChildScrollView(child: ViewQuote(quote: quote)))),
+          Container(
+            padding: const EdgeInsets.all(15),
+            child: Center(
+              child: TextButton(
+                  style: TextButton.styleFrom(
+                    backgroundColor: Theme.of(context).colorScheme.primary,
+                    shape: const CircleBorder(),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Icon(
+                      Icons.arrow_drop_down_sharp,
+                      color: Theme.of(context).colorScheme.onPrimary,
+                    ),
+                  ),
+                  onPressed: () => Navigator.pop(context)),
             ),
-        backgroundColor: Colors.white,
-        constraints: BoxConstraints.tight(
-            Size.fromHeight(MediaQuery.of(context).size.height * 0.75)));
+          ),
+        ],
+      ),
+    );
   }
 
   deleteCustomer(String sId) async {

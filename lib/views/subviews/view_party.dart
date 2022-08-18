@@ -10,7 +10,7 @@ class ViewParty extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-          color: Colors.blueGrey.withAlpha(170),
+          color: const Color.fromARGB(255, 127, 169, 190),
           borderRadius: BorderRadius.circular(20)),
       child: Wrap(
         children: [
@@ -22,11 +22,12 @@ class ViewParty extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
           ),
-          KeyValueView(skey: "Party Id", value: party.sid!),
           KeyValueView(skey: "Date", value: party.date!),
           KeyValueView(skey: "Party Type", value: party.partyType!),
           KeyValueView(skey: "Party Name", value: party.partyName!),
           KeyValueView(skey: "Company Name", value: party.orgName!),
+          KeyValueView(skey: "Email ID", value: party.emailId!),
+          KeyValueView(skey: "Phone", value: party.phone!),
           KeyValueView(skey: "Address", value: party.address!),
           KeyValueView(skey: "City", value: party.city!),
           KeyValueView(skey: "State", value: party.state!),
