@@ -61,20 +61,25 @@ class Party {
     city = json['city'];
     zipCode = json['zip_code'];
     state = json['state'];
-    phone = json['phone'];
-    extraContacts = List.from(json['extra_contacts'])
-        .map((e) => ExtraContacts.fromJson(e))
-        .toList();
+    phone = json['phone'] is String ? json['phone'] : json['phone'].toString();
+    extraContacts = json['extra_contacts'] is List
+        ? List.from(json['extra_contacts'])
+            .map((e) => ExtraContacts.fromJson(e))
+            .toList()
+        : [];
     scac = json['scac'];
     states = json['states'];
-    haz = json['haz'];
-    overweight = json['overweight'];
-    oog = json['oog'];
-    reefer = json['reefer'];
-    transloadService = json['transload_service'];
+    haz = json['haz'] is bool ? json['haz'] : false;
+    overweight = json['overweight'] is bool ? json['overweight'] : false;
+    oog = json['oog'] is bool ? json['oog'] : false;
+    reefer = json['reefer'] is bool ? json['reefer'] : false;
+    transloadService =
+        json['transload_service'] is bool ? json['transload_service'] : false;
     insuranceExpiry = json['insurance_expiry'];
     motorCarrier = json['motor_carrier'];
-    deliveryAppointmentNeeded = json['delivery_appointment_needed'];
+    deliveryAppointmentNeeded = json['delivery_appointment_needed'] is bool
+        ? json['delivery_appointment_needed']
+        : false;
     warehouseTimingsOpen = json['warehouse_timings_open'];
     warehouseTimingsClose = json['warehouse_timings_close'];
   }
