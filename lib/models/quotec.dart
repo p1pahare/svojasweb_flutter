@@ -39,6 +39,7 @@ class QuoteC {
   late final String? dropAndPick;
   late final String? hazmat;
   late final String sId;
+  late final String? truckers;
 
   QuoteC.fromJson(Map<String, dynamic> json) {
     date = json['date'];
@@ -60,12 +61,14 @@ class QuoteC {
     dropAndPick = json['drop_and_pick'];
     hazmat = json['hazmat'];
     sId = json['_id'];
+    truckers = json['truckers'];
   }
 
   Map<String, dynamic> toJson() {
     final _data = <String, dynamic>{};
     _data['date'] = date;
     _data['quote_number'] = quoteNumber;
+    _data['truckers'] = truckers;
     _data['drayage_fuel'] = drayageFuel;
     _data['chassis'] = chassis;
     _data['pre_pull'] = prePull;

@@ -78,4 +78,5 @@ class Values {
   static const drop_and_pick = 'drop_and_pick';
   static const hazmat = 'hazmat';
   static const sid = '_id';
+  static const truckers = 'truckers';
 }

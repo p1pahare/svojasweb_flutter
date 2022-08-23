@@ -19,7 +19,7 @@ class CreateQuoteCubit extends Cubit<CreateQuoteState> {
       final String id = apiResponse.data['reference'];
       final String date =
           DateTime.parse(apiResponse.data['date']).toLocal().toString();
-      emit(CreatePageSuccess(id: id, date: date));
+      emit(CreatePagelSuccess(id: id, date: date));
     } else {
       emit(CreateQuoteFailed(errorMessage: apiResponse.message));
     }

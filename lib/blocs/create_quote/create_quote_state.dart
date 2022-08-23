@@ -18,8 +18,8 @@ class CreateQuoteSuccess extends CreateQuoteState {
   final String? successMessage;
 }
 
-class CreatePageSuccess extends CreateQuoteState {
-  CreatePageSuccess({
+class CreatePagelSuccess extends CreateQuoteState {
+  CreatePagelSuccess({
     this.id,
     this.date,
   });

@@ -4,8 +4,10 @@ import 'package:svojasweb/utilities/key_value_view.dart';
 import 'package:svojasweb/utilities/helper_functions.dart';
 
 class ViewParty extends StatelessWidget {
-  const ViewParty({Key? key, required this.party}) : super(key: key);
+  const ViewParty({Key? key, required this.party, this.nameOnTop = false})
+      : super(key: key);
   final Party party;
+  final bool nameOnTop;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -16,9 +18,9 @@ class ViewParty extends StatelessWidget {
         children: [
           SizedBox(
             width: MediaQuery.of(context).size.width,
-            child: const Text(
-              "Party Details",
-              style: TextStyle(fontWeight: FontWeight.w900, fontSize: 22),
+            child: Text(
+              nameOnTop ? party.partyName! : "Party Details",
+              style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 22),
               textAlign: TextAlign.center,
             ),
           ),

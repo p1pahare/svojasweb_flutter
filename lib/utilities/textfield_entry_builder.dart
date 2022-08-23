@@ -61,7 +61,11 @@ class TextFieldEntryBuilder extends StatelessWidget {
                   label: textFieldEntry!.label,
                   validate: textFieldEntry?.validate,
                   onSelect: (object) {
-                    textFieldEntry?.object = object;
+                    if (textFieldEntry?.object is List) {
+                      textFieldEntry?.object.add(object);
+                    } else {
+                      textFieldEntry?.object = object;
+                    }
                     focusHandler!(textFieldEntry!.isLast);
                     onValueSelected!(
                         textFieldEntry?.keyId, getNameFromObject(object));

@@ -2,13 +2,16 @@ import 'dart:developer' as dev;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
+import 'package:svojasweb/blocs/create_quote/create_quote_cubit.dart';
 import 'package:svojasweb/blocs/create_quotec/create_quotec_cubit.dart';
+import 'package:svojasweb/models/party.dart';
 import 'package:svojasweb/models/quote.dart';
 import 'package:svojasweb/models/quotec.dart';
 import 'package:svojasweb/models/textfield_entry.dart';
 import 'package:svojasweb/repositories/values.dart';
 import 'package:svojasweb/utilities/button_custm.dart';
 import 'package:svojasweb/utilities/textfield_entry_builder.dart';
+import 'package:svojasweb/views/subviews/view_party.dart';
 
 class CreateQuotecView extends StatefulWidget {
   const CreateQuotecView({Key? key, this.quotec}) : super(key: key);
@@ -21,7 +24,7 @@ class CreateQuotecView extends StatefulWidget {
 
 class _CreateQuotecViewState extends State<CreateQuotecView> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
+  List<String> truckers = [];
   void onValueSelected(String key, String? value, {bool clear = true}) {
     switch (key) {
       default:
@@ -146,6 +149,18 @@ class _CreateQuotecViewState extends State<CreateQuotecView> {
           controller: TextEditingController(text: widget.quotec?.hazmat),
           keyId: Values.hazmat,
           isLast: false),
+      Values.truckers: TextFieldEntry(
+          fieldType: FieldType.autocomplete,
+          label: 'Select Truckers Id',
+          keyId: Values.truckers,
+          enabled: true,
+          object: [],
+          optionListing: (textValue) =>
+              GetIt.I<CreateQuoteCubit>().getParties(textValue),
+          controller: TextEditingController(
+              text: (widget.quotec?.truckers?.isNotEmpty) ?? false
+                  ? widget.quotec?.truckers
+                  : '')),
     };
   }
 
@@ -160,6 +175,10 @@ class _CreateQuotecViewState extends State<CreateQuotecView> {
 
     }
     GetIt.I<CreateQuotecCubit>().load();
+    GetIt.I<CreateQuotecCubit>()
+        .getTruckers(widget.quotec?.truckers)
+        .then((value) => quotecFields[Values.truckers]?.object = value)
+        .then((value) => setState(() {}));
     super.initState();
   }
 
@@ -226,6 +245,9 @@ class _CreateQuotecViewState extends State<CreateQuotecView> {
                 quotecFields[Values.drop_and_pick]?.object =
                     state.quoteC?.dropAndPick;
                 quotecFields[Values.hazmat]?.object = state.quoteC?.hazmat;
+                List<Party>? listruckers =
+                    (quotecFields[Values.truckers]?.object as List<dynamic>)
+                        .cast<Party>();
                 return SizedBox(
                     // width: min(MediaQuery.of(context).size.width, 480),
                     child: Form(
@@ -250,6 +272,63 @@ class _CreateQuotecViewState extends State<CreateQuotecView> {
                                 );
                               }),
                             ),
+                            StreamBuilder<List<Party>>(
+                                stream: Stream.value(listruckers),
+                                // GetIt.I<CreateQuotecCubit>()
+                                //     .getTruckersStream(widget.quotec?.truckers),
+                                builder: (context, snapp) {
+                                  if (snapp.data != null) {
+                                    if (snapp.data?.isNotEmpty ?? false) {
+                                      listruckers = snapp.data;
+                                    }
+                                    return ListView.builder(
+                                        // gridDelegate:
+                                        //     const SliverGridDelegateWithFixedCrossAxisCount(
+                                        //         crossAxisCount: 2),
+                                        shrinkWrap: true,
+                                        physics:
+                                            const NeverScrollableScrollPhysics(),
+                                        itemCount: snapp.data?.length,
+                                        itemBuilder: (context, index) =>
+                                            Container(
+                                                margin:
+                                                    const EdgeInsets.all(20),
+                                                child: Stack(
+                                                  children: [
+                                                    ViewParty(
+                                                        nameOnTop: true,
+                                                        party:
+                                                            snapp.data![index]),
+                                                    Positioned(
+                                                        top: 0,
+                                                        left: 0,
+                                                        child: MaterialButton(
+                                                          child: const Icon(
+                                                            Icons
+                                                                .cancel_outlined,
+                                                            size: 40,
+                                                            color: Colors.white,
+                                                          ),
+                                                          onPressed: () {
+                                                            setState(() {
+                                                              if (listruckers!
+                                                                      .length >=
+                                                                  index + 1) {
+                                                                listruckers!
+                                                                    .removeAt(
+                                                                        index);
+                                                              }
+                                                            });
+                                                          },
+                                                        )),
+                                                  ],
+                                                )));
+                                  } else {
+                                    return const SizedBox(
+                                      height: 0,
+                                    );
+                                  }
+                                }),
                             Padding(
                               padding: const EdgeInsets.all(12.0),
                               child: ButtonCustm(
@@ -280,6 +359,23 @@ class _CreateQuotecViewState extends State<CreateQuotecView> {
                                           (quotecFields[Values.quote_number]
                                                   ?.object as Quote?)
                                               ?.sid;
+
+                                      values[Values.truckers] = "";
+                                      final truckerList =
+                                          (quotecFields[Values.truckers]?.object
+                                                  as List<dynamic>)
+                                              .cast<Party>()
+                                              .map((e) => e.sid)
+                                              .toList();
+                                      for (int i = 0;
+                                          i < truckerList.length;
+                                          i++) {
+                                        values[Values.truckers] +=
+                                            "${truckerList[i]}";
+                                        if (i != truckerList.length - 1) {
+                                          values[Values.truckers] += ",";
+                                        }
+                                      }
                                     }
                                     // values[Values.quote_number] = state.id;
                                     if (widget.quotec == null) {

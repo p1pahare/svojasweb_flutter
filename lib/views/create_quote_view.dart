@@ -558,7 +558,7 @@ class _CreateQuoteViewState extends State<CreateQuoteView> {
                   ],
                 );
               }
-              if (state is CreatePageSuccess) {
+              if (state is CreatePagelSuccess) {
                 quoteFields[Values.date]?.controller?.text = state.date ?? '';
                 quoteFields[Values.quote_number]?.controller?.text =
                     widget.quote?.sid ?? state.id ?? '';
