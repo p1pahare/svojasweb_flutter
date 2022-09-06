@@ -14,6 +14,7 @@ import 'package:svojasweb/models/quote.dart';
 import 'package:svojasweb/models/quotec.dart';
 import 'package:svojasweb/repositories/network_calls.dart';
 import 'package:svojasweb/services/preferences.dart';
+import 'package:svojasweb/views/bol_view.dart';
 import 'package:svojasweb/views/create_party_view.dart';
 import 'package:svojasweb/views/create_quote_view.dart';
 import 'package:svojasweb/views/create_quotec_view.dart';
@@ -110,6 +111,9 @@ class MyApp extends StatelessWidget {
                   case LoginView.routeName:
                     return CupertinoPageRoute(
                         builder: (context) => const LoginView());
+                  case BolView.routeName:
+                    return CupertinoPageRoute(
+                        builder: (context) => const BolView());
                   case '/':
                   default:
                     if (!futureShot.data!) {
@@ -117,9 +121,11 @@ class MyApp extends StatelessWidget {
                           builder: (context) => const LoginView());
                     } else {
                       return CupertinoPageRoute(
-                          builder: (context) => const DashboardView(
-                                title: '',
-                              ));
+                          builder: (context) => const BolView()
+                          // const    DashboardView(
+                          //       title: '',
+                          //     )
+                          );
                     }
                 }
               },

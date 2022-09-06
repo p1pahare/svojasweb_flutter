@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:svojasweb/services/preferences.dart';
+import 'package:svojasweb/views/bol_view.dart';
 import 'package:svojasweb/views/dashboard_view.dart';
 import 'package:svojasweb/views/login_view.dart';
 import 'package:svojasweb/views/party_view.dart';
@@ -23,34 +24,30 @@ class DrawerView extends StatelessWidget {
           ListTile(
             leading: const Icon(Icons.api),
             title: const Text('Dashboard'),
-            onTap: () {
-              Navigator.pop(context);
-              Navigator.popAndPushNamed(context, DashboardView.routeName);
-            },
+            onTap: () =>
+                Navigator.popAndPushNamed(context, DashboardView.routeName),
           ),
           ListTile(
             leading: const Icon(Icons.api),
             title: const Text('Party'),
-            onTap: () {
-              Navigator.pop(context);
-              Navigator.popAndPushNamed(context, PartyView.routeName);
-            },
+            onTap: () =>
+                Navigator.popAndPushNamed(context, PartyView.routeName),
           ),
           ListTile(
             leading: const Icon(Icons.api),
             title: const Text('Quote'),
-            onTap: () {
-              Navigator.pop(context);
-              Navigator.popAndPushNamed(context, QuoteView.routeName);
-            },
+            onTap: () =>
+                Navigator.popAndPushNamed(context, QuoteView.routeName),
           ),
           ListTile(
+              leading: const Icon(Icons.api),
+              title: const Text('Quote Confirm'),
+              onTap: () =>
+                  Navigator.popAndPushNamed(context, QuotecView.routeName)),
+          ListTile(
             leading: const Icon(Icons.api),
-            title: const Text('Quote Confirm'),
-            onTap: () {
-              Navigator.pop(context);
-              Navigator.popAndPushNamed(context, QuotecView.routeName);
-            },
+            title: const Text('BOL Page'),
+            onTap: () => Navigator.popAndPushNamed(context, BolView.routeName),
           ),
           ListTile(
             leading: const Icon(Icons.logout_sharp),
