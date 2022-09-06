@@ -294,22 +294,30 @@ MACHINE )HS CODE 847740
                   function1: () async {
                     await feedHtml();
                     htmlText = htmlText
-                        .replaceAll("yyyypickupWarehouseyyyy", pickupWareHouse)
-                        .replaceAll("yyyyreferenceNumberyyyy", referenceNumber)
+                        .replaceAll("yyyypickupWarehouseyyyy",
+                            pickupWareHouse.replaceAll('\n', '<br>'))
+                        .replaceAll("yyyyreferenceNumberyyyy",
+                            referenceNumber.replaceAll('\n', '<br>'))
                         .replaceAll("yyyydateyyyy",
                             DateFormat("MMMM dd, yyyy").format(DateTime.now()))
+                        .replaceAll("yyyycustomerReferenceyyyy",
+                            customerRefernce.replaceAll('\n', '<br>'))
+                        .replaceAll("yyyydeliveryWarehouseyyyy",
+                            deliveryWarehouse.replaceAll('\n', '<br>'))
                         .replaceAll(
-                            "yyyycustomerReferenceyyyy", customerRefernce)
+                            "yyyycarrieryyyy", carrier.replaceAll('\n', '<br>'))
+                        .replaceAll("yyyynoOfPackagesyyyy",
+                            noOfPackages.replaceAll('\n', '<br>'))
+                        .replaceAll("yyyycommodityyyyy",
+                            commodity.replaceAll('\n', '<br>'))
+                        .replaceAll("yyyygrossWeightyyyy",
+                            grossWeight.replaceAll('\n', '<br>'))
+                        .replaceAll("yyyywarehouseLoaderSignyyyy",
+                            wareHouseLoaderSign.replaceAll('\n', '<br>'))
                         .replaceAll(
-                            "yyyydeliveryWarehouseyyyy", deliveryWarehouse)
-                        .replaceAll("yyyycarrieryyyy", carrier)
-                        .replaceAll("yyyynoOfPackagesyyyy", noOfPackages)
-                        .replaceAll("yyyycommodityyyyy", commodity)
-                        .replaceAll("yyyygrossWeightyyyy", grossWeight)
-                        .replaceAll(
-                            "yyyywarehouseLoaderSignyyyy", wareHouseLoaderSign)
-                        .replaceAll("yyyygateInyyyy", gateIn)
-                        .replaceAll("yyyygateOutyyyy", gateOut);
+                            "yyyygateInyyyy", gateIn.replaceAll('\n', '<br>'))
+                        .replaceAll("yyyygateOutyyyy",
+                            gateOut.replaceAll('\n', '<br>'));
                     await Future.delayed(const Duration(seconds: 1));
                     Navigator.push(
                         context,
@@ -317,7 +325,7 @@ MACHINE )HS CODE 847740
                             builder: (context) =>
                                 HtmlView(htmlText: htmlText)));
                     await Future.delayed(const Duration(seconds: 3));
-                    // js.context.callMethod('print');
+                    js.context.callMethod('print');
                   },
                 ),
               ],
@@ -343,10 +351,16 @@ MACHINE )HS CODE 847740
               ),
               actions: [
                 TextButton(
-                    onPressed: () => Navigator.pop(context, null),
+                    onPressed: () {
+                      Navigator.pop(context, null);
+                      _tec.clear();
+                    },
                     child: const Text("Cancel")),
                 TextButton(
-                    onPressed: () => Navigator.pop(context, _tec.text),
+                    onPressed: () {
+                      Navigator.pop(context, _tec.text);
+                      _tec.clear();
+                    },
                     child: const Text("OK")),
               ],
             ));
