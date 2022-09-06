@@ -87,9 +87,8 @@ MACHINE )HS CODE 847740
     super.initState();
   }
 
-  void feedHtml() async {
+  Future feedHtml() async {
     htmlText = await rootBundle.loadString("lib/assets/bill_of_lading.html");
-    setState(() {});
   }
 
   @override
@@ -293,9 +292,10 @@ MACHINE )HS CODE 847740
                 ButtonCustm(
                   label: 'Print',
                   function1: () async {
+                    await feedHtml();
                     htmlText = htmlText
                         .replaceAll("yyyypickupWarehouseyyyy", pickupWareHouse)
-                        .replaceAll("yyyyreferenceNumber", referenceNumber)
+                        .replaceAll("yyyyreferenceNumberyyyy", referenceNumber)
                         .replaceAll("yyyydateyyyy",
                             DateFormat("MMMM dd, yyyy").format(DateTime.now()))
                         .replaceAll(
@@ -307,16 +307,17 @@ MACHINE )HS CODE 847740
                         .replaceAll("yyyycommodityyyyy", commodity)
                         .replaceAll("yyyygrossWeightyyyy", grossWeight)
                         .replaceAll(
-                            "yyyywareHouseLoaderSignyyyy", wareHouseLoaderSign)
+                            "yyyywarehouseLoaderSignyyyy", wareHouseLoaderSign)
                         .replaceAll("yyyygateInyyyy", gateIn)
                         .replaceAll("yyyygateOutyyyy", gateOut);
+                    await Future.delayed(const Duration(seconds: 1));
                     Navigator.push(
                         context,
                         CupertinoPageRoute(
                             builder: (context) =>
                                 HtmlView(htmlText: htmlText)));
                     await Future.delayed(const Duration(seconds: 3));
-                    js.context.callMethod('print');
+                    // js.context.callMethod('print');
                   },
                 ),
               ],
@@ -494,7 +495,7 @@ class HeaderImage extends StatelessWidget {
         const Padding(
           padding: EdgeInsets.only(top: 8.0),
           child: Text(
-            "Bill of Lading",
+            "Order Confirmation",
             textAlign: TextAlign.center,
             style: TextStyle(fontWeight: FontWeight.w700, fontSize: 35),
           ),
@@ -541,7 +542,8 @@ class HtmlView extends StatelessWidget {
   final String htmlText;
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SingleChildScrollView(
+        child: Container(
       alignment: Alignment.center,
       padding: const EdgeInsets.only(left: 30),
       color: Colors.white,
@@ -549,6 +551,6 @@ class HtmlView extends StatelessWidget {
         htmlText: htmlText,
         htmlValidator: HtmlValidator.loose(),
       ),
-    );
+    ));
   }
 }
