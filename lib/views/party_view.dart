@@ -5,7 +5,7 @@ import 'package:get_it/get_it.dart';
 import 'package:svojasweb/blocs/party/party_cubit.dart';
 import 'package:svojasweb/models/api_response.dart';
 import 'package:svojasweb/models/party.dart';
-import 'package:svojasweb/repositories/network_calls.dart';
+import 'package:svojasweb/repositories/party_repository.dart';
 import 'package:svojasweb/views/create_party_view.dart';
 import 'package:svojasweb/views/drawer_view.dart';
 import 'package:svojasweb/views/subviews/view_party.dart';
@@ -254,7 +254,7 @@ class _PartyViewState extends State<PartyView> {
                             const BorderSide(color: Colors.blueGrey))),
                     onPressed: () async {
                       ApiResponse apiResponse =
-                          await GetIt.I<NetworkCalls>().deleteParty(sId);
+                          await GetIt.I<PartyRepository>().deleteParty(sId);
                       Navigator.pop(context, apiResponse.status);
                     },
                     child: const Text("Yes")),

@@ -3,7 +3,7 @@ import 'package:svojasweb/models/quote.dart';
 class QuoteC {
   QuoteC({
     required this.date,
-    required this.quoteNumber,
+    required this.quoteId,
     required this.drayageFuel,
     required this.chassis,
     required this.prePull,
@@ -22,7 +22,7 @@ class QuoteC {
     required this.sId,
   });
   late final String date;
-  late final String quoteNumber;
+  late final String quoteId;
   late final String drayageFuel;
   late final String chassis;
   late final String? prePull;
@@ -39,11 +39,10 @@ class QuoteC {
   late final String? dropAndPick;
   late final String? hazmat;
   late final String sId;
-  late final String? truckers;
 
   QuoteC.fromJson(Map<String, dynamic> json) {
     date = json['date'];
-    quoteNumber = json['quote_number'];
+    quoteId = json['quote_id'];
     drayageFuel = json['drayage_fuel'];
     chassis = json['chassis'];
     prePull = json['pre_pull'];
@@ -61,14 +60,12 @@ class QuoteC {
     dropAndPick = json['drop_and_pick'];
     hazmat = json['hazmat'];
     sId = json['_id'];
-    truckers = json['truckers'];
   }
 
   Map<String, dynamic> toJson() {
     final _data = <String, dynamic>{};
     _data['date'] = date;
-    _data['quote_number'] = quoteNumber;
-    _data['truckers'] = truckers;
+    _data['quote_id'] = quoteId;
     _data['drayage_fuel'] = drayageFuel;
     _data['chassis'] = chassis;
     _data['pre_pull'] = prePull;

@@ -3,7 +3,9 @@ import 'package:get_it/get_it.dart';
 import 'package:meta/meta.dart';
 import 'package:svojasweb/models/api_response.dart';
 import 'package:svojasweb/models/party.dart';
-import 'package:svojasweb/repositories/network_calls.dart';
+import 'package:svojasweb/repositories/basic_repository.dart';
+import 'package:svojasweb/repositories/party_repository.dart';
+import 'package:svojasweb/repositories/quote_repository.dart';
 
 part 'create_quote_state.dart';
 
@@ -13,7 +15,7 @@ class CreateQuoteCubit extends Cubit<CreateQuoteState> {
   load() async {
     emit(CreateQuoteLoading());
     final ApiResponse apiResponse =
-        await GetIt.I<NetworkCalls>().getDateAndReference();
+        await GetIt.I<BasicRepository>().getDateAndReference();
     if (apiResponse.status) {
       // GetIt.I<Preferences>().saveIsCreateQuote(isCreateQuote: true);
       final String id = apiResponse.data['reference'];
@@ -28,7 +30,7 @@ class CreateQuoteCubit extends Cubit<CreateQuoteState> {
   create(Map<String, dynamic> quote) async {
     emit(CreateQuoteLoading());
     final ApiResponse apiResponse =
-        await GetIt.I<NetworkCalls>().createQuote(quote);
+        await GetIt.I<QuoteRepository>().createQuote(quote);
     if (apiResponse.status) {
       // GetIt.I<Preferences>().saveIsCreateQuote(isCreateQuote: true);
 
@@ -43,7 +45,7 @@ class CreateQuoteCubit extends Cubit<CreateQuoteState> {
   edit(Map<String, dynamic> quote) async {
     emit(CreateQuoteLoading());
     final ApiResponse apiResponse =
-        await GetIt.I<NetworkCalls>().editQuote(quote);
+        await GetIt.I<QuoteRepository>().editQuote(quote);
     if (apiResponse.status) {
       // GetIt.I<Preferences>().saveIsCreateQuote(isCreateQuote: true);
 
@@ -60,7 +62,7 @@ class CreateQuoteCubit extends Cubit<CreateQuoteState> {
       return [];
     }
     final ApiResponse apiResponse =
-        await GetIt.I<NetworkCalls>().getPartyByName(partyName);
+        await GetIt.I<PartyRepository>().getPartyByName(partyName);
     if (apiResponse.status) {
       return (apiResponse.data as List<dynamic>)
           .map((e) => Party.fromJson(e))
@@ -68,5 +70,22 @@ class CreateQuoteCubit extends Cubit<CreateQuoteState> {
     } else {
       return [];
     }
+  }
+
+  Future<List<Party>> getTruckers(List<String>? truckers) async {
+    if (truckers == null || truckers.isEmpty) {
+      return [];
+    }
+
+    List<Party> realTruckers = [];
+
+    for (final truckerId in truckers) {
+      final ApiResponse apiResponse =
+          await GetIt.I<PartyRepository>().getParty(truckerId);
+      if (apiResponse.status) {
+        realTruckers.add(Party.fromJson(apiResponse.data));
+      }
+    }
+    return realTruckers;
   }
 }

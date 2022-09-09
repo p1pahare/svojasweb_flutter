@@ -10,8 +10,11 @@ import 'package:svojasweb/models/party.dart';
 import 'package:svojasweb/models/textfield_entry.dart';
 import 'package:svojasweb/repositories/values.dart';
 import 'package:svojasweb/utilities/button_custm.dart';
+import 'package:svojasweb/utilities/new_big_button.dart';
 import 'package:svojasweb/utilities/textfield_entry_builder.dart';
 import 'package:svojasweb/utilities/validations.dart';
+import 'package:svojasweb/views/drawer_view.dart';
+import 'package:svojasweb/views/party_view.dart';
 
 class CreatePartyView extends StatefulWidget {
   const CreatePartyView({Key? key, this.party}) : super(key: key);
@@ -32,8 +35,8 @@ class _CreatePartyViewState extends State<CreatePartyView> {
         value.isLast = false;
       });
 
-      partyFields[Values.party_id]?.visible = true;
-      partyFields[Values.date]?.visible = true;
+      partyFields[Values.party_id]?.visible = false;
+      partyFields[Values.date]?.visible = false;
       partyFields[Values.party_type]?.visible = true;
       partyFields[Values.party_name]?.visible = true;
       partyFields[Values.org_name]?.visible = true;
@@ -105,11 +108,13 @@ class _CreatePartyViewState extends State<CreatePartyView> {
           label: 'Party ID',
           keyId: Values.party_id,
           enabled: false,
+          visible: false,
           controller: TextEditingController(text: widget.party?.sid)),
       Values.date: TextFieldEntry(
           label: 'Date',
           keyId: Values.date,
           enabled: false,
+          visible: false,
           controller: TextEditingController(text: widget.party?.date)),
       Values.party_type: TextFieldEntry(
           fieldType: FieldType.dropdown,
@@ -323,267 +328,249 @@ class _CreatePartyViewState extends State<CreatePartyView> {
       appBar: AppBar(
           title: Text('${widget.party == null ? 'Create' : 'Edit'} Party')),
       // drawer: const DrawerView(),
-      body: Center(
-        child: SingleChildScrollView(
-          child: BlocBuilder<CreatePartyCubit, CreatePartyState>(
-            bloc: GetIt.I<CreatePartyCubit>(),
-            builder: (context, state) {
-              if (state is CreatePartyLoading) {
-                return const Center(
-                  child: CircularProgressIndicator(
-                    backgroundColor: Colors.white,
-                  ),
-                );
-              }
-              if (state is CreatePartyFailed) {
-                return Text(state.errorMessage!);
-              }
-
-              if (state is CreatePartySuccess) {
-                return Column(
-                  children: [
-                    Text(state.successMessage!),
-                    Padding(
-                      padding: const EdgeInsets.all(12.0),
-                      child: ButtonCustm(
-                        label: "Close",
-                        padding: 10,
-                        function1: () {
-                          Navigator.pop(context, true);
-                        },
-                      ),
-                    )
-                  ],
-                );
-              }
-              if (state is CreatePageSuccess) {
-                partyFields[Values.date]?.controller?.text = state.date ?? '';
-                partyFields[Values.party_id]?.controller?.text =
-                    widget.party?.sid ?? state.id ?? '';
-                return SizedBox(
-                    // width: min(MediaQuery.of(context).size.width, 480),
-                    child: Form(
-                        key: _formKey,
-                        child: Column(
-                          children: [
-                            Wrap(
-                              alignment: WrapAlignment.start,
-                              children: List<Widget>.generate(
-                                  partyFields.length, (index) {
-                                return TextFieldEntryBuilder(
-                                  textFieldEntry:
-                                      partyFields.values.toList()[index],
-                                  onValueSelected: (key, value) =>
-                                      onValueSelected(key!, value),
-                                  focusHandler: (isLast) {
-                                    isLast
-                                        ? FocusScope.of(context).unfocus()
-                                        : focusOnNextVisible(
-                                            index, partyFields);
-                                  },
-                                );
-                              }),
-                            ),
-                            Container(
-                              margin: const EdgeInsets.all(40),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  const Text(
-                                    "Extra Contact",
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: 22),
-                                  ),
-                                  Expanded(
-                                    child: SizedBox(
-                                      width: MediaQuery.of(context).size.width *
-                                          0.5,
-                                    ),
-                                  ),
-                                  TextButton(
-                                      style: TextButton.styleFrom(
-                                        backgroundColor: Theme.of(context)
-                                            .colorScheme
-                                            .primary,
-                                        shape: const CircleBorder(),
-                                      ),
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(4.0),
-                                        child: Icon(
-                                          Icons.add_rounded,
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .onPrimary,
-                                        ),
-                                      ),
-                                      onPressed: () {
-                                        setState(() {
-                                          extraContacts
-                                              .add(extraContactsFields);
-                                          initExtraContacts();
-                                        });
-                                      }),
-                                ],
-                              ),
-                            ),
-                            ListView.builder(
-                                shrinkWrap: true,
-                                physics: const NeverScrollableScrollPhysics(),
-                                itemCount: extraContacts.length,
-                                itemBuilder: (context, index0) {
-                                  return Container(
-                                      margin: const EdgeInsets.symmetric(
-                                          horizontal: 20),
-                                      width: min(
-                                          460,
-                                          MediaQuery.of(context).size.width -
-                                              40),
-                                      child: Card(
-                                          shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(16)),
-                                          child: Container(
-                                            padding: const EdgeInsets.all(12),
-                                            child: ListView.builder(
-                                                shrinkWrap: true,
-                                                physics:
-                                                    const NeverScrollableScrollPhysics(),
-                                                itemCount:
-                                                    extraContactsFields.length +
-                                                        1,
-                                                itemBuilder: (context, index) {
-                                                  if (index ==
-                                                      extraContactsFields
-                                                          .length) {
-                                                    return Padding(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              8.0),
-                                                      child: TextButton(
-                                                          style: TextButton
-                                                              .styleFrom(
-                                                            backgroundColor:
-                                                                Theme.of(
-                                                                        context)
-                                                                    .colorScheme
-                                                                    .primary,
-                                                            shape:
-                                                                const CircleBorder(),
-                                                          ),
-                                                          child: Padding(
-                                                            padding:
-                                                                const EdgeInsets
-                                                                    .all(4.0),
-                                                            child: Icon(
-                                                              Icons
-                                                                  .remove_circle_rounded,
-                                                              color: Theme.of(
-                                                                      context)
-                                                                  .colorScheme
-                                                                  .onPrimary,
-                                                            ),
-                                                          ),
-                                                          onPressed: () {
-                                                            setState(() {
-                                                              extraContacts
-                                                                  .removeAt(
-                                                                      index0);
-                                                            });
-                                                          }),
-                                                    );
-                                                  }
-                                                  return TextFieldEntryBuilder(
-                                                    textFieldEntry:
-                                                        extraContacts[index0]
-                                                            .values
-                                                            .toList()[index],
-                                                    onValueSelected: (key,
-                                                            value) =>
-                                                        onValueSelected(
-                                                            key!, value),
-                                                    focusHandler: (isLast) {
-                                                      isLast
-                                                          ? FocusScope.of(
-                                                                  context)
-                                                              .unfocus()
-                                                          : focusOnNextVisible(
-                                                              index,
-                                                              extraContacts[
-                                                                  index0]);
-                                                    },
-                                                  );
-                                                }),
-                                          )));
-                                }),
-                            Padding(
-                              padding: const EdgeInsets.all(12.0),
-                              child: ButtonCustm(
-                                label: "Submit",
-                                padding: 10,
-                                function1: () {
-                                  final Map<String, dynamic> values = {
-                                    for (final element in partyFields.entries)
-                                      if ((element.value.controller?.text
-                                                  .isNotEmpty ??
-                                              false) &&
-                                          element.value.visible)
-                                        if (element.value.fieldType ==
-                                            FieldType.dropdown)
-                                          element.key:
-                                              element.value.controller?.text ==
-                                                      'Yes'
-                                                  ? true
-                                                  : element.value.controller
-                                                              ?.text ==
-                                                          'No'
-                                                      ? false
-                                                      : element.value.controller
-                                                          ?.text
-                                        else if (element.value.fieldType ==
-                                            FieldType.date)
-                                          element.key: DateFormat("h:mm a")
-                                              .parse(element
-                                                      .value.controller?.text ??
-                                                  '12 AM')
-                                              .toIso8601String()
-                                        else
-                                          element.key:
-                                              element.value.controller?.text
-                                  };
-                                  if (_formKey.currentState!.validate()) {
-                                    dev.log(values.toString());
-                                    values[Values.extra_contacts] =
-                                        extraContacts
-                                            .map<Map<String, dynamic>>((e) =>
-                                                e.map<String, dynamic>(
-                                                    (key, value) =>
-                                                        MapEntry(
-                                                            key,
-                                                            value.controller
-                                                                ?.text)))
-                                            .toList();
-                                    if (widget.party == null) {
-                                      GetIt.I<CreatePartyCubit>()
-                                          .create(values);
-                                    } else {
-                                      GetIt.I<CreatePartyCubit>().edit(values);
-                                    }
-                                  }
-                                },
-                              ),
-                            )
-                          ],
-                        )));
-              }
-              return const SizedBox(
-                height: 0,
-                width: 0,
+      body: SingleChildScrollView(
+        child: BlocBuilder<CreatePartyCubit, CreatePartyState>(
+          bloc: GetIt.I<CreatePartyCubit>(),
+          builder: (context, state) {
+            if (state is CreatePartyLoading) {
+              return const Center(
+                child: CircularProgressIndicator(
+                  backgroundColor: Colors.white,
+                ),
               );
-            },
-          ),
+            }
+            if (state is CreatePartyFailed) {
+              return Text(state.errorMessage!);
+            }
+
+            if (state is CreatePartySuccess) {
+              return Column(
+                children: [
+                  Text(state.successMessage!),
+                  BigButtonNew(
+                      ttitle: 'View Parties Table',
+                      onTap: () =>
+                          Navigator.pushNamed(context, PartyView.routeName)),
+                ],
+              );
+            }
+            if (state is CreatePageSuccess) {
+              partyFields[Values.date]?.controller?.text = state.date ?? '';
+              partyFields[Values.party_id]?.controller?.text =
+                  widget.party?.sid ?? state.id ?? '';
+              return SizedBox(
+                  // width: min(MediaQuery.of(context).size.width, 480),
+                  child: Form(
+                      key: _formKey,
+                      child: Column(
+                        children: [
+                          BigButtonNew(
+                              ttitle: 'View Parties Table',
+                              onTap: () => Navigator.pushNamed(
+                                  context, PartyView.routeName)),
+                          Wrap(
+                            alignment: WrapAlignment.start,
+                            children: List<Widget>.generate(partyFields.length,
+                                (index) {
+                              return TextFieldEntryBuilder(
+                                textFieldEntry:
+                                    partyFields.values.toList()[index],
+                                onValueSelected: (key, value) =>
+                                    onValueSelected(key!, value),
+                                focusHandler: (isLast) {
+                                  isLast
+                                      ? FocusScope.of(context).unfocus()
+                                      : focusOnNextVisible(index, partyFields);
+                                },
+                              );
+                            }),
+                          ),
+                          Container(
+                            margin: const EdgeInsets.all(40),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const Text(
+                                  "Extra Contact",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 22),
+                                ),
+                                Flexible(
+                                  child: SizedBox(
+                                    width: MediaQuery.of(context).size.width *
+                                        0.65,
+                                  ),
+                                ),
+                                TextButton(
+                                    style: TextButton.styleFrom(
+                                      backgroundColor:
+                                          Theme.of(context).colorScheme.primary,
+                                      shape: const CircleBorder(),
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(4.0),
+                                      child: Icon(
+                                        Icons.add_rounded,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .onPrimary,
+                                      ),
+                                    ),
+                                    onPressed: () {
+                                      setState(() {
+                                        extraContacts.add(extraContactsFields);
+                                        initExtraContacts();
+                                      });
+                                    }),
+                              ],
+                            ),
+                          ),
+                          ListView.builder(
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemCount: extraContacts.length,
+                              itemBuilder: (context, index0) {
+                                return Container(
+                                    margin: const EdgeInsets.symmetric(
+                                        horizontal: 20),
+                                    width: min(460,
+                                        MediaQuery.of(context).size.width - 40),
+                                    child: Card(
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(16)),
+                                        child: Container(
+                                          padding: const EdgeInsets.all(12),
+                                          child: ListView.builder(
+                                              shrinkWrap: true,
+                                              physics:
+                                                  const NeverScrollableScrollPhysics(),
+                                              itemCount:
+                                                  extraContactsFields.length +
+                                                      1,
+                                              itemBuilder: (context, index) {
+                                                if (index ==
+                                                    extraContactsFields
+                                                        .length) {
+                                                  return Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            8.0),
+                                                    child: TextButton(
+                                                        style: TextButton
+                                                            .styleFrom(
+                                                          backgroundColor:
+                                                              Theme.of(context)
+                                                                  .colorScheme
+                                                                  .primary,
+                                                          shape:
+                                                              const CircleBorder(),
+                                                        ),
+                                                        child: Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .all(4.0),
+                                                          child: Icon(
+                                                            Icons
+                                                                .remove_circle_rounded,
+                                                            color: Theme.of(
+                                                                    context)
+                                                                .colorScheme
+                                                                .onPrimary,
+                                                          ),
+                                                        ),
+                                                        onPressed: () {
+                                                          setState(() {
+                                                            extraContacts
+                                                                .removeAt(
+                                                                    index0);
+                                                          });
+                                                        }),
+                                                  );
+                                                }
+                                                return TextFieldEntryBuilder(
+                                                  textFieldEntry:
+                                                      extraContacts[index0]
+                                                          .values
+                                                          .toList()[index],
+                                                  onValueSelected:
+                                                      (key, value) =>
+                                                          onValueSelected(
+                                                              key!, value),
+                                                  focusHandler: (isLast) {
+                                                    isLast
+                                                        ? FocusScope.of(context)
+                                                            .unfocus()
+                                                        : focusOnNextVisible(
+                                                            index,
+                                                            extraContacts[
+                                                                index0]);
+                                                  },
+                                                );
+                                              }),
+                                        )));
+                              }),
+                          Padding(
+                            padding: const EdgeInsets.all(12.0),
+                            child: ButtonCustm(
+                              label: "Submit",
+                              padding: 10,
+                              function1: () {
+                                final Map<String, dynamic> values = {
+                                  for (final element in partyFields.entries)
+                                    if (element.value.controller?.text
+                                            .isNotEmpty ??
+                                        false)
+                                      if (element.value.fieldType ==
+                                          FieldType.dropdown)
+                                        element.key: element
+                                                    .value.controller?.text ==
+                                                'Yes'
+                                            ? true
+                                            : element.value.controller?.text ==
+                                                    'No'
+                                                ? false
+                                                : element.value.controller?.text
+                                      else if (element.value.fieldType ==
+                                          FieldType.date)
+                                        element.key: DateFormat("h:mm a")
+                                            .parse(element
+                                                    .value.controller?.text ??
+                                                '12 AM')
+                                            .toIso8601String()
+                                      else
+                                        element.key:
+                                            element.value.controller?.text
+                                };
+                                if (_formKey.currentState!.validate()) {
+                                  dev.log(values.toString());
+                                  values[Values.extra_contacts] = extraContacts
+                                      .map<Map<String, dynamic>>((e) =>
+                                          e.map<String, dynamic>((key, value) =>
+                                              MapEntry(
+                                                  key, value.controller?.text)))
+                                      .toList();
+                                  if (widget.party == null) {
+                                    GetIt.I<CreatePartyCubit>().create(values);
+                                  } else {
+                                    GetIt.I<CreatePartyCubit>().edit(values);
+                                  }
+                                }
+                              },
+                            ),
+                          )
+                        ],
+                      )));
+            }
+            return const SizedBox(
+              height: 0,
+              width: 0,
+            );
+          },
         ),
       ),
+      drawer: const DrawerView(),
     );
   }
 }

@@ -5,7 +5,7 @@ import 'package:get_it/get_it.dart';
 import 'package:svojasweb/blocs/quote/quote_cubit.dart';
 import 'package:svojasweb/models/api_response.dart';
 import 'package:svojasweb/models/quote.dart';
-import 'package:svojasweb/repositories/network_calls.dart';
+import 'package:svojasweb/repositories/quote_repository.dart';
 import 'package:svojasweb/views/create_quote_view.dart';
 import 'package:svojasweb/views/drawer_view.dart';
 import 'package:svojasweb/views/subviews/view_quote.dart';
@@ -255,7 +255,7 @@ class _QuoteViewState extends State<QuoteView> {
                             const BorderSide(color: Colors.blueGrey))),
                     onPressed: () async {
                       ApiResponse apiResponse =
-                          await GetIt.I<NetworkCalls>().deleteQuote(sId);
+                          await GetIt.I<QuoteRepository>().deleteQuote(sId);
                       Navigator.pop(context, apiResponse.status);
                     },
                     child: const Text("Yes")),

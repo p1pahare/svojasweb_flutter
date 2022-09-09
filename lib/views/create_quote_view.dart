@@ -9,8 +9,12 @@ import 'package:svojasweb/models/quote.dart';
 import 'package:svojasweb/models/textfield_entry.dart';
 import 'package:svojasweb/repositories/values.dart';
 import 'package:svojasweb/utilities/button_custm.dart';
+import 'package:svojasweb/utilities/new_big_button.dart';
 import 'package:svojasweb/utilities/textfield_entry_builder.dart';
 import 'package:svojasweb/utilities/validations.dart';
+import 'package:svojasweb/views/drawer_view.dart';
+import 'package:svojasweb/views/quote_view.dart';
+import 'package:svojasweb/views/subviews/view_party.dart';
 
 class CreateQuoteView extends StatefulWidget {
   const CreateQuoteView({Key? key, this.quote}) : super(key: key);
@@ -28,13 +32,8 @@ class _CreateQuoteViewState extends State<CreateQuoteView> {
     switch (key) {
       case Values.type_of_move:
         quoteFields.forEach((key, value) {
-          if (![
-            Values.customer,
-            Values.date,
-            Values.quote_number,
-            Values.type_of_move,
-            Values.customer
-          ].contains(key)) {
+          if (![Values.quote_number, Values.type_of_move, Values.customer]
+              .contains(key)) {
             value.visible = false;
             value.isLast = false;
           }
@@ -262,11 +261,13 @@ class _CreateQuoteViewState extends State<CreateQuoteView> {
           label: 'Date',
           keyId: Values.date,
           enabled: false,
+          visible: false,
           controller: TextEditingController(text: widget.quote?.date)),
       Values.quote_number: TextFieldEntry(
           label: 'Quote Number',
           keyId: Values.quote_number,
           enabled: false,
+          visible: false,
           controller: TextEditingController(text: widget.quote?.sid)),
       Values.type_of_move: TextFieldEntry(
           label: 'Type Of Move',
@@ -461,6 +462,18 @@ class _CreateQuoteViewState extends State<CreateQuoteView> {
           visible: false,
           controller:
               TextEditingController(text: widget.quote?.typeOfEquipment)),
+      Values.truckers: TextFieldEntry(
+          fieldType: FieldType.autocomplete,
+          label: 'Select Truckers Id',
+          keyId: Values.truckers,
+          enabled: true,
+          object: [],
+          optionListing: (textValue) =>
+              GetIt.I<CreateQuoteCubit>().getParties(textValue),
+          controller: TextEditingController(
+              text: (widget.quote?.truckers?.isNotEmpty) ?? false
+                  ? widget.quote?.truckers.toString()
+                  : '')),
     };
   }
 
@@ -516,6 +529,10 @@ class _CreateQuoteViewState extends State<CreateQuoteView> {
       }
     }
     GetIt.I<CreateQuoteCubit>().load();
+    GetIt.I<CreateQuoteCubit>()
+        .getTruckers(widget.quote?.truckers)
+        .then((value) => quoteFields[Values.truckers]?.object = value)
+        .then((value) => setState(() {}));
     super.initState();
   }
 
@@ -525,255 +542,301 @@ class _CreateQuoteViewState extends State<CreateQuoteView> {
       appBar: AppBar(
           title: Text('${widget.quote == null ? 'Create' : 'Edit'} Quote')),
       // drawer: const DrawerView(),
-      body: Center(
-        child: SingleChildScrollView(
-          child: BlocBuilder<CreateQuoteCubit, CreateQuoteState>(
-            bloc: GetIt.I<CreateQuoteCubit>(),
-            builder: (context, state) {
-              if (state is CreateQuoteLoading) {
-                return const Center(
-                  child: CircularProgressIndicator(
-                    backgroundColor: Colors.white,
-                  ),
-                );
-              }
-              if (state is CreateQuoteFailed) {
-                return Text(state.errorMessage!);
-              }
-
-              if (state is CreateQuoteSuccess) {
-                return Column(
-                  children: [
-                    Text(state.successMessage!),
-                    Padding(
-                      padding: const EdgeInsets.all(12.0),
-                      child: ButtonCustm(
-                        label: "Close",
-                        padding: 10,
-                        function1: () {
-                          Navigator.pop(context, true);
-                        },
-                      ),
-                    )
-                  ],
-                );
-              }
-              if (state is CreatePagelSuccess) {
-                quoteFields[Values.date]?.controller?.text = state.date ?? '';
-                quoteFields[Values.quote_number]?.controller?.text =
-                    widget.quote?.sid ?? state.id ?? '';
-
-                return SizedBox(
-                    // width: min(MediaQuery.of(context).size.width, 480),
-                    child: Form(
-                        key: _formKey,
-                        child: Column(
-                          children: [
-                            Wrap(
-                              alignment: WrapAlignment.start,
-                              children: List<Widget>.generate(
-                                  quoteFields.length, (index) {
-                                return TextFieldEntryBuilder(
-                                  textFieldEntry:
-                                      quoteFields.values.toList()[index],
-                                  onValueSelected: (key, value) =>
-                                      onValueSelected(key!, value),
-                                  focusHandler: (isLast) {
-                                    isLast
-                                        ? FocusScope.of(context).unfocus()
-                                        : focusOnNextVisible(
-                                            index, quoteFields);
-                                  },
-                                );
-                              }),
-                            ),
-                            if (!quoteFields[Values.gross_weight]!.enabled)
-                              Container(
-                                margin: const EdgeInsets.all(40),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    const Text(
-                                      "Package Details",
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.w600,
-                                          fontSize: 22),
-                                    ),
-                                    Expanded(
-                                      child: SizedBox(
-                                        width:
-                                            MediaQuery.of(context).size.width *
-                                                0.5,
-                                      ),
-                                    ),
-                                    TextButton(
-                                        style: TextButton.styleFrom(
-                                          backgroundColor: Theme.of(context)
-                                              .colorScheme
-                                              .primary,
-                                          shape: const CircleBorder(),
-                                        ),
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(4.0),
-                                          child: Icon(
-                                            Icons.add_rounded,
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .onPrimary,
-                                          ),
-                                        ),
-                                        onPressed: () {
-                                          setState(() {
-                                            packages.add(packageFields);
-                                            initPackage();
-                                          });
-                                        }),
-                                  ],
-                                ),
-                              ),
-                            ListView.builder(
-                                shrinkWrap: true,
-                                physics: const NeverScrollableScrollPhysics(),
-                                itemCount: packages.length,
-                                itemBuilder: (context, index0) {
-                                  return Container(
-                                      margin: const EdgeInsets.symmetric(
-                                          horizontal: 20),
-                                      width: min(
-                                          460,
-                                          MediaQuery.of(context).size.width -
-                                              40),
-                                      child: Card(
-                                          shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(16)),
-                                          child: Container(
-                                            padding: const EdgeInsets.all(12),
-                                            child: ListView.builder(
-                                                shrinkWrap: true,
-                                                physics:
-                                                    const NeverScrollableScrollPhysics(),
-                                                itemCount:
-                                                    packageFields.length + 1,
-                                                itemBuilder: (context, index) {
-                                                  if (index ==
-                                                      packageFields.length) {
-                                                    return Padding(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              8.0),
-                                                      child: TextButton(
-                                                          style: TextButton
-                                                              .styleFrom(
-                                                            backgroundColor:
-                                                                Theme.of(
-                                                                        context)
-                                                                    .colorScheme
-                                                                    .primary,
-                                                            shape:
-                                                                const CircleBorder(),
-                                                          ),
-                                                          child: Padding(
-                                                            padding:
-                                                                const EdgeInsets
-                                                                    .all(4.0),
-                                                            child: Icon(
-                                                              Icons
-                                                                  .remove_circle_rounded,
-                                                              color: Theme.of(
-                                                                      context)
-                                                                  .colorScheme
-                                                                  .onPrimary,
-                                                            ),
-                                                          ),
-                                                          onPressed: () {
-                                                            setState(() {
-                                                              packages.removeAt(
-                                                                  index0);
-                                                            });
-                                                          }),
-                                                    );
-                                                  }
-                                                  return TextFieldEntryBuilder(
-                                                    textFieldEntry:
-                                                        packages[index0]
-                                                            .values
-                                                            .toList()[index],
-                                                    onValueSelected: (key,
-                                                            value) =>
-                                                        onValueSelected(
-                                                            key!, value),
-                                                    focusHandler: (isLast) {
-                                                      isLast
-                                                          ? FocusScope.of(
-                                                                  context)
-                                                              .unfocus()
-                                                          : focusOnNextVisible(
-                                                              index,
-                                                              packages[index0]);
-                                                    },
-                                                  );
-                                                }),
-                                          )));
-                                }),
-                            Padding(
-                              padding: const EdgeInsets.all(12.0),
-                              child: ButtonCustm(
-                                label: "Submit",
-                                padding: 10,
-                                function1: () {
-                                  final Map<String, dynamic> values = {
-                                    for (final element in quoteFields.entries)
-                                      if ((element.value.controller?.text
-                                                  .isNotEmpty ??
-                                              false) &&
-                                          element.value.visible)
-                                        element.key: element
-                                                    .value.controller?.text ==
-                                                'Yes'
-                                            ? true
-                                            : element.value.controller?.text ==
-                                                    'No'
-                                                ? false
-                                                : element.value.controller?.text
-                                  };
-                                  if (_formKey.currentState!.validate()) {
-                                    dev.log(values.toString());
-                                    values[Values.package] = packages
-                                        .map<Map<String, dynamic>>((e) =>
-                                            e.map<String, dynamic>(
-                                                (key, value) => MapEntry(key,
-                                                    value.controller?.text)))
-                                        .toList();
-                                    if ((quoteFields[Values.customer]?.object
-                                            as Party?) !=
-                                        null) {
-                                      values[Values.customer] =
-                                          (quoteFields[Values.customer]?.object
-                                                  as Party?)
-                                              ?.sid;
-                                    }
-                                    if (widget.quote == null) {
-                                      GetIt.I<CreateQuoteCubit>()
-                                          .create(values);
-                                    } else {
-                                      GetIt.I<CreateQuoteCubit>().edit(values);
-                                    }
-                                  }
-                                },
-                              ),
-                            )
-                          ],
-                        )));
-              }
-              return const SizedBox(
-                height: 0,
-                width: 0,
+      body: SingleChildScrollView(
+        child: BlocBuilder<CreateQuoteCubit, CreateQuoteState>(
+          bloc: GetIt.I<CreateQuoteCubit>(),
+          builder: (context, state) {
+            if (state is CreateQuoteLoading) {
+              return const Center(
+                child: CircularProgressIndicator(
+                  backgroundColor: Colors.white,
+                ),
               );
-            },
-          ),
+            }
+            if (state is CreateQuoteFailed) {
+              return Text(state.errorMessage!);
+            }
+
+            if (state is CreateQuoteSuccess) {
+              return Column(
+                children: [
+                  Text(state.successMessage!),
+                  BigButtonNew(
+                      ttitle: 'View Quotes Table',
+                      onTap: () =>
+                          Navigator.pushNamed(context, QuoteView.routeName)),
+                ],
+              );
+            }
+            if (state is CreatePagelSuccess) {
+              quoteFields[Values.date]?.controller?.text = state.date ?? '';
+              quoteFields[Values.quote_number]?.controller?.text =
+                  widget.quote?.sid ?? state.id ?? '';
+              List<Party>? listruckers =
+                  (quoteFields[Values.truckers]?.object as List<dynamic>)
+                      .cast<Party>();
+              return SizedBox(
+                  // width: min(MediaQuery.of(context).size.width, 480),
+                  child: Form(
+                      key: _formKey,
+                      child: Column(
+                        children: [
+                          BigButtonNew(
+                              ttitle: 'View Quotes Table',
+                              onTap: () => Navigator.pushNamed(
+                                  context, QuoteView.routeName)),
+                          Wrap(
+                            alignment: WrapAlignment.start,
+                            children: List<Widget>.generate(quoteFields.length,
+                                (index) {
+                              return TextFieldEntryBuilder(
+                                textFieldEntry:
+                                    quoteFields.values.toList()[index],
+                                onValueSelected: (key, value) =>
+                                    onValueSelected(key!, value),
+                                focusHandler: (isLast) {
+                                  isLast
+                                      ? FocusScope.of(context).unfocus()
+                                      : focusOnNextVisible(index, quoteFields);
+                                },
+                              );
+                            }),
+                          ),
+                          if (!quoteFields[Values.gross_weight]!.enabled)
+                            Container(
+                              margin: const EdgeInsets.all(40),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const Text(
+                                    "Package Details",
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 22),
+                                  ),
+                                  Flexible(
+                                    child: SizedBox(
+                                      width: MediaQuery.of(context).size.width *
+                                          0.65,
+                                    ),
+                                  ),
+                                  TextButton(
+                                      style: TextButton.styleFrom(
+                                        backgroundColor: Theme.of(context)
+                                            .colorScheme
+                                            .primary,
+                                        shape: const CircleBorder(),
+                                      ),
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(4.0),
+                                        child: Icon(
+                                          Icons.add_rounded,
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .onPrimary,
+                                        ),
+                                      ),
+                                      onPressed: () {
+                                        setState(() {
+                                          packages.add(packageFields);
+                                          initPackage();
+                                        });
+                                      }),
+                                ],
+                              ),
+                            ),
+                          ListView.builder(
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemCount: packages.length,
+                              itemBuilder: (context, index0) {
+                                return Container(
+                                    margin: const EdgeInsets.symmetric(
+                                        horizontal: 20),
+                                    width: min(460,
+                                        MediaQuery.of(context).size.width - 40),
+                                    child: Card(
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(16)),
+                                        child: Container(
+                                          padding: const EdgeInsets.all(12),
+                                          child: ListView.builder(
+                                              shrinkWrap: true,
+                                              physics:
+                                                  const NeverScrollableScrollPhysics(),
+                                              itemCount:
+                                                  packageFields.length + 1,
+                                              itemBuilder: (context, index) {
+                                                if (index ==
+                                                    packageFields.length) {
+                                                  return Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            8.0),
+                                                    child: TextButton(
+                                                        style: TextButton
+                                                            .styleFrom(
+                                                          backgroundColor:
+                                                              Theme.of(context)
+                                                                  .colorScheme
+                                                                  .primary,
+                                                          shape:
+                                                              const CircleBorder(),
+                                                        ),
+                                                        child: Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .all(4.0),
+                                                          child: Icon(
+                                                            Icons
+                                                                .remove_circle_rounded,
+                                                            color: Theme.of(
+                                                                    context)
+                                                                .colorScheme
+                                                                .onPrimary,
+                                                          ),
+                                                        ),
+                                                        onPressed: () {
+                                                          setState(() {
+                                                            packages.removeAt(
+                                                                index0);
+                                                          });
+                                                        }),
+                                                  );
+                                                }
+                                                return TextFieldEntryBuilder(
+                                                  textFieldEntry:
+                                                      packages[index0]
+                                                          .values
+                                                          .toList()[index],
+                                                  onValueSelected:
+                                                      (key, value) =>
+                                                          onValueSelected(
+                                                              key!, value),
+                                                  focusHandler: (isLast) {
+                                                    isLast
+                                                        ? FocusScope.of(context)
+                                                            .unfocus()
+                                                        : focusOnNextVisible(
+                                                            index,
+                                                            packages[index0]);
+                                                  },
+                                                );
+                                              }),
+                                        )));
+                              }),
+                          StreamBuilder<List<Party>>(
+                              stream: Stream.value(listruckers),
+                              // GetIt.I<CreateQuotecCubit>()
+                              //     .getTruckersStream(widget.quotec?.truckers),
+                              builder: (context, snapp) {
+                                if (snapp.data != null) {
+                                  if (snapp.data?.isNotEmpty ?? false) {
+                                    listruckers = snapp.data;
+                                  }
+                                  return ListView.builder(
+                                      // gridDelegate:
+                                      //     const SliverGridDelegateWithFixedCrossAxisCount(
+                                      //         crossAxisCount: 2),
+                                      shrinkWrap: true,
+                                      physics:
+                                          const NeverScrollableScrollPhysics(),
+                                      itemCount: snapp.data?.length,
+                                      itemBuilder: (context, index) =>
+                                          Container(
+                                              margin: const EdgeInsets.all(20),
+                                              child: Stack(
+                                                children: [
+                                                  ViewParty(
+                                                      nameOnTop: true,
+                                                      party:
+                                                          snapp.data![index]),
+                                                  Positioned(
+                                                      top: 0,
+                                                      left: 0,
+                                                      child: MaterialButton(
+                                                        child: const Icon(
+                                                          Icons.cancel_outlined,
+                                                          size: 40,
+                                                          color: Colors.white,
+                                                        ),
+                                                        onPressed: () {
+                                                          setState(() {
+                                                            if (listruckers!
+                                                                    .length >=
+                                                                index + 1) {
+                                                              listruckers!
+                                                                  .removeAt(
+                                                                      index);
+                                                            }
+                                                          });
+                                                        },
+                                                      )),
+                                                ],
+                                              )));
+                                } else {
+                                  return const SizedBox(
+                                    height: 0,
+                                  );
+                                }
+                              }),
+                          Padding(
+                            padding: const EdgeInsets.all(12.0),
+                            child: ButtonCustm(
+                              label: "Submit",
+                              padding: 10,
+                              function1: () {
+                                final Map<String, dynamic> values = {
+                                  for (final element in quoteFields.entries)
+                                    if (element.value.controller?.text
+                                            .isNotEmpty ??
+                                        false)
+                                      element.key: element
+                                                  .value.controller?.text ==
+                                              'Yes'
+                                          ? true
+                                          : element.value.controller?.text ==
+                                                  'No'
+                                              ? false
+                                              : element.value.controller?.text
+                                };
+                                if (_formKey.currentState!.validate()) {
+                                  dev.log(values.toString());
+                                  values[Values.package] = packages
+                                      .map<Map<String, dynamic>>((e) =>
+                                          e.map<String, dynamic>((key, value) =>
+                                              MapEntry(
+                                                  key, value.controller?.text)))
+                                      .toList();
+                                  if ((quoteFields[Values.customer]?.object
+                                          as Party?) !=
+                                      null) {
+                                    values[Values.customer] =
+                                        (quoteFields[Values.customer]?.object
+                                                as Party?)
+                                            ?.sid;
+                                  }
+                                  if (widget.quote == null) {
+                                    GetIt.I<CreateQuoteCubit>().create(values);
+                                  } else {
+                                    GetIt.I<CreateQuoteCubit>().edit(values);
+                                  }
+                                }
+                              },
+                            ),
+                          )
+                        ],
+                      )));
+            }
+            return const SizedBox(
+              height: 0,
+              width: 0,
+            );
+          },
         ),
       ),
+      drawer: const DrawerView(),
     );
   }
 }

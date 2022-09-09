@@ -99,7 +99,9 @@ class _DashboardViewState extends State<DashboardView> {
           ),
         ),
       ),
-      drawer: const DrawerView(),
+      drawer: const DrawerView(
+        isDashboard: true,
+      ),
     );
   }
 }

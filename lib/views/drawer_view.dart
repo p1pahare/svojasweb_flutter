@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:svojasweb/services/preferences.dart';
 import 'package:svojasweb/views/bol_view.dart';
+import 'package:svojasweb/views/create_party_view.dart';
+import 'package:svojasweb/views/create_quote_view.dart';
+import 'package:svojasweb/views/create_quotec_view.dart';
 import 'package:svojasweb/views/dashboard_view.dart';
 import 'package:svojasweb/views/login_view.dart';
-import 'package:svojasweb/views/party_view.dart';
-import 'package:svojasweb/views/quote_view.dart';
-import 'package:svojasweb/views/quotec_view.dart';
 
 class DrawerView extends StatelessWidget {
-  const DrawerView({Key? key}) : super(key: key);
-
+  const DrawerView({Key? key, this.isDashboard = false}) : super(key: key);
+  final bool isDashboard;
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -24,30 +24,52 @@ class DrawerView extends StatelessWidget {
           ListTile(
             leading: const Icon(Icons.api),
             title: const Text('Dashboard'),
-            onTap: () =>
-                Navigator.popAndPushNamed(context, DashboardView.routeName),
+            onTap: () {
+              if (!isDashboard) {
+                Navigator.pop(context);
+              }
+              Navigator.popAndPushNamed(context, DashboardView.routeName);
+            },
           ),
           ListTile(
             leading: const Icon(Icons.api),
             title: const Text('Party'),
-            onTap: () =>
-                Navigator.popAndPushNamed(context, PartyView.routeName),
+            onTap: () {
+              if (!isDashboard) {
+                Navigator.pop(context);
+              }
+              Navigator.popAndPushNamed(context, CreatePartyView.routeName);
+            },
           ),
           ListTile(
             leading: const Icon(Icons.api),
             title: const Text('Quote'),
-            onTap: () =>
-                Navigator.popAndPushNamed(context, QuoteView.routeName),
+            onTap: () {
+              if (!isDashboard) {
+                Navigator.pop(context);
+              }
+              Navigator.popAndPushNamed(context, CreateQuoteView.routeName);
+            },
           ),
           ListTile(
-              leading: const Icon(Icons.api),
-              title: const Text('Quote Confirm'),
-              onTap: () =>
-                  Navigator.popAndPushNamed(context, QuotecView.routeName)),
+            leading: const Icon(Icons.api),
+            title: const Text('Quote to Customer'),
+            onTap: () {
+              if (!isDashboard) {
+                Navigator.pop(context);
+              }
+              Navigator.popAndPushNamed(context, CreateQuotecView.routeName);
+            },
+          ),
           ListTile(
             leading: const Icon(Icons.api),
-            title: const Text('BOL Page'),
-            onTap: () => Navigator.popAndPushNamed(context, BolView.routeName),
+            title: const Text('BOL Page (temp)'),
+            onTap: () {
+              if (!isDashboard) {
+                Navigator.pop(context);
+              }
+              Navigator.popAndPushNamed(context, BolView.routeName);
+            },
           ),
           ListTile(
             leading: const Icon(Icons.logout_sharp),

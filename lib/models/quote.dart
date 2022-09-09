@@ -35,6 +35,7 @@ class Quote {
   late final String sid;
   late final String? quoteId;
   late final String customer;
+  late final List<String>? truckers;
   late final String typeOfMove;
   late final String transitType;
   late final String? pickupRamp;
@@ -60,7 +61,7 @@ class Quote {
   late final String? typeOfEquipment;
   late final List<Package>? package;
   late final List<Party> party;
-
+  late final List<Party> trucker;
   Quote.fromJson(Map<String, dynamic> json) {
     date = json['date'];
     sid = json['_id'];
@@ -94,6 +95,10 @@ class Quote {
         .toList();
     party =
         List.from(json['party'] ?? []).map((e) => Party.fromJson(e)).toList();
+    trucker =
+        List.from(json['trucker'] ?? []).map((e) => Party.fromJson(e)).toList();
+    truckers =
+        List.from(json['truckers'] ?? []).map((e) => e.toString()).toList();
   }
 
   Map<String, dynamic> toJson() {
@@ -117,6 +122,8 @@ class Quote {
     _data['size_of_container'] = sizeOfContainer;
     _data['type_of_container'] = typeOfContainer;
     _data['party'] = party.map((e) => e.toJson()).toList();
+    _data['trucker'] = trucker.map((e) => e.toJson()).toList();
+    _data['truckers'] = truckers;
     _data['gross_weight'] = grossWeight;
     _data['commodity'] = commodity;
     _data['haz'] = haz;

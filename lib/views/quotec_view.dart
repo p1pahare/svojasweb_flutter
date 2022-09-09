@@ -5,7 +5,7 @@ import 'package:get_it/get_it.dart';
 import 'package:svojasweb/blocs/quotec/quotec_cubit.dart';
 import 'package:svojasweb/models/api_response.dart';
 import 'package:svojasweb/models/quotec.dart';
-import 'package:svojasweb/repositories/network_calls.dart';
+import 'package:svojasweb/repositories/quotec_repostiory.dart';
 import 'package:svojasweb/views/create_quotec_view.dart';
 import 'package:svojasweb/views/drawer_view.dart';
 import 'package:svojasweb/views/subviews/view_quotec.dart';
@@ -38,7 +38,7 @@ class _QuotecViewState extends State<QuotecView> {
       if (width > 270)
         EasyTableColumn(
           name: 'Quote Number',
-          stringValue: (row) => row.quoteNumber,
+          stringValue: (row) => row.quoteId,
           width: 120,
         ),
       if (width > 410)
@@ -248,7 +248,7 @@ class _QuotecViewState extends State<QuotecView> {
                             const BorderSide(color: Colors.blueGrey))),
                     onPressed: () async {
                       ApiResponse apiResponse =
-                          await GetIt.I<NetworkCalls>().deleteQuoteC(sId);
+                          await GetIt.I<QuotecRepository>().deleteQuoteC(sId);
                       Navigator.pop(context, apiResponse.status);
                     },
                     child: const Text("Yes")),

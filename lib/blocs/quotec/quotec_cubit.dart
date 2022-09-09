@@ -3,7 +3,7 @@ import 'package:get_it/get_it.dart';
 import 'package:meta/meta.dart';
 import 'package:svojasweb/models/api_response.dart';
 import 'package:svojasweb/models/quotec.dart';
-import 'package:svojasweb/repositories/network_calls.dart';
+import 'package:svojasweb/repositories/quotec_repostiory.dart';
 
 part 'quotec_state.dart';
 
@@ -28,7 +28,7 @@ class QuotecCubit extends Cubit<QuotecState> {
   load() async {
     emit(QuotecLoading());
     final ApiResponse apiResponse =
-        await GetIt.I<NetworkCalls>().getAllQuotecs(pageNumber: pageNumber);
+        await GetIt.I<QuotecRepository>().getAllQuotecs(pageNumber: pageNumber);
     if (apiResponse.status) {
       List<QuoteC> quotecs = (apiResponse.data as List<dynamic>)
           .map<QuoteC>((e) => QuoteC.fromJson(e))

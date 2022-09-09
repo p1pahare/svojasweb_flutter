@@ -12,7 +12,12 @@ import 'package:svojasweb/blocs/quotec/quotec_cubit.dart';
 import 'package:svojasweb/models/party.dart';
 import 'package:svojasweb/models/quote.dart';
 import 'package:svojasweb/models/quotec.dart';
-import 'package:svojasweb/repositories/network_calls.dart';
+import 'package:svojasweb/repositories/basic_repository.dart';
+import 'package:svojasweb/repositories/buying_repository.dart';
+import 'package:svojasweb/repositories/cquote_repository.dart';
+import 'package:svojasweb/repositories/party_repository.dart';
+import 'package:svojasweb/repositories/quote_repository.dart';
+import 'package:svojasweb/repositories/quotec_repostiory.dart';
 import 'package:svojasweb/services/preferences.dart';
 import 'package:svojasweb/views/bol_view.dart';
 import 'package:svojasweb/views/create_party_view.dart';
@@ -23,8 +28,10 @@ import 'package:svojasweb/views/login_view.dart';
 import 'package:svojasweb/views/party_view.dart';
 import 'package:svojasweb/views/quote_view.dart';
 import 'package:svojasweb/views/quotec_view.dart';
+import 'package:flutter_web_plugins/url_strategy.dart';
 
 void main() {
+  usePathUrlStrategy();
   runApp(const MyApp());
 }
 
@@ -34,7 +41,12 @@ class MyApp extends StatelessWidget {
     GetIt.I.registerSingleton(Preferences());
     GetIt.I.registerSingleton(LoginCubit());
     GetIt.I.registerSingleton(DashboardCubit());
-    GetIt.I.registerSingleton(NetworkCalls());
+    GetIt.I.registerSingleton(BasicRepository());
+    GetIt.I.registerSingleton(PartyRepository());
+    GetIt.I.registerSingleton(QuoteRepository());
+    GetIt.I.registerSingleton(QuotecRepository());
+    GetIt.I.registerSingleton(BuyingRepository());
+    GetIt.I.registerSingleton(CquoteRepository());
     GetIt.I.registerSingleton(PartyCubit());
     GetIt.I.registerSingleton(CreatePartyCubit());
     GetIt.I.registerSingleton(QuoteCubit());
@@ -63,69 +75,81 @@ class MyApp extends StatelessWidget {
                 switch (settings.name) {
                   case CreatePartyView.routeName:
                     return CupertinoPageRoute<bool>(
+                        settings: settings,
                         builder: (context) => const CreatePartyView());
                   case CreatePartyView.routeNameEdit:
                     Party customer = settings.arguments as Party;
                     return CupertinoPageRoute<bool>(
+                        settings: settings,
                         builder: (context) => CreatePartyView(
                               party: customer,
                             ));
                   case CreateQuoteView.routeName:
                     return CupertinoPageRoute<bool>(
+                        settings: settings,
                         builder: (context) => const CreateQuoteView());
                   case CreateQuoteView.routeNameEdit:
                     Quote customer = settings.arguments as Quote;
                     return CupertinoPageRoute<bool>(
+                        settings: settings,
                         builder: (context) => CreateQuoteView(
                               quote: customer,
                             ));
                   case CreateQuotecView.routeName:
                     return CupertinoPageRoute<bool>(
+                        settings: settings,
                         builder: (context) => const CreateQuotecView());
                   case CreateQuotecView.routeNameEdit:
                     QuoteC customer = settings.arguments as QuoteC;
                     return CupertinoPageRoute<bool>(
+                        settings: settings,
                         builder: (context) => CreateQuotecView(
                               quotec: customer,
                             ));
                   case DashboardView.routeName:
                     return CupertinoPageRoute(
+                        settings: settings,
                         builder: (context) => const DashboardView(
                               title: '',
                             ));
                   case PartyView.routeName:
                     return CupertinoPageRoute(
+                        settings: settings,
                         builder: (context) => const PartyView(
                               title: 'Party Management',
                             ));
                   case QuoteView.routeName:
                     return CupertinoPageRoute(
+                        settings: settings,
                         builder: (context) => const QuoteView(
                               title: 'Quote Management',
                             ));
                   case QuotecView.routeName:
                     return CupertinoPageRoute(
+                        settings: settings,
                         builder: (context) => const QuotecView(
-                              title: 'Quote Confirmation Management',
+                              title: 'Quote to Customer',
                             ));
                   case LoginView.routeName:
                     return CupertinoPageRoute(
+                        settings: settings,
                         builder: (context) => const LoginView());
                   case BolView.routeName:
                     return CupertinoPageRoute(
+                        settings: settings,
                         builder: (context) => const BolView());
                   case '/':
                   default:
                     if (!futureShot.data!) {
                       return CupertinoPageRoute(
+                          settings: settings,
                           builder: (context) => const LoginView());
                     } else {
                       return CupertinoPageRoute(
-                          builder: (context) => const BolView()
-                          // const    DashboardView(
-                          //       title: '',
-                          //     )
-                          );
+                          settings: settings,
+                          builder: (context) => const DashboardView(
+                                title: '',
+                              ));
                     }
                 }
               },

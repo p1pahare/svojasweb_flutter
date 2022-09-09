@@ -2,7 +2,8 @@ import 'package:bloc/bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:meta/meta.dart';
 import 'package:svojasweb/models/api_response.dart';
-import 'package:svojasweb/repositories/network_calls.dart';
+import 'package:svojasweb/repositories/basic_repository.dart';
+import 'package:svojasweb/repositories/party_repository.dart';
 
 part 'create_party_state.dart';
 
@@ -12,7 +13,7 @@ class CreatePartyCubit extends Cubit<CreatePartyState> {
   load() async {
     emit(CreatePartyLoading());
     final ApiResponse apiResponse =
-        await GetIt.I<NetworkCalls>().getDateAndReference();
+        await GetIt.I<BasicRepository>().getDateAndReference();
     if (apiResponse.status) {
       // GetIt.I<Preferences>().saveIsCreateParty(isCreateParty: true);
       final String id = apiResponse.data['reference'];
@@ -27,7 +28,7 @@ class CreatePartyCubit extends Cubit<CreatePartyState> {
   create(Map<String, dynamic> party) async {
     emit(CreatePartyLoading());
     final ApiResponse apiResponse =
-        await GetIt.I<NetworkCalls>().createParty(party);
+        await GetIt.I<PartyRepository>().createParty(party);
     if (apiResponse.status) {
       // GetIt.I<Preferences>().saveIsCreateParty(isCreateParty: true);
 
@@ -42,7 +43,7 @@ class CreatePartyCubit extends Cubit<CreatePartyState> {
   edit(Map<String, dynamic> party) async {
     emit(CreatePartyLoading());
     final ApiResponse apiResponse =
-        await GetIt.I<NetworkCalls>().editParty(party);
+        await GetIt.I<PartyRepository>().editParty(party);
     if (apiResponse.status) {
       // GetIt.I<Preferences>().saveIsCreateParty(isCreateParty: true);
 

@@ -2,7 +2,6 @@ import 'dart:developer' as dev;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
-import 'package:svojasweb/blocs/create_quote/create_quote_cubit.dart';
 import 'package:svojasweb/blocs/create_quotec/create_quotec_cubit.dart';
 import 'package:svojasweb/models/party.dart';
 import 'package:svojasweb/models/quote.dart';
@@ -10,8 +9,10 @@ import 'package:svojasweb/models/quotec.dart';
 import 'package:svojasweb/models/textfield_entry.dart';
 import 'package:svojasweb/repositories/values.dart';
 import 'package:svojasweb/utilities/button_custm.dart';
+import 'package:svojasweb/utilities/new_big_button.dart';
 import 'package:svojasweb/utilities/textfield_entry_builder.dart';
-import 'package:svojasweb/views/subviews/view_party.dart';
+import 'package:svojasweb/views/drawer_view.dart';
+import 'package:svojasweb/views/quotec_view.dart';
 
 class CreateQuotecView extends StatefulWidget {
   const CreateQuotecView({Key? key, this.quotec}) : super(key: key);
@@ -149,18 +150,6 @@ class _CreateQuotecViewState extends State<CreateQuotecView> {
           controller: TextEditingController(text: widget.quotec?.hazmat),
           keyId: Values.hazmat,
           isLast: false),
-      Values.truckers: TextFieldEntry(
-          fieldType: FieldType.autocomplete,
-          label: 'Select Truckers Id',
-          keyId: Values.truckers,
-          enabled: true,
-          object: [],
-          optionListing: (textValue) =>
-              GetIt.I<CreateQuoteCubit>().getParties(textValue),
-          controller: TextEditingController(
-              text: (widget.quotec?.truckers?.isNotEmpty) ?? false
-                  ? widget.quotec?.truckers
-                  : '')),
     };
   }
 
@@ -175,10 +164,7 @@ class _CreateQuotecViewState extends State<CreateQuotecView> {
 
     }
     GetIt.I<CreateQuotecCubit>().load();
-    GetIt.I<CreateQuotecCubit>()
-        .getTruckers(widget.quotec?.truckers)
-        .then((value) => quotecFields[Values.truckers]?.object = value)
-        .then((value) => setState(() {}));
+
     super.initState();
   }
 
@@ -189,216 +175,151 @@ class _CreateQuotecViewState extends State<CreateQuotecView> {
           title: Text(
               '${widget.quotec == null ? 'Create' : 'Edit'} Quote Confirm')),
       // drawer: const DrawerView(),
-      body: Center(
-        child: SingleChildScrollView(
-          child: BlocBuilder<CreateQuotecCubit, CreateQuotecState>(
-            bloc: GetIt.I<CreateQuotecCubit>(),
-            builder: (context, state) {
-              if (state is CreateQuotecLoading) {
-                return const Center(
-                  child: CircularProgressIndicator(
-                    backgroundColor: Colors.white,
-                  ),
-                );
-              }
-              if (state is CreateQuotecFailed) {
-                return Text(state.errorMessage!);
-              }
+      body: SingleChildScrollView(
+        child: BlocBuilder<CreateQuotecCubit, CreateQuotecState>(
+          bloc: GetIt.I<CreateQuotecCubit>(),
+          builder: (context, state) {
+            if (state is CreateQuotecLoading) {
+              return const Center(
+                child: CircularProgressIndicator(
+                  backgroundColor: Colors.white,
+                ),
+              );
+            }
+            if (state is CreateQuotecFailed) {
+              return Text(state.errorMessage!);
+            }
 
-              if (state is CreateQuotecSuccess) {
-                return Column(
-                  children: [
-                    Text(state.successMessage!),
-                    Padding(
-                      padding: const EdgeInsets.all(12.0),
-                      child: ButtonCustm(
-                        label: "Close",
-                        padding: 10,
-                        function1: () {
-                          Navigator.pop(context, true);
-                        },
-                      ),
-                    )
-                  ],
-                );
-              }
-              if (state is CreatePageSuccess) {
-                quotecFields[Values.date]?.controller?.text = state.date ?? '';
-                quotecFields[Values.sid]?.controller?.text =
-                    widget.quotec?.sId ?? state.id ?? '';
-                quotecFields[Values.pre_pull]?.object = state.quoteC?.prePull;
-                quotecFields[Values.yard_storage]?.object =
-                    state.quoteC?.yardStorage;
-                quotecFields[Values.port_congestion]?.object =
-                    state.quoteC?.portCongestion;
-                quotecFields[Values.stop_off]?.object = state.quoteC?.stopOff;
-                quotecFields[Values.overweight]?.object =
-                    state.quoteC?.overweight;
-                quotecFields[Values.reefer]?.object = state.quoteC?.reefer;
-                quotecFields[Values.reefer_monitoring_fee]?.object =
-                    state.quoteC?.reeferMonitoringFee;
-                quotecFields[Values.chassis_split]?.object =
-                    state.quoteC?.chassisSplit;
-                quotecFields[Values.detention]?.object =
-                    state.quoteC?.detention;
-                quotecFields[Values.tolls]?.object = state.quoteC?.tolls;
-                quotecFields[Values.drop_and_pick]?.object =
-                    state.quoteC?.dropAndPick;
-                quotecFields[Values.hazmat]?.object = state.quoteC?.hazmat;
-                List<Party>? listruckers =
-                    (quotecFields[Values.truckers]?.object as List<dynamic>)
-                        .cast<Party>();
-                return SizedBox(
-                    // width: min(MediaQuery.of(context).size.width, 480),
-                    child: Form(
-                        key: _formKey,
-                        child: Column(
-                          children: [
-                            Wrap(
-                              alignment: WrapAlignment.start,
-                              children: List<Widget>.generate(
-                                  quotecFields.length, (index) {
-                                return TextFieldEntryBuilder(
-                                  textFieldEntry:
-                                      quotecFields.values.toList()[index],
-                                  onValueSelected: (key, value) =>
-                                      onValueSelected(key!, value),
-                                  focusHandler: (isLast) {
-                                    isLast
-                                        ? FocusScope.of(context).unfocus()
-                                        : focusOnNextVisible(
-                                            index, quotecFields);
-                                  },
-                                );
-                              }),
-                            ),
-                            StreamBuilder<List<Party>>(
-                                stream: Stream.value(listruckers),
-                                // GetIt.I<CreateQuotecCubit>()
-                                //     .getTruckersStream(widget.quotec?.truckers),
-                                builder: (context, snapp) {
-                                  if (snapp.data != null) {
-                                    if (snapp.data?.isNotEmpty ?? false) {
-                                      listruckers = snapp.data;
-                                    }
-                                    return ListView.builder(
-                                        // gridDelegate:
-                                        //     const SliverGridDelegateWithFixedCrossAxisCount(
-                                        //         crossAxisCount: 2),
-                                        shrinkWrap: true,
-                                        physics:
-                                            const NeverScrollableScrollPhysics(),
-                                        itemCount: snapp.data?.length,
-                                        itemBuilder: (context, index) =>
-                                            Container(
-                                                margin:
-                                                    const EdgeInsets.all(20),
-                                                child: Stack(
-                                                  children: [
-                                                    ViewParty(
-                                                        nameOnTop: true,
-                                                        party:
-                                                            snapp.data![index]),
-                                                    Positioned(
-                                                        top: 0,
-                                                        left: 0,
-                                                        child: MaterialButton(
-                                                          child: const Icon(
-                                                            Icons
-                                                                .cancel_outlined,
-                                                            size: 40,
-                                                            color: Colors.white,
-                                                          ),
-                                                          onPressed: () {
-                                                            setState(() {
-                                                              if (listruckers!
-                                                                      .length >=
-                                                                  index + 1) {
-                                                                listruckers!
-                                                                    .removeAt(
-                                                                        index);
-                                                              }
-                                                            });
-                                                          },
-                                                        )),
-                                                  ],
-                                                )));
-                                  } else {
-                                    return const SizedBox(
-                                      height: 0,
-                                    );
-                                  }
-                                }),
-                            Padding(
-                              padding: const EdgeInsets.all(12.0),
-                              child: ButtonCustm(
-                                label: "Submit",
-                                padding: 10,
-                                function1: () {
-                                  final Map<String, dynamic> values = {
-                                    for (final element in quotecFields.entries)
-                                      if ((element.value.controller?.text
-                                                  .isNotEmpty ??
-                                              false) &&
-                                          element.value.visible)
-                                        element.key: element
-                                                    .value.controller?.text ==
-                                                'Yes'
-                                            ? true
-                                            : element.value.controller?.text ==
-                                                    'No'
-                                                ? false
-                                                : element.value.controller?.text
-                                  };
-                                  if (_formKey.currentState!.validate()) {
-                                    dev.log(values.toString());
-                                    if ((quotecFields[Values.quote_number]
-                                            ?.object as Quote?) !=
-                                        null) {
-                                      values[Values.quote_number] =
-                                          (quotecFields[Values.quote_number]
-                                                  ?.object as Quote?)
-                                              ?.sid;
+            if (state is CreateQuotecSuccess) {
+              return Column(
+                children: [
+                  Text(state.successMessage!),
+                  BigButtonNew(
+                      ttitle: 'View Quotes to Customer Table',
+                      onTap: () =>
+                          Navigator.pushNamed(context, QuotecView.routeName)),
+                ],
+              );
+            }
+            if (state is CreatePageSuccess) {
+              quotecFields[Values.date]?.controller?.text = state.date ?? '';
+              quotecFields[Values.sid]?.controller?.text =
+                  widget.quotec?.sId ?? state.id ?? '';
+              quotecFields[Values.pre_pull]?.object = state.quoteC?.prePull;
+              quotecFields[Values.yard_storage]?.object =
+                  state.quoteC?.yardStorage;
+              quotecFields[Values.port_congestion]?.object =
+                  state.quoteC?.portCongestion;
+              quotecFields[Values.stop_off]?.object = state.quoteC?.stopOff;
+              quotecFields[Values.overweight]?.object =
+                  state.quoteC?.overweight;
+              quotecFields[Values.reefer]?.object = state.quoteC?.reefer;
+              quotecFields[Values.reefer_monitoring_fee]?.object =
+                  state.quoteC?.reeferMonitoringFee;
+              quotecFields[Values.chassis_split]?.object =
+                  state.quoteC?.chassisSplit;
+              quotecFields[Values.detention]?.object = state.quoteC?.detention;
+              quotecFields[Values.tolls]?.object = state.quoteC?.tolls;
+              quotecFields[Values.drop_and_pick]?.object =
+                  state.quoteC?.dropAndPick;
+              quotecFields[Values.hazmat]?.object = state.quoteC?.hazmat;
 
-                                      values[Values.truckers] = "";
-                                      final truckerList =
-                                          (quotecFields[Values.truckers]?.object
-                                                  as List<dynamic>)
-                                              .cast<Party>()
-                                              .map((e) => e.sid)
-                                              .toList();
-                                      for (int i = 0;
-                                          i < truckerList.length;
-                                          i++) {
-                                        values[Values.truckers] +=
-                                            "${truckerList[i]}";
-                                        if (i != truckerList.length - 1) {
-                                          values[Values.truckers] += ",";
-                                        }
+              return SizedBox(
+                  // width: min(MediaQuery.of(context).size.width, 480),
+                  child: Form(
+                      key: _formKey,
+                      child: Column(
+                        children: [
+                          BigButtonNew(
+                              ttitle: 'View Quotes to Customer Table',
+                              onTap: () => Navigator.pushNamed(
+                                  context, QuotecView.routeName)),
+                          Wrap(
+                            alignment: WrapAlignment.start,
+                            children: List<Widget>.generate(quotecFields.length,
+                                (index) {
+                              return TextFieldEntryBuilder(
+                                textFieldEntry:
+                                    quotecFields.values.toList()[index],
+                                onValueSelected: (key, value) =>
+                                    onValueSelected(key!, value),
+                                focusHandler: (isLast) {
+                                  isLast
+                                      ? FocusScope.of(context).unfocus()
+                                      : focusOnNextVisible(index, quotecFields);
+                                },
+                              );
+                            }),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(12.0),
+                            child: ButtonCustm(
+                              label: "Submit",
+                              padding: 10,
+                              function1: () {
+                                final Map<String, dynamic> values = {
+                                  for (final element in quotecFields.entries)
+                                    if ((element.value.controller?.text
+                                                .isNotEmpty ??
+                                            false) &&
+                                        element.value.visible)
+                                      element.key: element
+                                                  .value.controller?.text ==
+                                              'Yes'
+                                          ? true
+                                          : element.value.controller?.text ==
+                                                  'No'
+                                              ? false
+                                              : element.value.controller?.text
+                                };
+                                if (_formKey.currentState!.validate()) {
+                                  dev.log(values.toString());
+                                  if ((quotecFields[Values.quote_number]?.object
+                                          as Quote?) !=
+                                      null) {
+                                    values[Values.quote_number] =
+                                        (quotecFields[Values.quote_number]
+                                                ?.object as Quote?)
+                                            ?.sid;
+
+                                    values[Values.truckers] = "";
+                                    final truckerList =
+                                        (quotecFields[Values.truckers]?.object
+                                                as List<dynamic>)
+                                            .cast<Party>()
+                                            .map((e) => e.sid)
+                                            .toList();
+                                    for (int i = 0;
+                                        i < truckerList.length;
+                                        i++) {
+                                      values[Values.truckers] +=
+                                          "${truckerList[i]}";
+                                      if (i != truckerList.length - 1) {
+                                        values[Values.truckers] += ",";
                                       }
                                     }
-                                    // values[Values.quote_number] = state.id;
-                                    if (widget.quotec == null) {
-                                      GetIt.I<CreateQuotecCubit>()
-                                          .create(values);
-                                    } else {
-                                      GetIt.I<CreateQuotecCubit>().edit(values);
-                                    }
                                   }
-                                },
-                              ),
-                            )
-                          ],
-                        )));
-              }
-              return const SizedBox(
-                height: 0,
-                width: 0,
-              );
-            },
-          ),
+                                  // values[Values.quote_number] = state.id;
+                                  if (widget.quotec == null) {
+                                    GetIt.I<CreateQuotecCubit>().create(values);
+                                  } else {
+                                    GetIt.I<CreateQuotecCubit>().edit(values);
+                                  }
+                                }
+                              },
+                            ),
+                          )
+                        ],
+                      )));
+            }
+            return const SizedBox(
+              height: 0,
+              width: 0,
+            );
+          },
         ),
       ),
+      drawer: const DrawerView(),
     );
   }
 }

@@ -59,7 +59,7 @@ class Party {
     partyType = json['party_type'];
     address = json['address'];
     city = json['city'];
-    zipCode = json['zip_code'];
+    zipCode = json['zip_code'].toString();
     state = json['state'];
     phone = json['phone'] is String ? json['phone'] : json['phone'].toString();
     extraContacts = json['extra_contacts'] is List

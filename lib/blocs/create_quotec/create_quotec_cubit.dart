@@ -2,10 +2,11 @@ import 'package:bloc/bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:meta/meta.dart';
 import 'package:svojasweb/models/api_response.dart';
-import 'package:svojasweb/models/party.dart';
 import 'package:svojasweb/models/quote.dart';
 import 'package:svojasweb/models/quotec.dart';
-import 'package:svojasweb/repositories/network_calls.dart';
+import 'package:svojasweb/repositories/basic_repository.dart';
+import 'package:svojasweb/repositories/quote_repository.dart';
+import 'package:svojasweb/repositories/quotec_repostiory.dart';
 
 part 'create_quotec_state.dart';
 
@@ -15,9 +16,9 @@ class CreateQuotecCubit extends Cubit<CreateQuotecState> {
   load() async {
     emit(CreateQuotecLoading());
     final ApiResponse apiResponse =
-        await GetIt.I<NetworkCalls>().getDateAndReference();
+        await GetIt.I<BasicRepository>().getDateAndReference();
     final ApiResponse apiResponse2 =
-        await GetIt.I<NetworkCalls>().getQuoteC("62fc7c3ac17bff21c42dfc87");
+        await GetIt.I<QuotecRepository>().getQuoteC("6318c102ec516068b6fb3808");
     if (apiResponse.status && apiResponse2.status) {
       // GetIt.I<Preferences>().saveIsCreateQuote(isCreateQuote: true);
       final String id = apiResponse.data['reference'];
@@ -33,7 +34,7 @@ class CreateQuotecCubit extends Cubit<CreateQuotecState> {
   create(Map<String, dynamic> quotec) async {
     emit(CreateQuotecLoading());
     final ApiResponse apiResponse =
-        await GetIt.I<NetworkCalls>().createQuoteC(quotec);
+        await GetIt.I<QuotecRepository>().createQuoteC(quotec);
     if (apiResponse.status) {
       // GetIt.I<Preferences>().saveIsCreateQuote(isCreateQuote: true);
 
@@ -48,7 +49,7 @@ class CreateQuotecCubit extends Cubit<CreateQuotecState> {
   edit(Map<String, dynamic> quotec) async {
     emit(CreateQuotecLoading());
     final ApiResponse apiResponse =
-        await GetIt.I<NetworkCalls>().editQuoteC(quotec);
+        await GetIt.I<QuotecRepository>().editQuoteC(quotec);
     if (apiResponse.status) {
       // GetIt.I<Preferences>().saveIsCreateQuote(isCreateQuote: true);
 
@@ -65,7 +66,7 @@ class CreateQuotecCubit extends Cubit<CreateQuotecState> {
       return [];
     }
     final ApiResponse apiResponse =
-        await GetIt.I<NetworkCalls>().getQuoteByQuoteID(quoteId);
+        await GetIt.I<QuoteRepository>().getQuoteByQuoteID(quoteId);
     if (apiResponse.status) {
       return (apiResponse.data as List<dynamic>)
           .map((e) => Quote.fromJson(e))
@@ -73,22 +74,5 @@ class CreateQuotecCubit extends Cubit<CreateQuotecState> {
     } else {
       return [];
     }
-  }
-
-  Future<List<Party>> getTruckers(String? truckers) async {
-    if (truckers == null || truckers.isEmpty) {
-      return [];
-    }
-    List<String> truckerList = truckers.split(",");
-    List<Party> realTruckers = [];
-
-    for (final truckerId in truckerList) {
-      final ApiResponse apiResponse =
-          await GetIt.I<NetworkCalls>().getParty(truckerId);
-      if (apiResponse.status) {
-        realTruckers.add(Party.fromJson(apiResponse.data));
-      }
-    }
-    return realTruckers;
   }
 }

@@ -6,8 +6,10 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:svojasweb/utilities/button_custm.dart';
-import 'dart:js' as js;
 // ignore: avoid_web_libraries_in_flutter
+import 'dart:js' as js;
+
+import 'package:svojasweb/views/drawer_view.dart';
 
 class BolView extends StatefulWidget {
   const BolView({Key? key}) : super(key: key);
@@ -96,6 +98,8 @@ MACHINE )HS CODE 847740
     return Scaffold(
       key: _scaffoldKey,
       backgroundColor: Colors.white,
+      appBar: AppBar(),
+      drawer: const DrawerView(),
       body: Center(
         child: Padding(
           padding: EdgeInsets.symmetric(

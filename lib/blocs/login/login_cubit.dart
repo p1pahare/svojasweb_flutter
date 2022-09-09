@@ -2,7 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:svojasweb/models/api_response.dart';
-import 'package:svojasweb/repositories/network_calls.dart';
+import 'package:svojasweb/repositories/basic_repository.dart';
 import 'package:svojasweb/services/preferences.dart';
 part 'login_state.dart';
 
@@ -18,7 +18,7 @@ class LoginCubit extends Cubit<LoginState> {
     }
     emit(LoginLoading());
     final ApiResponse apiResponse =
-        await GetIt.I<NetworkCalls>().login(username, password);
+        await GetIt.I<BasicRepository>().login(username, password);
     if (apiResponse.status) {
       GetIt.I<Preferences>().saveIslogin(isLogin: true);
       emit(LoginSuccess());
