@@ -12,6 +12,7 @@ class TextFieldCustm extends StatelessWidget {
       required this.focusNode,
       this.validate,
       this.enabled = true,
+      this.onChange,
       this.onDone})
       : super(key: key);
   final TextEditingController controller;
@@ -21,6 +22,7 @@ class TextFieldCustm extends StatelessWidget {
   final bool showLabel;
   final String? Function(String?)? validate;
   final FocusNode focusNode;
+  final void Function(String?)? onChange;
   final void Function(String?)? onDone;
   @override
   Widget build(BuildContext context) {
@@ -38,6 +40,7 @@ class TextFieldCustm extends StatelessWidget {
           focusNode: focusNode,
           autovalidateMode: AutovalidateMode.onUserInteraction,
           validator: validate ?? (str) => null,
+          onChanged: onChange ?? (str) => log("field changed"),
           onFieldSubmitted: onDone ?? (str) => log("field submitted"),
           decoration: InputDecoration(
               hintText: showLabel ? '' : label,

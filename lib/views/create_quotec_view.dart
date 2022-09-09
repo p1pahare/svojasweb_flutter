@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:svojasweb/blocs/create_quotec/create_quotec_cubit.dart';
-import 'package:svojasweb/models/party.dart';
 import 'package:svojasweb/models/quote.dart';
 import 'package:svojasweb/models/quotec.dart';
 import 'package:svojasweb/models/textfield_entry.dart';
@@ -65,6 +64,7 @@ class _CreateQuotecViewState extends State<CreateQuotecView> {
           label: 'Date',
           keyId: Values.date,
           enabled: false,
+          visible: false,
           controller: TextEditingController(text: widget.quotec?.date)),
       Values.drayage_fuel: TextFieldEntry(
           label: 'Drayage Fuel',
@@ -173,7 +173,7 @@ class _CreateQuotecViewState extends State<CreateQuotecView> {
     return Scaffold(
       appBar: AppBar(
           title: Text(
-              '${widget.quotec == null ? 'Create' : 'Edit'} Quote Confirm')),
+              '${widget.quotec == null ? 'Create' : 'Edit'} Quote to Customer')),
       // drawer: const DrawerView(),
       body: SingleChildScrollView(
         child: BlocBuilder<CreateQuotecCubit, CreateQuotecState>(
@@ -259,10 +259,9 @@ class _CreateQuotecViewState extends State<CreateQuotecView> {
                               function1: () {
                                 final Map<String, dynamic> values = {
                                   for (final element in quotecFields.entries)
-                                    if ((element.value.controller?.text
-                                                .isNotEmpty ??
-                                            false) &&
-                                        element.value.visible)
+                                    if (element.value.controller?.text
+                                            .isNotEmpty ??
+                                        false)
                                       element.key: element
                                                   .value.controller?.text ==
                                               'Yes'
@@ -281,23 +280,6 @@ class _CreateQuotecViewState extends State<CreateQuotecView> {
                                         (quotecFields[Values.quote_number]
                                                 ?.object as Quote?)
                                             ?.sid;
-
-                                    values[Values.truckers] = "";
-                                    final truckerList =
-                                        (quotecFields[Values.truckers]?.object
-                                                as List<dynamic>)
-                                            .cast<Party>()
-                                            .map((e) => e.sid)
-                                            .toList();
-                                    for (int i = 0;
-                                        i < truckerList.length;
-                                        i++) {
-                                      values[Values.truckers] +=
-                                          "${truckerList[i]}";
-                                      if (i != truckerList.length - 1) {
-                                        values[Values.truckers] += ",";
-                                      }
-                                    }
                                   }
                                   // values[Values.quote_number] = state.id;
                                   if (widget.quotec == null) {

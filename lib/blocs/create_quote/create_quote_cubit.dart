@@ -57,12 +57,12 @@ class CreateQuoteCubit extends Cubit<CreateQuoteState> {
     }
   }
 
-  Future<Iterable<Party>> getParties(String partyName) async {
+  Future<Iterable<Party>> getParties(String partyName, String partyType) async {
     if (partyName.isEmpty) {
       return [];
     }
-    final ApiResponse apiResponse =
-        await GetIt.I<PartyRepository>().getPartyByName(partyName);
+    final ApiResponse apiResponse = await GetIt.I<PartyRepository>()
+        .getPartyByName(partyName: partyName, partyType: partyType);
     if (apiResponse.status) {
       return (apiResponse.data as List<dynamic>)
           .map((e) => Party.fromJson(e))

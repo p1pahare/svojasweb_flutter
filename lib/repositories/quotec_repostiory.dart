@@ -156,9 +156,10 @@ class QuotecRepository {
 
   Future<ApiResponse> getQuotecByQuoteID(String? quoteID) async {
     try {
-      final http.Response response = await http.get(
-        Uri.parse(Values.base_url + Values.quote + '/quote_id/' + quoteID!),
-      );
+      final http.Response response = await http.get(Uri.https(
+          Values.base_url.split('/')[2],
+          'api/${Values.quotec}',
+          {if (quoteID != null) 'quote_id': quoteID}));
 
       if (response.statusCode == 200) {
         final String body = response.body;

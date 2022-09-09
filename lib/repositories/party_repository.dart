@@ -123,12 +123,14 @@ class PartyRepository {
   }
 
   Future<ApiResponse> getPartyByName(
-    String? partyName,
-  ) async {
+      {String? partyName, String? port, String? partyType}) async {
     try {
-      final http.Response response = await http.get(
-        Uri.parse(Values.base_url + Values.party + '/name/' + partyName!),
-      );
+      final http.Response response = await http
+          .get(Uri.https(Values.base_url.split('/')[2], 'api/${Values.party}', {
+        if (partyName != null) 'party_name': partyName,
+        if (port != null) 'port': port,
+        if (partyType != null) 'party_type': partyType
+      }));
       if (response.statusCode == 200) {
         final String body = response.body;
         log(body);

@@ -74,7 +74,10 @@ class TextFieldEntryBuilder extends StatelessWidget {
                 ),
                 if (textFieldEntry!.object != null)
                   if (textFieldEntry!.object is Party)
-                    ViewParty(party: textFieldEntry!.object)
+                    ViewParty(
+                      party: textFieldEntry!.object,
+                      nameOnTop: true,
+                    )
                   else if (textFieldEntry!.object is Quote)
                     ViewQuote(quote: textFieldEntry!.object)
                   else if (textFieldEntry!.object is QuoteC)
@@ -87,6 +90,7 @@ class TextFieldEntryBuilder extends StatelessWidget {
               controller: textFieldEntry!.controller!,
               enabled: textFieldEntry!.enabled,
               focusNode: textFieldEntry!.focusnode!,
+              onChange: (str) => onValueSelected!(textFieldEntry?.keyId, str),
               onDone: (str) {
                 onValueSelected!(textFieldEntry?.keyId, str);
                 focusHandler!(textFieldEntry!.isLast);

@@ -38,24 +38,23 @@ class ViewParty extends StatelessWidget {
             KeyValueView(skey: "SCAC", value: party.scac!),
           if (party.states != null)
             KeyValueView(skey: "States", value: party.states!),
-          if (party.haz != null)
+          if (party.haz != null && party.partyType == 'Trucker')
             KeyValueView(skey: "Haz", value: party.haz?.toBetterString() ?? ''),
-          if (party.overweight != null)
+          if (party.overweight != null && party.partyType == 'Trucker')
             KeyValueView(
                 skey: "Overweight",
                 value: party.overweight?.toBetterString() ?? ''),
-          if (party.oog != null)
+          if (party.oog != null && party.partyType == 'Trucker')
             KeyValueView(skey: "OOG", value: party.oog!.toBetterString()),
-          if (party.reefer != null)
-            KeyValueView(skey: "Reefer", value: party.reefer!.toBetterString()),
-          if (party.transloadService != null)
+          if (party.transloadService != null && party.partyType == 'Trucker')
             KeyValueView(
                 skey: "transload service",
                 value: party.transloadService!.toBetterString()),
           if (party.motorCarrier != null)
             KeyValueView(
                 skey: "Motor Service", value: party.motorCarrier ?? ''),
-          if (party.deliveryAppointmentNeeded != null)
+          if (party.deliveryAppointmentNeeded != null &&
+              party.partyType == 'Trucker')
             KeyValueView(
                 skey: "Delivery Appointment Needed",
                 value: party.reefer!.toBetterString()),
@@ -67,7 +66,7 @@ class ViewParty extends StatelessWidget {
             KeyValueView(
                 skey: "Ware House Closing Time",
                 value: party.warehouseTimingsClose!),
-          if (party.reefer != null)
+          if (party.reefer != null && party.partyType == 'Trucker')
             KeyValueView(skey: "Reefer", value: party.reefer!.toBetterString()),
           if (party.extraContacts.isNotEmpty) ...[
             ...List.generate(

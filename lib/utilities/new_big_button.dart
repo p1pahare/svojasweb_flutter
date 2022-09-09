@@ -23,6 +23,7 @@ class BigButtonNew extends StatelessWidget {
             children: [
               Text(
                 ttitle,
+                textAlign: TextAlign.center,
                 style: const TextStyle(
                     color: Colors.white,
                     fontSize: 22,

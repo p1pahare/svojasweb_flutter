@@ -32,8 +32,12 @@ class _CreateQuoteViewState extends State<CreateQuoteView> {
     switch (key) {
       case Values.type_of_move:
         quoteFields.forEach((key, value) {
-          if (![Values.quote_number, Values.type_of_move, Values.customer]
-              .contains(key)) {
+          if (![
+            Values.quote_number,
+            Values.type_of_move,
+            Values.customer,
+            Values.truckers
+          ].contains(key)) {
             value.visible = false;
             value.isLast = false;
           }
@@ -83,6 +87,7 @@ class _CreateQuoteViewState extends State<CreateQuoteView> {
         quoteFields[Values.transit_type]?.visible = true;
         quoteFields.forEach((key, value) {
           if (![
+            Values.truckers,
             Values.customer,
             Values.date,
             Values.quote_number,
@@ -243,20 +248,6 @@ class _CreateQuoteViewState extends State<CreateQuoteView> {
 
   void initQuote() {
     quoteFields = {
-      Values.customer: TextFieldEntry(
-          fieldType: FieldType.autocomplete,
-          label: 'Select Customer',
-          keyId: Values.customer,
-          enabled: true,
-          object: (widget.quote?.party.isEmpty ?? false)
-              ? null
-              : widget.quote?.party.first,
-          optionListing: (textValue) =>
-              GetIt.I<CreateQuoteCubit>().getParties(textValue),
-          controller: TextEditingController(
-              text: (widget.quote?.party.isNotEmpty) ?? false
-                  ? widget.quote?.party.first.partyName
-                  : '')),
       Values.date: TextFieldEntry(
           label: 'Date',
           keyId: Values.date,
@@ -469,10 +460,24 @@ class _CreateQuoteViewState extends State<CreateQuoteView> {
           enabled: true,
           object: [],
           optionListing: (textValue) =>
-              GetIt.I<CreateQuoteCubit>().getParties(textValue),
+              GetIt.I<CreateQuoteCubit>().getParties(textValue, 'Trucker'),
           controller: TextEditingController(
               text: (widget.quote?.truckers?.isNotEmpty) ?? false
                   ? widget.quote?.truckers.toString()
+                  : '')),
+      Values.customer: TextFieldEntry(
+          fieldType: FieldType.autocomplete,
+          label: 'Select Customer',
+          keyId: Values.customer,
+          enabled: true,
+          object: (widget.quote?.party.isEmpty ?? false)
+              ? null
+              : widget.quote?.party.first,
+          optionListing: (textValue) =>
+              GetIt.I<CreateQuoteCubit>().getParties(textValue, 'Customer'),
+          controller: TextEditingController(
+              text: (widget.quote?.party.isNotEmpty) ?? false
+                  ? widget.quote?.party.first.partyName
                   : '')),
     };
   }
@@ -602,6 +607,61 @@ class _CreateQuoteViewState extends State<CreateQuoteView> {
                               );
                             }),
                           ),
+                          StreamBuilder<List<Party>>(
+                              stream: Stream.value(listruckers),
+                              // GetIt.I<CreateQuotecCubit>()
+                              //     .getTruckersStream(widget.quotec?.truckers),
+                              builder: (context, snapp) {
+                                if (snapp.data != null) {
+                                  if (snapp.data?.isNotEmpty ?? false) {
+                                    listruckers = snapp.data;
+                                  }
+                                  return ListView.builder(
+                                      // gridDelegate:
+                                      //     const SliverGridDelegateWithFixedCrossAxisCount(
+                                      //         crossAxisCount: 2),
+                                      shrinkWrap: true,
+                                      physics:
+                                          const NeverScrollableScrollPhysics(),
+                                      itemCount: snapp.data?.length,
+                                      itemBuilder: (context, index) =>
+                                          Container(
+                                              margin: const EdgeInsets.all(20),
+                                              child: Stack(
+                                                children: [
+                                                  ViewParty(
+                                                      nameOnTop: true,
+                                                      party:
+                                                          snapp.data![index]),
+                                                  Positioned(
+                                                      top: 0,
+                                                      left: 0,
+                                                      child: MaterialButton(
+                                                        child: const Icon(
+                                                          Icons.cancel_outlined,
+                                                          size: 40,
+                                                          color: Colors.white,
+                                                        ),
+                                                        onPressed: () {
+                                                          setState(() {
+                                                            if (listruckers!
+                                                                    .length >=
+                                                                index + 1) {
+                                                              listruckers!
+                                                                  .removeAt(
+                                                                      index);
+                                                            }
+                                                          });
+                                                        },
+                                                      )),
+                                                ],
+                                              )));
+                                } else {
+                                  return const SizedBox(
+                                    height: 0,
+                                  );
+                                }
+                              }),
                           if (!quoteFields[Values.gross_weight]!.enabled)
                             Container(
                               margin: const EdgeInsets.all(40),
@@ -726,61 +786,6 @@ class _CreateQuoteViewState extends State<CreateQuoteView> {
                                               }),
                                         )));
                               }),
-                          StreamBuilder<List<Party>>(
-                              stream: Stream.value(listruckers),
-                              // GetIt.I<CreateQuotecCubit>()
-                              //     .getTruckersStream(widget.quotec?.truckers),
-                              builder: (context, snapp) {
-                                if (snapp.data != null) {
-                                  if (snapp.data?.isNotEmpty ?? false) {
-                                    listruckers = snapp.data;
-                                  }
-                                  return ListView.builder(
-                                      // gridDelegate:
-                                      //     const SliverGridDelegateWithFixedCrossAxisCount(
-                                      //         crossAxisCount: 2),
-                                      shrinkWrap: true,
-                                      physics:
-                                          const NeverScrollableScrollPhysics(),
-                                      itemCount: snapp.data?.length,
-                                      itemBuilder: (context, index) =>
-                                          Container(
-                                              margin: const EdgeInsets.all(20),
-                                              child: Stack(
-                                                children: [
-                                                  ViewParty(
-                                                      nameOnTop: true,
-                                                      party:
-                                                          snapp.data![index]),
-                                                  Positioned(
-                                                      top: 0,
-                                                      left: 0,
-                                                      child: MaterialButton(
-                                                        child: const Icon(
-                                                          Icons.cancel_outlined,
-                                                          size: 40,
-                                                          color: Colors.white,
-                                                        ),
-                                                        onPressed: () {
-                                                          setState(() {
-                                                            if (listruckers!
-                                                                    .length >=
-                                                                index + 1) {
-                                                              listruckers!
-                                                                  .removeAt(
-                                                                      index);
-                                                            }
-                                                          });
-                                                        },
-                                                      )),
-                                                ],
-                                              )));
-                                } else {
-                                  return const SizedBox(
-                                    height: 0,
-                                  );
-                                }
-                              }),
                           Padding(
                             padding: const EdgeInsets.all(12.0),
                             child: ButtonCustm(
@@ -817,6 +822,13 @@ class _CreateQuoteViewState extends State<CreateQuoteView> {
                                                 as Party?)
                                             ?.sid;
                                   }
+
+                                  values[Values.truckers] =
+                                      (quoteFields[Values.truckers]?.object
+                                              as List<dynamic>)
+                                          .cast<Party>()
+                                          .map((e) => e.sid)
+                                          .toList();
                                   if (widget.quote == null) {
                                     GetIt.I<CreateQuoteCubit>().create(values);
                                   } else {
