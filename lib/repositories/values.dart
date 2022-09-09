@@ -41,6 +41,7 @@ class Values {
   static const gross_weight = "gross_weight";
   static const commodity = "commodity";
   static const package = "package";
+  static const quote_id = "quote_id";
   static const pickup_ramp = "pickup_ramp";
   static const delivery_ramp = "delivery_ramp";
   static const delivery_address = "delivery_address";

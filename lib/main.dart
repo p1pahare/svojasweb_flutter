@@ -76,35 +76,44 @@ class MyApp extends StatelessWidget {
                   case CreatePartyView.routeName:
                     return CupertinoPageRoute<bool>(
                         settings: settings,
-                        builder: (context) => const CreatePartyView());
+                        builder: (context) => const CreatePartyView(
+                              title: 'Crate Party',
+                            ));
                   case CreatePartyView.routeNameEdit:
                     Party customer = settings.arguments as Party;
                     return CupertinoPageRoute<bool>(
                         settings: settings,
                         builder: (context) => CreatePartyView(
                               party: customer,
+                              title: 'Edit Party',
                             ));
                   case CreateQuoteView.routeName:
                     return CupertinoPageRoute<bool>(
                         settings: settings,
-                        builder: (context) => const CreateQuoteView());
+                        builder: (context) => const CreateQuoteView(
+                              title: 'Create Quote',
+                            ));
                   case CreateQuoteView.routeNameEdit:
                     Quote customer = settings.arguments as Quote;
                     return CupertinoPageRoute<bool>(
                         settings: settings,
                         builder: (context) => CreateQuoteView(
                               quote: customer,
+                              title: 'Edit Quote',
                             ));
                   case CreateQuotecView.routeName:
                     return CupertinoPageRoute<bool>(
                         settings: settings,
-                        builder: (context) => const CreateQuotecView());
+                        builder: (context) => const CreateQuotecView(
+                              title: 'Create Quote to Customer',
+                            ));
                   case CreateQuotecView.routeNameEdit:
                     QuoteC customer = settings.arguments as QuoteC;
                     return CupertinoPageRoute<bool>(
                         settings: settings,
                         builder: (context) => CreateQuotecView(
                               quotec: customer,
+                              title: 'Edit Quote to Customer',
                             ));
                   case DashboardView.routeName:
                     return CupertinoPageRoute(

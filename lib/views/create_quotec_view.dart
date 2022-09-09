@@ -14,17 +14,19 @@ import 'package:svojasweb/views/drawer_view.dart';
 import 'package:svojasweb/views/quotec_view.dart';
 
 class CreateQuotecView extends StatefulWidget {
-  const CreateQuotecView({Key? key, this.quotec}) : super(key: key);
+  const CreateQuotecView({Key? key, this.quotec, required this.title})
+      : super(key: key);
   static const routeName = '/CreateQuotecView';
   static const routeNameEdit = '/EditQuotecView';
   final QuoteC? quotec;
+  final String title;
   @override
   State<CreateQuotecView> createState() => _CreateQuotecViewState();
 }
 
 class _CreateQuotecViewState extends State<CreateQuotecView> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  List<String> truckers = [];
+
   void onValueSelected(String key, String? value, {bool clear = true}) {
     switch (key) {
       default:
@@ -171,9 +173,7 @@ class _CreateQuotecViewState extends State<CreateQuotecView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-          title: Text(
-              '${widget.quotec == null ? 'Create' : 'Edit'} Quote to Customer')),
+      appBar: AppBar(title: Text(widget.title)),
       // drawer: const DrawerView(),
       body: SingleChildScrollView(
         child: BlocBuilder<CreateQuotecCubit, CreateQuotecState>(
@@ -229,13 +229,14 @@ class _CreateQuotecViewState extends State<CreateQuotecView> {
                   child: Form(
                       key: _formKey,
                       child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           BigButtonNew(
                               ttitle: 'View Quotes to Customer Table',
                               onTap: () => Navigator.pushNamed(
                                   context, QuotecView.routeName)),
                           Wrap(
-                            alignment: WrapAlignment.start,
+                            alignment: WrapAlignment.center,
                             children: List<Widget>.generate(quotecFields.length,
                                 (index) {
                               return TextFieldEntryBuilder(
@@ -273,13 +274,13 @@ class _CreateQuotecViewState extends State<CreateQuotecView> {
                                 };
                                 if (_formKey.currentState!.validate()) {
                                   dev.log(values.toString());
-                                  if ((quotecFields[Values.quote_number]?.object
+                                  if ((quotecFields[Values.quote_id]?.object
                                           as Quote?) !=
                                       null) {
-                                    values[Values.quote_number] =
-                                        (quotecFields[Values.quote_number]
-                                                ?.object as Quote?)
-                                            ?.sid;
+                                    values[Values.quote_id] =
+                                        (quotecFields[Values.quote_id]?.object
+                                                as Quote?)
+                                            ?.quoteId;
                                   }
                                   // values[Values.quote_number] = state.id;
                                   if (widget.quotec == null) {

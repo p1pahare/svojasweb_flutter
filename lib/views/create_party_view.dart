@@ -17,10 +17,12 @@ import 'package:svojasweb/views/drawer_view.dart';
 import 'package:svojasweb/views/party_view.dart';
 
 class CreatePartyView extends StatefulWidget {
-  const CreatePartyView({Key? key, this.party}) : super(key: key);
+  const CreatePartyView({Key? key, this.party, required this.title})
+      : super(key: key);
   static const routeName = '/CreatePartyView';
   static const routeNameEdit = '/EditPartyView';
   final Party? party;
+  final String title;
   @override
   State<CreatePartyView> createState() => _CreatePartyViewState();
 }
@@ -325,8 +327,7 @@ class _CreatePartyViewState extends State<CreatePartyView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-          title: Text('${widget.party == null ? 'Create' : 'Edit'} Party')),
+      appBar: AppBar(title: Text(widget.title)),
       // drawer: const DrawerView(),
       body: SingleChildScrollView(
         child: BlocBuilder<CreatePartyCubit, CreatePartyState>(
@@ -345,6 +346,7 @@ class _CreatePartyViewState extends State<CreatePartyView> {
 
             if (state is CreatePartySuccess) {
               return Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(state.successMessage!),
                   BigButtonNew(

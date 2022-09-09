@@ -17,10 +17,12 @@ import 'package:svojasweb/views/quote_view.dart';
 import 'package:svojasweb/views/subviews/view_party.dart';
 
 class CreateQuoteView extends StatefulWidget {
-  const CreateQuoteView({Key? key, this.quote}) : super(key: key);
+  const CreateQuoteView({Key? key, this.quote, required this.title})
+      : super(key: key);
   static const routeName = '/CreateQuoteView';
   static const routeNameEdit = '/EditQuoteView';
   final Quote? quote;
+  final String title;
   @override
   State<CreateQuoteView> createState() => _CreateQuoteViewState();
 }
@@ -544,8 +546,7 @@ class _CreateQuoteViewState extends State<CreateQuoteView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-          title: Text('${widget.quote == null ? 'Create' : 'Edit'} Quote')),
+      appBar: AppBar(title: Text(widget.title)),
       // drawer: const DrawerView(),
       body: SingleChildScrollView(
         child: BlocBuilder<CreateQuoteCubit, CreateQuoteState>(
@@ -564,6 +565,7 @@ class _CreateQuoteViewState extends State<CreateQuoteView> {
 
             if (state is CreateQuoteSuccess) {
               return Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(state.successMessage!),
                   BigButtonNew(
