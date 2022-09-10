@@ -8,10 +8,10 @@ import 'package:svojasweb/models/api_response.dart';
 import 'values.dart';
 
 class CquoteRepository {
-  Future<ApiResponse> getAllQuotecs({int pageNumber = 1}) async {
+  Future<ApiResponse> getAllCquotes({int pageNumber = 1}) async {
     try {
       final http.Response response = await http.get(
-        Uri.parse(Values.base_url + Values.quotecs + '?page=$pageNumber'),
+        Uri.parse(Values.base_url + Values.cquotes + '?page=$pageNumber'),
       );
 
       if (response.statusCode == 200) {
@@ -36,10 +36,10 @@ class CquoteRepository {
     }
   }
 
-  Future<ApiResponse> createQuoteC(Map<String, dynamic> quote) async {
+  Future<ApiResponse> createCquote(Map<String, dynamic> quote) async {
     try {
       final http.Response response = await http.post(
-          Uri.parse(Values.base_url + Values.quotec),
+          Uri.parse(Values.base_url + Values.cquote),
           body: jsonEncode(quote));
 
       if (response.statusCode == 200) {
@@ -64,20 +64,20 @@ class CquoteRepository {
     }
   }
 
-  Future<ApiResponse> editQuoteC(Map<String, dynamic> quoteC) async {
+  Future<ApiResponse> editCquote(Map<String, dynamic> quote) async {
     try {
-      String quoteCid = quoteC['_id'];
-      quoteC.remove(Values.sid);
+      String cquoteId = quote['_id'];
+      quote.remove(Values.sid);
       final http.Response response = await http.put(
-          Uri.parse(Values.base_url + Values.quotec + '/' + quoteCid),
-          body: jsonEncode(quoteC));
+          Uri.parse(Values.base_url + Values.cquote + '/' + cquoteId),
+          body: jsonEncode(quote));
 
       if (response.statusCode == 200) {
         final String body = response.body;
         log(body);
         return ApiResponse.fromJson({
           "status": true,
-          "message": "Quote Confirmation was updated successfully",
+          "message": "Shipment Data was updated successfully",
         });
       } else {
         String message = response.body;
@@ -96,10 +96,10 @@ class CquoteRepository {
     }
   }
 
-  Future<ApiResponse> getQuoteC(String? sId) async {
+  Future<ApiResponse> getCquote(String? sId) async {
     try {
       final http.Response response = await http.get(
-        Uri.parse(Values.base_url + Values.quotec + '/' + sId!),
+        Uri.parse(Values.base_url + Values.cquote + '/' + sId!),
       );
 
       if (response.statusCode == 200) {
@@ -124,10 +124,10 @@ class CquoteRepository {
     }
   }
 
-  Future<ApiResponse> deleteQuoteC(String? sId) async {
+  Future<ApiResponse> deleteCquote(String? sId) async {
     try {
       final http.Response response = await http.delete(
-        Uri.parse(Values.base_url + Values.quotec + '/' + sId!),
+        Uri.parse(Values.base_url + Values.cquote + '/' + sId!),
       );
 
       if (response.statusCode == 200) {
@@ -135,7 +135,7 @@ class CquoteRepository {
         log(body);
         return ApiResponse.fromJson({
           "status": true,
-          "message": "The quote confirmation was deleted successfully",
+          "message": "The Shipment Data was deleted successfully",
         });
       } else {
         String message = response.reasonPhrase ?? 'Something Went Wrong';
@@ -154,11 +154,12 @@ class CquoteRepository {
     }
   }
 
-  Future<ApiResponse> getQuotecByQuoteID(String? quoteID) async {
+  Future<ApiResponse> getCquoteByQuoteID(String? quoteID) async {
     try {
-      final http.Response response = await http.get(
-        Uri.parse(Values.base_url + Values.quote + '/quote_id/' + quoteID!),
-      );
+      final http.Response response = await http.get(Uri.https(
+          Values.base_url.split('/')[2],
+          'api/${Values.cquote}',
+          {if (quoteID != null) 'quote_id': quoteID}));
 
       if (response.statusCode == 200) {
         final String body = response.body;

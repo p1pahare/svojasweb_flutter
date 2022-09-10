@@ -58,7 +58,7 @@ class Cquote {
 
   Cquote.fromJson(Map<String, dynamic> json) {
     sid = json['_id'];
-    quoteId = json['quotesid'];
+    quoteId = json['quote_id'];
     container = json['container'];
     mbl = json['mbl'];
     pickupTerminal = json['pickup_terminal'];
@@ -89,7 +89,7 @@ class Cquote {
   Map<String, dynamic> toJson() {
     final _data = <String, dynamic>{};
     _data['_id'] = sid;
-    _data['quotesid'] = quoteId;
+    _data['quote_id'] = quoteId;
     _data['container'] = container;
     _data['mbl'] = mbl;
     _data['pickup_terminal'] = pickupTerminal;

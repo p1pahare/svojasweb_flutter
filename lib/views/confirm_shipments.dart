@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:svojasweb/blocs/buying/buying_cubit.dart';
+import 'package:svojasweb/models/buying.dart';
 import 'package:svojasweb/models/party.dart';
+import 'package:svojasweb/models/quote.dart';
+import 'package:svojasweb/models/quotec.dart';
 import 'package:svojasweb/models/textfield_entry.dart';
 import 'package:svojasweb/repositories/values.dart';
 import 'package:svojasweb/utilities/textfield_entry_builder.dart';
@@ -23,17 +26,249 @@ class ConfirmShipments extends StatefulWidget {
 
 class _ConfirmShipmentsState extends State<ConfirmShipments> {
   final GlobalKey<ScaffoldState> _scaff = GlobalKey();
-  TextFieldEntry textFieldEntry = TextFieldEntry(
-      fieldType: FieldType.autocomplete,
-      label: 'Select Quote Id',
-      keyId: Values.quote_number,
-      enabled: true,
-      optionListing: (textValue) async =>
-          (await GetIt.I<BuyingCubit>().getQuotecs(textValue)),
-      controller: TextEditingController(text: ''));
+
+  Map<String, TextFieldEntry> cquoteFields = {};
+  void onValueSelected(String typeOfMove, String? transitType) {
+    if (typeOfMove == 'Ocean' && transitType == 'Import') {
+      cquoteFields[Values.container]?.visible = true;
+      cquoteFields[Values.mbl]?.visible = true;
+      cquoteFields[Values.pickup_terminal]?.visible = true;
+      cquoteFields[Values.eta]?.visible = true;
+      cquoteFields[Values.lfd]?.visible = true;
+      cquoteFields[Values.gate_out]?.visible = true;
+      cquoteFields[Values.delivery]?.visible = true;
+      cquoteFields[Values.empty_gate_in]?.visible = true;
+      cquoteFields[Values.empty_return_terminal]?.visible = true;
+    }
+    if (typeOfMove == 'Ocean' && transitType == 'Export') {
+      cquoteFields[Values.booking]?.visible = true;
+      cquoteFields[Values.container]?.visible = true;
+      cquoteFields[Values.empty_pickup_terminal]?.visible = true;
+      cquoteFields[Values.erd]?.visible = true;
+      cquoteFields[Values.lrd]?.visible = true;
+      cquoteFields[Values.etd]?.visible = true;
+      cquoteFields[Values.empty_gate_out]?.visible = true;
+      cquoteFields[Values.loading]?.visible = true;
+      cquoteFields[Values.full_return]?.visible = true;
+      cquoteFields[Values.full_return_terminal]?.visible = true;
+    }
+    if (typeOfMove == 'Air' && transitType == 'Import') {
+      cquoteFields[Values.awb]?.visible = true;
+      cquoteFields[Values.pickup_handling_agent]?.visible = true;
+      cquoteFields[Values.eta]?.visible = true;
+      cquoteFields[Values.lfd]?.visible = true;
+      cquoteFields[Values.pickup]?.visible = true;
+      cquoteFields[Values.delivery]?.visible = true;
+    }
+    if (typeOfMove == 'Air' && transitType == 'Export') {
+      cquoteFields[Values.awb]?.visible = true;
+      cquoteFields[Values.delivery_handling_agent]?.visible = true;
+      cquoteFields[Values.pickup]?.visible = true;
+      cquoteFields[Values.delivery]?.visible = true;
+      cquoteFields[Values.booking_cutoff]?.visible = true;
+      cquoteFields[Values.etd]?.visible = true;
+    }
+    if (typeOfMove == 'Inland' && transitType == 'LTL') {
+      cquoteFields[Values.bol]?.visible = true;
+      cquoteFields[Values.carrier_reference_no]?.visible = true;
+      cquoteFields[Values.ltl_carrier_name]?.visible = true;
+      cquoteFields[Values.pickup]?.visible = true;
+      cquoteFields[Values.delivery]?.visible = true;
+    }
+    if (typeOfMove == 'Inland' && transitType == 'FTL') {
+      cquoteFields[Values.bol]?.visible = true;
+      cquoteFields[Values.ftl_carrier_name]?.visible = true;
+      cquoteFields[Values.pickup]?.visible = true;
+      cquoteFields[Values.delivery]?.visible = true;
+    }
+  }
+
+  void focusOnNextVisible(int index, Map<String, TextFieldEntry> fields) {
+    for (int x = index + 1; x < fields.length; x++) {
+      if (fields.values.toList()[x].visible) {
+        FocusScope.of(context)
+            .requestFocus(fields.values.toList()[x].focusnode);
+        break;
+      }
+    }
+  }
+
   @override
   void initState() {
+    initCquote();
     super.initState();
+  }
+
+  void initCquote() {
+    cquoteFields = {
+      Values.quote_id: TextFieldEntry(
+          fieldType: FieldType.autocomplete,
+          label: 'Select Quote Id',
+          keyId: Values.quote_id,
+          enabled: true,
+          optionListing: (textValue) async =>
+              (await GetIt.I<BuyingCubit>().getQuotecs(textValue)),
+          controller: TextEditingController(text: '')),
+      Values.container: TextFieldEntry(
+          label: 'Container',
+          controller: TextEditingController(text: ''),
+          keyId: Values.container,
+          visible: false,
+          isLast: false),
+      Values.mbl: TextFieldEntry(
+          label: 'MBL',
+          controller: TextEditingController(text: ''),
+          keyId: Values.mbl,
+          visible: false,
+          isLast: false),
+      Values.pickup_terminal: TextFieldEntry(
+          label: 'Pickup Terminal',
+          controller: TextEditingController(text: ''),
+          keyId: Values.pickup_terminal,
+          visible: false,
+          isLast: false),
+      Values.eta: TextFieldEntry(
+          label: 'ETA',
+          controller: TextEditingController(text: ''),
+          keyId: Values.eta,
+          fieldType: FieldType.date,
+          isLast: false),
+      Values.lfd: TextFieldEntry(
+          label: 'LFD',
+          controller: TextEditingController(text: ''),
+          keyId: Values.lfd,
+          fieldType: FieldType.date,
+          visible: false,
+          isLast: false),
+      Values.gate_out: TextFieldEntry(
+          label: 'Gate Out',
+          controller: TextEditingController(text: ''),
+          keyId: Values.gate_out,
+          fieldType: FieldType.date,
+          visible: false,
+          isLast: false),
+      Values.delivery: TextFieldEntry(
+          label: 'Delivery',
+          controller: TextEditingController(text: ''),
+          keyId: Values.delivery,
+          fieldType: FieldType.date,
+          visible: false,
+          isLast: false),
+      Values.empty_gate_in: TextFieldEntry(
+          label: 'Empty Gate In',
+          controller: TextEditingController(text: ''),
+          keyId: Values.empty_gate_in,
+          fieldType: FieldType.date,
+          visible: false,
+          isLast: false),
+      Values.empty_return_terminal: TextFieldEntry(
+          label: 'Empty Return Terminal',
+          controller: TextEditingController(text: ''),
+          keyId: Values.empty_return_terminal,
+          visible: false,
+          isLast: false),
+      Values.empty_pickup_terminal: TextFieldEntry(
+          label: 'Empty Pickup Terminal',
+          controller: TextEditingController(text: ''),
+          keyId: Values.empty_pickup_terminal,
+          visible: false,
+          isLast: false),
+      Values.booking: TextFieldEntry(
+          label: 'Booking',
+          controller: TextEditingController(text: ''),
+          keyId: Values.booking,
+          visible: false,
+          isLast: false),
+      Values.erd: TextFieldEntry(
+          label: 'ERD',
+          controller: TextEditingController(text: ''),
+          keyId: Values.erd,
+          fieldType: FieldType.date,
+          visible: false,
+          isLast: false),
+      Values.lrd: TextFieldEntry(
+          label: 'LRD',
+          controller: TextEditingController(text: ''),
+          keyId: Values.lrd,
+          fieldType: FieldType.date,
+          visible: false,
+          isLast: false),
+      Values.etd: TextFieldEntry(
+          label: 'ETD',
+          controller: TextEditingController(text: ''),
+          keyId: Values.etd,
+          fieldType: FieldType.date,
+          visible: false,
+          isLast: false),
+      Values.empty_gate_out: TextFieldEntry(
+          label: 'Empty Gate Out',
+          controller: TextEditingController(text: ''),
+          keyId: Values.empty_gate_out,
+          fieldType: FieldType.date,
+          visible: false,
+          isLast: false),
+      Values.awb: TextFieldEntry(
+          label: 'AWB',
+          controller: TextEditingController(text: ''),
+          keyId: Values.awb,
+          visible: false,
+          isLast: false),
+      Values.pickup_handling_agent: TextFieldEntry(
+          label: 'Pickup Handling Agent',
+          controller: TextEditingController(text: ''),
+          keyId: Values.pickup_handling_agent,
+          visible: false,
+          isLast: false),
+      Values.delivery_handling_agent: TextFieldEntry(
+          label: 'Delivery Handling Agent',
+          controller: TextEditingController(text: ''),
+          keyId: Values.delivery_handling_agent,
+          visible: false,
+          isLast: false),
+      Values.pickup: TextFieldEntry(
+          label: 'Pickup',
+          controller: TextEditingController(text: ''),
+          keyId: Values.pickup,
+          fieldType: FieldType.date,
+          visible: false,
+          isLast: false),
+      Values.booking_cutoff: TextFieldEntry(
+          label: 'Booking Cut-Off',
+          controller: TextEditingController(text: ''),
+          keyId: Values.booking_cutoff,
+          fieldType: FieldType.date,
+          visible: false,
+          isLast: false),
+      Values.bol: TextFieldEntry(
+          label: 'BOL',
+          controller: TextEditingController(text: ''),
+          keyId: Values.bol,
+          visible: false,
+          isLast: false),
+      Values.carrier_reference_no: TextFieldEntry(
+          label: 'Carrier Reference Number',
+          controller: TextEditingController(text: ''),
+          keyId: Values.carrier_reference_no,
+          isLast: false),
+      Values.ltl_carrier_name: TextFieldEntry(
+          label: 'LTL Carrier Name',
+          controller: TextEditingController(text: ''),
+          keyId: Values.ltl_carrier_name,
+          visible: false,
+          isLast: false),
+      Values.ftl_carrier_name: TextFieldEntry(
+          label: 'FTL Carrier Name',
+          controller: TextEditingController(text: ''),
+          keyId: Values.ftl_carrier_name,
+          visible: false,
+          isLast: false),
+      Values.type: TextFieldEntry(
+          label: 'Type',
+          controller: TextEditingController(text: ''),
+          keyId: Values.type,
+          visible: false,
+          isLast: false),
+    };
   }
 
   @override
@@ -45,10 +280,9 @@ class _ConfirmShipmentsState extends State<ConfirmShipments> {
         child: Column(
           children: [
             TextFieldEntryBuilder(
-              textFieldEntry: textFieldEntry,
+              textFieldEntry: cquoteFields[Values.quote_id],
               onValueSelected: (key, value) {
                 d.log("$key!, $value");
-
                 setState(() {});
               },
               focusHandler: (islast) => d.log(islast.toString()),
@@ -67,68 +301,40 @@ class _ConfirmShipmentsState extends State<ConfirmShipments> {
                   return Text(state.errorMessage!);
                 }
                 if (state is CreatePageSuccess) {
+                  if (state.quote != null) {
+                    onValueSelected(
+                        state.quote!.typeOfMove, state.quote!.transitType);
+                  }
                   return Column(
                     children: [
-                      if (state.quote != null)
-                        Container(
-                            margin: const EdgeInsets.all(25),
-                            child: ViewQuote(quote: state.quote!)),
-                      if (state.quotec != null)
-                        Container(
-                            margin: const EdgeInsets.all(25),
-                            child: ViewQuotec(quoteC: state.quotec!)),
-                      if (state.buying != null)
-                        Column(
-                          children: [
-                            const Text(
-                              "Buyings",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.w900, fontSize: 20),
-                            ),
-                            ListView.builder(
-                                shrinkWrap: true,
-                                itemCount: state.quote?.trucker.length,
-                                itemBuilder: (context, index) {
-                                  return Container(
-                                    height: 50,
-                                    margin: const EdgeInsets.all(20),
-                                    decoration: BoxDecoration(
-                                        color: const Color.fromARGB(
-                                            255, 127, 169, 190),
-                                        borderRadius:
-                                            BorderRadius.circular(20)),
-                                    child: Material(
-                                      type: MaterialType.transparency,
-                                      child: InkWell(
-                                        onTap: () {
-                                          selectCustomer(state
-                                              .quote?.trucker[index] as Party);
-                                        },
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceAround,
-                                          children: [
-                                            Text(
-                                                "   ${state.quote?.trucker[index].partyName} (${state.quote?.trucker[index].orgName})\t"),
-                                            Text(
-                                                "   ${state.quote?.trucker[index].emailId}\t"),
-                                            Text(
-                                                "   ${state.quote?.trucker[index].phone}\t"
-                                                    .padRight(12)),
-                                            SizedBox(
-                                                width: 100,
-                                                child: Text(
-                                                  state.buying!.buyings[index]
-                                                      .toString(),
-                                                ))
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  );
-                                }),
-                          ],
-                        )
+                      QuoteDetails(
+                        ontruckerPress: selectCustomer,
+                        quote: state.quote,
+                        quotec: state.quotec,
+                        buying: state.buying,
+                      ),
+                      const Text(
+                        "Shipments",
+                        style: TextStyle(
+                            fontWeight: FontWeight.w900, fontSize: 22),
+                      ),
+                      Wrap(
+                        alignment: WrapAlignment.start,
+                        children: List<Widget>.generate(cquoteFields.length - 1,
+                            (index) {
+                          return TextFieldEntryBuilder(
+                            textFieldEntry:
+                                cquoteFields.values.toList()[index + 1],
+                            onValueSelected: (key, value) =>
+                                onValueSelected(key!, value),
+                            focusHandler: (isLast) {
+                              isLast
+                                  ? FocusScope.of(context).unfocus()
+                                  : focusOnNextVisible(index + 1, cquoteFields);
+                            },
+                          );
+                        }),
+                      ),
                     ],
                   );
                 }
@@ -178,6 +384,76 @@ class _ConfirmShipmentsState extends State<ConfirmShipments> {
           ),
         ],
       ),
+    );
+  }
+}
+
+class QuoteDetails extends StatelessWidget {
+  const QuoteDetails(
+      {Key? key, this.buying, this.quote, this.quotec, this.ontruckerPress})
+      : super(key: key);
+  final Quote? quote;
+  final QuoteC? quotec;
+  final Buying? buying;
+  final Function(Party)? ontruckerPress;
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        if (quote != null)
+          Container(
+              margin: const EdgeInsets.all(25),
+              child: ViewQuote(quote: quote!)),
+        if (quotec != null)
+          Container(
+              margin: const EdgeInsets.all(25),
+              child: ViewQuotec(quoteC: quotec!)),
+        if (buying != null)
+          Column(
+            children: [
+              const Text(
+                "Buyings",
+                style: TextStyle(fontWeight: FontWeight.w900, fontSize: 22),
+              ),
+              ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: quote?.trucker.length,
+                  itemBuilder: (context, index) {
+                    return Container(
+                      height: 50,
+                      margin: const EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                          color: const Color.fromARGB(255, 127, 169, 190),
+                          borderRadius: BorderRadius.circular(20)),
+                      child: Material(
+                        type: MaterialType.transparency,
+                        child: InkWell(
+                          onTap: () {
+                            ontruckerPress
+                                ?.call(quote?.trucker[index] as Party);
+                          },
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              Text(
+                                  "   ${quote?.trucker[index].partyName} (${quote?.trucker[index].orgName})\t"),
+                              Text("   ${quote?.trucker[index].emailId}\t"),
+                              Text("   ${quote?.trucker[index].phone}\t"
+                                  .padRight(12)),
+                              SizedBox(
+                                  width: 100,
+                                  child: Text(
+                                    buying!.buyings[index].toString(),
+                                  ))
+                            ],
+                          ),
+                        ),
+                      ),
+                    );
+                  }),
+            ],
+          )
+      ],
     );
   }
 }
