@@ -25,6 +25,7 @@ import 'package:svojasweb/repositories/quotec_repostiory.dart';
 import 'package:svojasweb/services/preferences.dart';
 import 'package:svojasweb/views/bol_view.dart';
 import 'package:svojasweb/views/buyings_received_view.dart';
+import 'package:svojasweb/views/confirm_shipments.dart';
 import 'package:svojasweb/views/confirmed_quote_view.dart';
 import 'package:svojasweb/views/create_party_view.dart';
 import 'package:svojasweb/views/create_quote_view.dart';
@@ -136,6 +137,12 @@ class MyApp extends StatelessWidget {
                         settings: settings,
                         builder: (context) => const ConfirmedQuote(
                               title: 'Confirmed Quote',
+                            ));
+                  case ConfirmShipments.routeName:
+                    return CupertinoPageRoute<bool>(
+                        settings: settings,
+                        builder: (context) => const ConfirmShipments(
+                              title: 'Confirm Shipments',
                             ));
                   case DashboardView.routeName:
                     return CupertinoPageRoute(
