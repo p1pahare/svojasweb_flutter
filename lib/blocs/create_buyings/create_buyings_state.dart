@@ -19,7 +19,8 @@ class CreateBuyingSuccess extends CreateBuyingsState {
 }
 
 class CreatePageSuccess extends CreateBuyingsState {
-  CreatePageSuccess({this.buying});
-
+  CreatePageSuccess({this.buying, this.quotec, this.quote});
+  final Quote? quote;
+  final QuoteC? quotec;
   final Buying? buying;
 }

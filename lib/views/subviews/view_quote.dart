@@ -36,7 +36,10 @@ class ViewQuote extends StatelessWidget {
             Container(
                 decoration: BoxDecoration(
                     border: Border.all(color: Colors.white, width: 1.7)),
-                child: ViewParty(party: quote.party.first)),
+                child: ViewParty(
+                  party: quote.party.first,
+                  nameOnTop: true,
+                )),
           KeyValueView(skey: "type of Move", value: quote.typeOfMove),
           KeyValueView(skey: "Transit Type", value: quote.transitType),
           if (quote.pickupRamp != null)

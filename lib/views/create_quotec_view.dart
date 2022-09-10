@@ -48,7 +48,7 @@ class _CreateQuotecViewState extends State<CreateQuotecView> {
 
   void initQuote() {
     quotecFields = {
-      Values.quote_number: TextFieldEntry(
+      Values.quote_id: TextFieldEntry(
           fieldType: FieldType.autocomplete,
           label: 'Select Quote Id',
           keyId: Values.quote_number,

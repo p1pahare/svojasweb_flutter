@@ -22,14 +22,7 @@ class ViewQuotec extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
           ),
-          if (quoteC.quote.isEmpty)
-            SizedBox(
-                width: MediaQuery.of(context).size.width,
-                child: const Text(
-                  "The Quote was removed from the main Data",
-                  textAlign: TextAlign.center,
-                ))
-          else
+          if (quoteC.quote.isNotEmpty)
             Container(
                 decoration: BoxDecoration(
                   border: Border.all(color: Colors.white, width: 1.7),

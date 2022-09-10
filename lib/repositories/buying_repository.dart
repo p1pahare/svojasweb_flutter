@@ -8,10 +8,10 @@ import 'package:svojasweb/models/api_response.dart';
 import 'values.dart';
 
 class BuyingRepository {
-  Future<ApiResponse> getAllQuotecs({int pageNumber = 1}) async {
+  Future<ApiResponse> getAllBuyings({int pageNumber = 1}) async {
     try {
       final http.Response response = await http.get(
-        Uri.parse(Values.base_url + Values.quotecs + '?page=$pageNumber'),
+        Uri.parse(Values.base_url + Values.buyings + '?page=$pageNumber'),
       );
 
       if (response.statusCode == 200) {
@@ -36,11 +36,11 @@ class BuyingRepository {
     }
   }
 
-  Future<ApiResponse> createQuoteC(Map<String, dynamic> quote) async {
+  Future<ApiResponse> createBuying(Map<String, dynamic> buying) async {
     try {
       final http.Response response = await http.post(
-          Uri.parse(Values.base_url + Values.quotec),
-          body: jsonEncode(quote));
+          Uri.parse(Values.base_url + Values.buying),
+          body: jsonEncode(buying));
 
       if (response.statusCode == 200) {
         final String body = response.body;
@@ -64,20 +64,20 @@ class BuyingRepository {
     }
   }
 
-  Future<ApiResponse> editQuoteC(Map<String, dynamic> quoteC) async {
+  Future<ApiResponse> editBuying(Map<String, dynamic> buying) async {
     try {
-      String quoteCid = quoteC['_id'];
-      quoteC.remove(Values.sid);
+      String buyingId = buying['_id'];
+      buying.remove(Values.sid);
       final http.Response response = await http.put(
-          Uri.parse(Values.base_url + Values.quotec + '/' + quoteCid),
-          body: jsonEncode(quoteC));
+          Uri.parse(Values.base_url + Values.buying + '/' + buyingId),
+          body: jsonEncode(buying));
 
       if (response.statusCode == 200) {
         final String body = response.body;
         log(body);
         return ApiResponse.fromJson({
           "status": true,
-          "message": "Quote Confirmation was updated successfully",
+          "message": "Buying was updated successfully",
         });
       } else {
         String message = response.body;
@@ -96,10 +96,10 @@ class BuyingRepository {
     }
   }
 
-  Future<ApiResponse> getQuoteC(String? sId) async {
+  Future<ApiResponse> getBuying(String? sId) async {
     try {
       final http.Response response = await http.get(
-        Uri.parse(Values.base_url + Values.quotec + '/' + sId!),
+        Uri.parse(Values.base_url + Values.buying + '/' + sId!),
       );
 
       if (response.statusCode == 200) {
@@ -124,10 +124,10 @@ class BuyingRepository {
     }
   }
 
-  Future<ApiResponse> deleteQuoteC(String? sId) async {
+  Future<ApiResponse> deleteBuying(String? sId) async {
     try {
       final http.Response response = await http.delete(
-        Uri.parse(Values.base_url + Values.quotec + '/' + sId!),
+        Uri.parse(Values.base_url + Values.buying + '/' + sId!),
       );
 
       if (response.statusCode == 200) {
@@ -135,7 +135,7 @@ class BuyingRepository {
         log(body);
         return ApiResponse.fromJson({
           "status": true,
-          "message": "The quote confirmation was deleted successfully",
+          "message": "The Buying was deleted successfully",
         });
       } else {
         String message = response.reasonPhrase ?? 'Something Went Wrong';
@@ -154,11 +154,12 @@ class BuyingRepository {
     }
   }
 
-  Future<ApiResponse> getQuotecByQuoteID(String? quoteID) async {
+  Future<ApiResponse> getBuyingByQuoteID(String? quoteID) async {
     try {
-      final http.Response response = await http.get(
-        Uri.parse(Values.base_url + Values.quote + '/quote_id/' + quoteID!),
-      );
+      final http.Response response = await http.get(Uri.https(
+          Values.base_url.split('/')[2],
+          'api/${Values.buying}',
+          {if (quoteID != null) 'quote_id': quoteID}));
 
       if (response.statusCode == 200) {
         final String body = response.body;

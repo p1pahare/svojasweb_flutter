@@ -20,7 +20,7 @@ class ViewParty extends StatelessWidget {
             width: MediaQuery.of(context).size.width,
             child: Text(
               nameOnTop ? party.partyName! : "Party Details",
-              style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 22),
+              style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 20),
               textAlign: TextAlign.center,
             ),
           ),

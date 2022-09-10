@@ -10,6 +10,8 @@ class Values {
   static const quotecs = 'quotecs';
   static const party = 'party';
   static const quote = 'quote';
+  static const buying = 'buying';
+  static const buyings = 'buyings';
   static const quote_number = 'quote_number';
   static const party_id = "party_id";
   static const party_name = "party_name";

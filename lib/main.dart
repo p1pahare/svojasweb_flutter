@@ -1,14 +1,18 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:svojasweb/blocs/buying/buying_cubit.dart';
+import 'package:svojasweb/blocs/create_buyings/create_buyings_cubit.dart';
 import 'package:svojasweb/blocs/create_party/create_party_cubit.dart';
 import 'package:svojasweb/blocs/create_quote/create_quote_cubit.dart';
 import 'package:svojasweb/blocs/create_quotec/create_quotec_cubit.dart';
+import 'package:svojasweb/blocs/create_shipment/create_shipment_cubit.dart';
 import 'package:svojasweb/blocs/dashboard/dashboard_cubit.dart';
 import 'package:svojasweb/blocs/login/login_cubit.dart';
 import 'package:svojasweb/blocs/party/party_cubit.dart';
 import 'package:svojasweb/blocs/quote/quote_cubit.dart';
 import 'package:svojasweb/blocs/quotec/quotec_cubit.dart';
+import 'package:svojasweb/blocs/shipment/shipment_cubit.dart';
 import 'package:svojasweb/models/party.dart';
 import 'package:svojasweb/models/quote.dart';
 import 'package:svojasweb/models/quotec.dart';
@@ -20,6 +24,8 @@ import 'package:svojasweb/repositories/quote_repository.dart';
 import 'package:svojasweb/repositories/quotec_repostiory.dart';
 import 'package:svojasweb/services/preferences.dart';
 import 'package:svojasweb/views/bol_view.dart';
+import 'package:svojasweb/views/buyings_received_view.dart';
+import 'package:svojasweb/views/confirmed_quote_view.dart';
 import 'package:svojasweb/views/create_party_view.dart';
 import 'package:svojasweb/views/create_quote_view.dart';
 import 'package:svojasweb/views/create_quotec_view.dart';
@@ -53,6 +59,10 @@ class MyApp extends StatelessWidget {
     GetIt.I.registerSingleton(CreateQuoteCubit());
     GetIt.I.registerSingleton(QuotecCubit());
     GetIt.I.registerSingleton(CreateQuotecCubit());
+    GetIt.I.registerSingleton(CreateBuyingsCubit());
+    GetIt.I.registerSingleton(CreateShipmentCubit());
+    GetIt.I.registerSingleton(BuyingCubit());
+    GetIt.I.registerSingleton(ShipmentCubit());
   }
 
   @override
@@ -114,6 +124,18 @@ class MyApp extends StatelessWidget {
                         builder: (context) => CreateQuotecView(
                               quotec: customer,
                               title: 'Edit Quote to Customer',
+                            ));
+                  case BuyingsReceived.routeName:
+                    return CupertinoPageRoute<bool>(
+                        settings: settings,
+                        builder: (context) => const BuyingsReceived(
+                              title: 'Buyings Received',
+                            ));
+                  case ConfirmedQuote.routeName:
+                    return CupertinoPageRoute<bool>(
+                        settings: settings,
+                        builder: (context) => const ConfirmedQuote(
+                              title: 'Confirmed Quote',
                             ));
                   case DashboardView.routeName:
                     return CupertinoPageRoute(

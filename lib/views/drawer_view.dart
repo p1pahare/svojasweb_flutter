@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:svojasweb/services/preferences.dart';
 import 'package:svojasweb/views/bol_view.dart';
+import 'package:svojasweb/views/buyings_received_view.dart';
+import 'package:svojasweb/views/confirmed_quote_view.dart';
 import 'package:svojasweb/views/create_party_view.dart';
 import 'package:svojasweb/views/create_quote_view.dart';
 import 'package:svojasweb/views/create_quotec_view.dart';
@@ -68,7 +70,7 @@ class DrawerView extends StatelessWidget {
               if (!isDashboard) {
                 Navigator.pop(context);
               }
-              Navigator.popAndPushNamed(context, CreateQuotecView.routeName);
+              Navigator.popAndPushNamed(context, BuyingsReceived.routeName);
             },
           ),
           ListTile(
@@ -78,7 +80,7 @@ class DrawerView extends StatelessWidget {
               if (!isDashboard) {
                 Navigator.pop(context);
               }
-              Navigator.popAndPushNamed(context, CreateQuotecView.routeName);
+              Navigator.popAndPushNamed(context, ConfirmedQuote.routeName);
             },
           ),
           ListTile(
