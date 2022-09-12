@@ -68,6 +68,7 @@ class CquoteRepository {
     try {
       String cquoteId = quote['_id'];
       quote.remove(Values.sid);
+      quote.remove(Values.quote_id);
       final http.Response response = await http.put(
           Uri.parse(Values.base_url + Values.cquote + '/' + cquoteId),
           body: jsonEncode(quote));

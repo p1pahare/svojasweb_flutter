@@ -28,34 +28,36 @@ class Cquote {
     required this.ftlCarrierName,
     required this.type,
   });
-  late final String sid;
-  late final String quoteId;
-  late final String container;
-  late final String mbl;
-  late final String pickupTerminal;
-  late final String eta;
-  late final String lfd;
-  late final String gateOut;
-  late final String delivery;
-  late final String emptyGateIn;
-  late final String emptyReturnTerminal;
-  late final String emptyPickupTerminal;
-  late final String booking;
-  late final String erd;
-  late final String lrd;
-  late final String etd;
-  late final String emptyGateOut;
-  late final String awb;
-  late final String pickupHandlingAgent;
-  late final String deliveryHandlingAgent;
-  late final String pickup;
-  late final String bookingCutoff;
-  late final String bol;
-  late final String carrierReferenceNo;
-  late final String ltlCarrierName;
-  late final String ftlCarrierName;
-  late final String type;
-
+  late final String? sid;
+  late final String? quoteId;
+  late final String? container;
+  late final String? mbl;
+  late final String? pickupTerminal;
+  late final String? eta;
+  late final String? lfd;
+  late final String? gateOut;
+  late final String? delivery;
+  late final String? emptyGateIn;
+  late final String? emptyReturnTerminal;
+  late final String? emptyPickupTerminal;
+  late final String? booking;
+  late final String? erd;
+  late final String? lrd;
+  late final String? etd;
+  late final String? emptyGateOut;
+  late final String? awb;
+  late final String? pickupHandlingAgent;
+  late final String? deliveryHandlingAgent;
+  late final String? pickup;
+  late final String? bookingCutoff;
+  late final String? bol;
+  late final String? carrierReferenceNo;
+  late final String? ltlCarrierName;
+  late final String? ftlCarrierName;
+  late final String? type;
+  late final String? loading;
+  late final String? fullReturn;
+  late final String? fullReturnTerminal;
   Cquote.fromJson(Map<String, dynamic> json) {
     sid = json['_id'];
     quoteId = json['quote_id'];
@@ -84,10 +86,13 @@ class Cquote {
     ltlCarrierName = json['ltl_carrier_name'];
     ftlCarrierName = json['ftl_carrier_name'];
     type = json['type'];
+    loading = json['loading'];
+    fullReturn = json['full_return'];
+    fullReturnTerminal = json['full_return_terminal'];
   }
 
-  Map<String, dynamic> toJson() {
-    final _data = <String, dynamic>{};
+  Map<String?, dynamic> toJson() {
+    final _data = <String?, dynamic>{};
     _data['_id'] = sid;
     _data['quote_id'] = quoteId;
     _data['container'] = container;
@@ -115,6 +120,9 @@ class Cquote {
     _data['ltl_carrier_name'] = ltlCarrierName;
     _data['ftl_carrier_name'] = ftlCarrierName;
     _data['type'] = type;
+    _data['loading'] = loading;
+    _data['full_return'] = fullReturn;
+    _data['full_return_terminal'] = fullReturnTerminal;
     return _data;
   }
 }
