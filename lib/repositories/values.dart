@@ -9,6 +9,7 @@ class Values {
   static const quotes = 'quotes';
   static const quotecs = 'quotecs';
   static const party = 'party';
+  static const port = 'port';
   static const cquote = 'cquote';
   static const cquotes = 'cquotes';
   static const quote = 'quote';
