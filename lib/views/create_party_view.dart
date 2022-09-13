@@ -55,6 +55,7 @@ class _CreatePartyViewState extends State<CreatePartyView> {
           break;
         case 'trucker':
           partyFields[Values.scac]?.visible = true;
+          partyFields[Values.port]?.visible = true;
           partyFields[Values.states]?.visible = true;
           partyFields[Values.haz]?.visible = true;
           partyFields[Values.overweight]?.visible = true;
@@ -75,6 +76,9 @@ class _CreatePartyViewState extends State<CreatePartyView> {
         default:
           dev.log("value error");
       }
+    }
+    if (key == Values.port) {
+      partyFields[Values.port]?.controller?.text = value.toString();
     }
     if (key.toLowerCase() == Values.delivery_appointment_needed &&
         value?.toLowerCase() != 'select') {
@@ -97,6 +101,22 @@ class _CreatePartyViewState extends State<CreatePartyView> {
             .requestFocus(fields.values.toList()[x].focusnode);
         break;
       }
+    }
+  }
+
+  String servertoFormatTime(String? datee) {
+    if (datee == null || datee.isEmpty) {
+      return '';
+    } else {
+      return DateFormat("h:mm a").format(DateTime.parse(datee));
+    }
+  }
+
+  String servertoFormatDate(String? datee) {
+    if (datee == null || datee.isEmpty) {
+      return '';
+    } else {
+      return DateFormat.yMMMd().format(DateTime.parse(datee));
     }
   }
 
@@ -145,6 +165,15 @@ class _CreatePartyViewState extends State<CreatePartyView> {
           keyId: Values.address,
           visible: false,
           controller: TextEditingController(text: widget.party?.address)),
+
+      Values.port: TextFieldEntry(
+          label: 'Port',
+          keyId: Values.port,
+          visible: false,
+          fieldType: FieldType.autocomplete,
+          optionListing: (textValue) =>
+              GetIt.I<CreatePartyCubit>().getPorts(textValue),
+          controller: TextEditingController(text: widget.party?.port)),
 
       Values.city: TextFieldEntry(
           label: 'City',
@@ -255,8 +284,8 @@ class _CreatePartyViewState extends State<CreatePartyView> {
           fieldType: FieldType.date,
           isTime: true,
           visible: false,
-          controller:
-              TextEditingController(text: widget.party?.warehouseTimingsOpen)),
+          controller: TextEditingController(
+              text: servertoFormatTime(widget.party?.warehouseTimingsOpen))),
 
       Values.warehouse_timings_close: TextFieldEntry(
           label: 'Warehouse Timings (Close)',
@@ -264,15 +293,15 @@ class _CreatePartyViewState extends State<CreatePartyView> {
           fieldType: FieldType.date,
           isTime: true,
           visible: false,
-          controller:
-              TextEditingController(text: widget.party?.warehouseTimingsClose)),
+          controller: TextEditingController(
+              text: servertoFormatTime(widget.party?.warehouseTimingsClose))),
       Values.insurance_expiry: TextFieldEntry(
           label: 'Insurance Expiry',
           keyId: Values.insurance_expiry,
           fieldType: FieldType.date,
           visible: false,
-          controller:
-              TextEditingController(text: widget.party?.insuranceExpiry)),
+          controller: TextEditingController(
+              text: servertoFormatDate(widget.party?.insuranceExpiry))),
       Values.motor_carrier: TextFieldEntry(
           label: 'Motor Carrier',
           keyId: Values.motor_carrier,
@@ -536,11 +565,17 @@ class _CreatePartyViewState extends State<CreatePartyView> {
                                                 : element.value.controller?.text
                                       else if (element.value.fieldType ==
                                           FieldType.date)
-                                        element.key: DateFormat("h:mm a")
-                                            .parse(element
-                                                    .value.controller?.text ??
-                                                '12 AM')
-                                            .toIso8601String()
+                                        element.key: element.value.isTime
+                                            ? DateFormat("h:mm a")
+                                                .parse(element.value.controller
+                                                        ?.text ??
+                                                    '12 AM')
+                                                .toIso8601String()
+                                            : DateFormat.yMMMd()
+                                                .parse(element.value.controller
+                                                        ?.text ??
+                                                    'Jul 23Retr, 2022')
+                                                .toIso8601String()
                                       else
                                         element.key:
                                             element.value.controller?.text

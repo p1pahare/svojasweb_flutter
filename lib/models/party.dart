@@ -14,6 +14,7 @@ class Party {
     required this.extraContacts,
     required this.scac,
     required this.states,
+    required this.port,
     required this.haz,
     required this.overweight,
     required this.oog,
@@ -33,6 +34,7 @@ class Party {
   late final String? partyType;
   late final String? address;
   late final String? city;
+  late final String? port;
   late final String? state;
   late final String? zipCode;
   late final String? phone;
@@ -59,6 +61,7 @@ class Party {
     partyType = json['party_type'];
     address = json['address'];
     city = json['city'];
+    port = json['port'];
     zipCode = json['zip_code'].toString();
     state = json['state'];
     phone = json['phone'] is String ? json['phone'] : json['phone'].toString();
@@ -126,6 +129,7 @@ class Party {
     _data['haz'] = haz;
     _data['overweight'] = overweight;
     _data['oog'] = oog;
+    _data['port'] == port;
     _data['reefer'] = reefer;
     _data['transload_service'] = transloadService;
     _data['insurance_expiry'] = insuranceExpiry;

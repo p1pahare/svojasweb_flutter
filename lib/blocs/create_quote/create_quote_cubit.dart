@@ -3,8 +3,10 @@ import 'package:get_it/get_it.dart';
 import 'package:meta/meta.dart';
 import 'package:svojasweb/models/api_response.dart';
 import 'package:svojasweb/models/party.dart';
+import 'package:svojasweb/models/port.dart';
 import 'package:svojasweb/repositories/basic_repository.dart';
 import 'package:svojasweb/repositories/party_repository.dart';
+import 'package:svojasweb/repositories/port_repository.dart';
 import 'package:svojasweb/repositories/quote_repository.dart';
 
 part 'create_quote_state.dart';
@@ -57,12 +59,13 @@ class CreateQuoteCubit extends Cubit<CreateQuoteState> {
     }
   }
 
-  Future<Iterable<Party>> getParties(String partyName, String partyType) async {
+  Future<Iterable<Party>> getParties(
+      String partyName, String partyType, String port) async {
     if (partyName.isEmpty) {
       return [];
     }
     final ApiResponse apiResponse = await GetIt.I<PartyRepository>()
-        .getPartyByName(partyName: partyName, partyType: partyType);
+        .getPartyByName(partyName: partyName, partyType: partyType, port: port);
     if (apiResponse.status) {
       return (apiResponse.data as List<dynamic>)
           .map((e) => Party.fromJson(e))
@@ -87,5 +90,17 @@ class CreateQuoteCubit extends Cubit<CreateQuoteState> {
       }
     }
     return realTruckers;
+  }
+
+  Future<Iterable<Port>> getPorts(String portName, String portType) async {
+    final ApiResponse apiResponse = await GetIt.I<PortRepository>()
+        .getPortByFields(portName: portName, portType: portType);
+    if (apiResponse.status) {
+      return (apiResponse.data as List<dynamic>)
+          .map((e) => Port.fromJson(e))
+          .toList();
+    } else {
+      return [];
+    }
   }
 }

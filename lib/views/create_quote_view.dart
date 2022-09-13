@@ -217,7 +217,14 @@ class _CreateQuoteViewState extends State<CreateQuoteView> {
           quoteFields[Values.transit_type]?.visible = true;
         }
         break;
+      case Values.delivery_ramp:
+        quoteFields[Values.delivery_ramp]?.controller?.text = value.toString();
+        break;
+      case Values.pickup_ramp:
+        quoteFields[Values.pickup_ramp]?.controller?.text = value.toString();
+        break;
       case Values.weight:
+
       case Values.package_no:
         double grossWeight = 0;
         for (final map in packages) {
@@ -232,6 +239,16 @@ class _CreateQuoteViewState extends State<CreateQuoteView> {
       default:
     }
     setState(() {});
+  }
+
+  String getPortValue() {
+    if (quoteFields[Values.pickup_ramp]?.visible ?? false) {
+      return "${quoteFields[Values.pickup_ramp]?.controller?.text}";
+    } else if (quoteFields[Values.delivery_ramp]?.visible ?? false) {
+      return "${quoteFields[Values.delivery_ramp]?.controller?.text}";
+    } else {
+      return "";
+    }
   }
 
   void focusOnNextVisible(int index, Map<String, TextFieldEntry> fields) {
@@ -286,30 +303,20 @@ class _CreateQuoteViewState extends State<CreateQuoteView> {
               ? 'Pickup Airport'
               : 'Pickup Port',
           keyId: Values.pickup_ramp,
-          fieldType: FieldType.dropdown,
+          fieldType: FieldType.autocomplete,
           visible: false,
-          options: [
-            'Select',
-            'Entry 1',
-            'Entry 2',
-            'Entry 3',
-            'Entry 4',
-          ],
+          optionListing: (textValue) => GetIt.I<CreateQuoteCubit>().getPorts(
+              textValue, quoteFields[Values.type_of_move]!.controller!.text),
           controller: TextEditingController(text: widget.quote?.pickupRamp)),
       Values.delivery_ramp: TextFieldEntry(
           label: quoteFields[Values.type_of_move]?.controller?.text == 'Air'
               ? 'Delivery Airport'
               : 'Delivery Port',
           keyId: Values.delivery_ramp,
-          fieldType: FieldType.dropdown,
+          fieldType: FieldType.autocomplete,
           visible: false,
-          options: [
-            'Select',
-            'Entry 1',
-            'Entry 2',
-            'Entry 3',
-            'Entry 4',
-          ],
+          optionListing: (textValue) => GetIt.I<CreateQuoteCubit>().getPorts(
+              textValue, quoteFields[Values.type_of_move]!.controller!.text),
           controller: TextEditingController(text: widget.quote?.deliveryRamp)),
       Values.delivery_address: TextFieldEntry(
           label: 'Delivery Address',
@@ -361,7 +368,7 @@ class _CreateQuoteViewState extends State<CreateQuoteView> {
           controller: TextEditingController(text: widget.quote?.commodity)),
       Values.size_of_container: TextFieldEntry(
           label: 'Size of Container',
-          keyId: Values.delivery_ramp,
+          keyId: Values.size_of_container,
           fieldType: FieldType.dropdown,
           visible: false,
           options: [
@@ -461,8 +468,8 @@ class _CreateQuoteViewState extends State<CreateQuoteView> {
           keyId: Values.truckers,
           enabled: true,
           object: [],
-          optionListing: (textValue) =>
-              GetIt.I<CreateQuoteCubit>().getParties(textValue, 'Trucker'),
+          optionListing: (textValue) => GetIt.I<CreateQuoteCubit>()
+              .getParties(textValue, 'Trucker', getPortValue()),
           controller: TextEditingController(
               text: (widget.quote?.truckers?.isNotEmpty) ?? false
                   ? widget.quote?.truckers.toString()
@@ -475,8 +482,8 @@ class _CreateQuoteViewState extends State<CreateQuoteView> {
           object: (widget.quote?.party.isEmpty ?? false)
               ? null
               : widget.quote?.party.first,
-          optionListing: (textValue) =>
-              GetIt.I<CreateQuoteCubit>().getParties(textValue, 'Customer'),
+          optionListing: (textValue) => GetIt.I<CreateQuoteCubit>()
+              .getParties(textValue, 'Customer', getPortValue()),
           controller: TextEditingController(
               text: (widget.quote?.party.isNotEmpty) ?? false
                   ? widget.quote?.party.first.partyName

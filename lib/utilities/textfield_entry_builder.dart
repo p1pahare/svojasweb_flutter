@@ -67,6 +67,7 @@ class TextFieldEntryBuilder extends StatelessWidget {
                       textFieldEntry?.object = object;
                     }
                     focusHandler!(textFieldEntry!.isLast);
+
                     onValueSelected!(
                         textFieldEntry?.keyId, getNameFromObject(object));
                   },

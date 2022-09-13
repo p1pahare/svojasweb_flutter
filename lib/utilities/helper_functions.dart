@@ -1,5 +1,6 @@
 import 'package:svojasweb/models/buying.dart';
 import 'package:svojasweb/models/party.dart';
+import 'package:svojasweb/models/port.dart';
 import 'package:svojasweb/models/quote.dart';
 
 String getNameFromObject(dynamic object) {
@@ -11,7 +12,9 @@ String getNameFromObject(dynamic object) {
               ? object.key
               : object is Buying
                   ? object.quoteId
-                  : "";
+                  : object is Port
+                      ? object.portName
+                      : "";
 }
 
 extension Better on bool {

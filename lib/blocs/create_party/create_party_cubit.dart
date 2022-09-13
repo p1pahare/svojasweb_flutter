@@ -2,8 +2,10 @@ import 'package:bloc/bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:meta/meta.dart';
 import 'package:svojasweb/models/api_response.dart';
+import 'package:svojasweb/models/port.dart';
 import 'package:svojasweb/repositories/basic_repository.dart';
 import 'package:svojasweb/repositories/party_repository.dart';
+import 'package:svojasweb/repositories/port_repository.dart';
 
 part 'create_party_state.dart';
 
@@ -52,6 +54,18 @@ class CreatePartyCubit extends Cubit<CreatePartyState> {
               "Party Was Updated Successfully. You can close the page now."));
     } else {
       emit(CreatePartyFailed(errorMessage: apiResponse.message));
+    }
+  }
+
+  Future<Iterable<Port>> getPorts(String portName) async {
+    final ApiResponse apiResponse =
+        await GetIt.I<PortRepository>().getPortByFields(portName: portName);
+    if (apiResponse.status) {
+      return (apiResponse.data as List<dynamic>)
+          .map((e) => Port.fromJson(e))
+          .toList();
+    } else {
+      return [];
     }
   }
 }

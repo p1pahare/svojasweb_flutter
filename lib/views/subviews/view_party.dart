@@ -30,6 +30,8 @@ class ViewParty extends StatelessWidget {
           KeyValueView(skey: "Company Name", value: party.orgName!),
           KeyValueView(skey: "Email ID", value: party.emailId!),
           KeyValueView(skey: "Phone", value: party.phone!),
+          if (party.port != null && party.partyType == 'Trucker')
+            KeyValueView(skey: "Port", value: party.port!),
           KeyValueView(skey: "Address", value: party.address!),
           KeyValueView(skey: "City", value: party.city!),
           KeyValueView(skey: "State", value: party.state!),
