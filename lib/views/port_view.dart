@@ -7,13 +7,13 @@ import 'package:get_it/get_it.dart';
 import 'package:svojasweb/blocs/port/port_cubit.dart';
 import 'package:svojasweb/models/api_response.dart';
 import 'package:svojasweb/models/port.dart';
-import 'package:svojasweb/repositories/party_repository.dart';
-import 'package:svojasweb/views/create_party_view.dart';
+import 'package:svojasweb/repositories/port_repository.dart';
+import 'package:svojasweb/views/create_port_view.dart';
 import 'package:svojasweb/views/drawer_view.dart';
 
 class PortView extends StatefulWidget {
   const PortView({Key? key, required this.title}) : super(key: key);
-  static const routeName = '/PartyView';
+  static const routeName = '/PortView';
   final String title;
 
   @override
@@ -134,7 +134,7 @@ class _PortViewState extends State<PortView> {
         mini: true,
         onPressed: () async {
           final bool? change =
-              await Navigator.pushNamed(context, CreatePartyView.routeName);
+              await Navigator.pushNamed(context, CreatePortView.routeName);
           if (change ?? false) {
             loadPage();
           }
@@ -149,7 +149,7 @@ class _PortViewState extends State<PortView> {
         context: context,
         builder: (context) {
           return AlertDialog(
-              title: const Text("Delete Party"),
+              title: const Text("Delete Port"),
               actions: [
                 OutlinedButton(
                     style: ButtonStyle(
@@ -157,7 +157,7 @@ class _PortViewState extends State<PortView> {
                             const BorderSide(color: Colors.blueGrey))),
                     onPressed: () async {
                       ApiResponse apiResponse =
-                          await GetIt.I<PartyRepository>().deleteParty(sId);
+                          await GetIt.I<PortRepository>().deletePort(sId);
                       Navigator.pop(context, apiResponse.status);
                     },
                     child: const Text("Yes")),
@@ -168,7 +168,7 @@ class _PortViewState extends State<PortView> {
                     child: const Text("Cancel")),
               ],
               content: const Text(
-                "Do you really want to delete this Party",
+                "Do you really want to delete this Port",
               ));
         });
     if (delete != null && delete) {

@@ -33,7 +33,7 @@ class PortCubit extends Cubit<PortState> {
 
       emit(CreatePortSuccess(
           successMessage:
-              "Party Was Created Successfully. You can close the page now."));
+              "Port Was Created Successfully. You can close the page now."));
     } else {
       emit(CreatePortFailed(errorMessage: apiResponse.message));
     }

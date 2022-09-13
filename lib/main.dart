@@ -10,6 +10,7 @@ import 'package:svojasweb/blocs/create_shipment/create_shipment_cubit.dart';
 import 'package:svojasweb/blocs/dashboard/dashboard_cubit.dart';
 import 'package:svojasweb/blocs/login/login_cubit.dart';
 import 'package:svojasweb/blocs/party/party_cubit.dart';
+import 'package:svojasweb/blocs/port/port_cubit.dart';
 import 'package:svojasweb/blocs/quote/quote_cubit.dart';
 import 'package:svojasweb/blocs/quotec/quotec_cubit.dart';
 import 'package:svojasweb/blocs/shipment/shipment_cubit.dart';
@@ -20,6 +21,7 @@ import 'package:svojasweb/repositories/basic_repository.dart';
 import 'package:svojasweb/repositories/buying_repository.dart';
 import 'package:svojasweb/repositories/cquote_repository.dart';
 import 'package:svojasweb/repositories/party_repository.dart';
+import 'package:svojasweb/repositories/port_repository.dart';
 import 'package:svojasweb/repositories/quote_repository.dart';
 import 'package:svojasweb/repositories/quotec_repostiory.dart';
 import 'package:svojasweb/services/preferences.dart';
@@ -28,11 +30,13 @@ import 'package:svojasweb/views/buyings_received_view.dart';
 import 'package:svojasweb/views/confirm_shipments.dart';
 import 'package:svojasweb/views/confirmed_quote_view.dart';
 import 'package:svojasweb/views/create_party_view.dart';
+import 'package:svojasweb/views/create_port_view.dart';
 import 'package:svojasweb/views/create_quote_view.dart';
 import 'package:svojasweb/views/create_quotec_view.dart';
 import 'package:svojasweb/views/dashboard_view.dart';
 import 'package:svojasweb/views/login_view.dart';
 import 'package:svojasweb/views/party_view.dart';
+import 'package:svojasweb/views/port_view.dart';
 import 'package:svojasweb/views/quote_view.dart';
 import 'package:svojasweb/views/quotec_view.dart';
 import 'package:flutter_web_plugins/url_strategy.dart';
@@ -64,6 +68,8 @@ class MyApp extends StatelessWidget {
     GetIt.I.registerSingleton(CreateShipmentCubit());
     GetIt.I.registerSingleton(BuyingCubit());
     GetIt.I.registerSingleton(ShipmentCubit());
+    GetIt.I.registerSingleton(PortCubit());
+    GetIt.I.registerSingleton(PortRepository());
   }
 
   @override
@@ -97,6 +103,12 @@ class MyApp extends StatelessWidget {
                         builder: (context) => CreatePartyView(
                               party: customer,
                               title: 'Edit Party',
+                            ));
+                     case CreatePortView.routeName:
+                    return CupertinoPageRoute<bool>(
+                        settings: settings,
+                        builder: (context) => const CreatePortView(
+                              title: 'Create a Port',
                             ));
                   case CreateQuoteView.routeName:
                     return CupertinoPageRoute<bool>(
@@ -155,6 +167,12 @@ class MyApp extends StatelessWidget {
                         settings: settings,
                         builder: (context) => const PartyView(
                               title: 'Party Management',
+                            ));
+                  case PortView.routeName:
+                    return CupertinoPageRoute(
+                        settings: settings,
+                        builder: (context) => const PortView(
+                              title: 'Port Management',
                             ));
                   case QuoteView.routeName:
                     return CupertinoPageRoute(

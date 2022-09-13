@@ -6,6 +6,7 @@ import 'package:svojasweb/views/buyings_received_view.dart';
 import 'package:svojasweb/views/confirm_shipments.dart';
 import 'package:svojasweb/views/confirmed_quote_view.dart';
 import 'package:svojasweb/views/create_party_view.dart';
+import 'package:svojasweb/views/create_port_view.dart';
 import 'package:svojasweb/views/create_quote_view.dart';
 import 'package:svojasweb/views/create_quotec_view.dart';
 import 'package:svojasweb/views/dashboard_view.dart';
@@ -92,6 +93,16 @@ class DrawerView extends StatelessWidget {
                 Navigator.pop(context);
               }
               Navigator.popAndPushNamed(context, ConfirmShipments.routeName);
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.api),
+            title: const Text('Port Management'),
+            onTap: () {
+              if (!isDashboard) {
+                Navigator.pop(context);
+              }
+              Navigator.popAndPushNamed(context, CreatePortView.routeName);
             },
           ),
           ListTile(

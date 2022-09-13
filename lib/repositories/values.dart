@@ -113,4 +113,8 @@ class Values {
   static const ltl_carrier_name = 'ltl_carrier_name';
   static const ftl_carrier_name = 'ftl_carrier_name';
   static const type = 'type';
+  static const port_name = 'port_name';
+  static const port_type = 'port_type';
+  static const state_name = 'state_name';
+  static const port_code = 'port_code';
 }
