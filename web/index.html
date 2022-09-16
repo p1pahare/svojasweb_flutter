@@ -36,9 +36,13 @@
   <!-- This script installs service_worker.js to provide PWA functionality to
        application. For more information, see:
        https://developers.google.com/web/fundamentals/primers/service-workers -->
+       <script  src="html2pdf.bundle.min.js"></script>  
   <script>
     var serviceWorkerVersion = null;
     var scriptLoaded = false;
+    window.converHTMLToPDF = (htmll) => {
+  html2pdf().from(htmll).save()
+}
 
     function loadMainDartJs() {
       if (scriptLoaded) {

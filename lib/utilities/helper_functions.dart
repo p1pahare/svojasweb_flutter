@@ -1,7 +1,15 @@
+@JS()
+library main;
+
 import 'package:svojasweb/models/buying.dart';
 import 'package:svojasweb/models/party.dart';
 import 'package:svojasweb/models/port.dart';
 import 'package:svojasweb/models/quote.dart';
+
+import 'package:js/js.dart';
+
+@JS('window.converHTMLToPDF')
+external void convertHtmlToPdf(dynamic command);
 
 String getNameFromObject(dynamic object) {
   return object is Party
