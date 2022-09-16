@@ -108,16 +108,16 @@ class _ConfirmedQuoteState extends State<ConfirmedQuote> {
                                           mainAxisAlignment:
                                               MainAxisAlignment.spaceAround,
                                           children: [
-                                            Text(
+                                            SelectableText(
                                                 "   ${state.quote?.trucker[index].partyName} (${state.quote?.trucker[index].orgName})\t"),
-                                            Text(
+                                            SelectableText(
                                                 "   ${state.quote?.trucker[index].emailId}\t"),
-                                            Text(
+                                            SelectableText(
                                                 "   ${state.quote?.trucker[index].phone}\t"
                                                     .padRight(12)),
                                             SizedBox(
                                                 width: 100,
-                                                child: Text(
+                                                child: SelectableText(
                                                   state.buying!.buyings[index]
                                                       .toString(),
                                                 ))

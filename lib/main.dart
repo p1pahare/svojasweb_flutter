@@ -94,7 +94,7 @@ class MyApp extends StatelessWidget {
                     return CupertinoPageRoute<bool>(
                         settings: settings,
                         builder: (context) => const CreatePartyView(
-                              title: 'Crate Party',
+                              title: 'Create Party',
                             ));
                   case CreatePartyView.routeNameEdit:
                     Party customer = settings.arguments as Party;
@@ -104,7 +104,7 @@ class MyApp extends StatelessWidget {
                               party: customer,
                               title: 'Edit Party',
                             ));
-                     case CreatePortView.routeName:
+                  case CreatePortView.routeName:
                     return CupertinoPageRoute<bool>(
                         settings: settings,
                         builder: (context) => const CreatePortView(

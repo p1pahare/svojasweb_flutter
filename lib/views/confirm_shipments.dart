@@ -583,14 +583,16 @@ class QuoteDetails extends StatelessWidget {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
-                              Text(
+                              SelectableText(
                                   "   ${quote?.trucker[index].partyName} (${quote?.trucker[index].orgName})\t"),
-                              Text("   ${quote?.trucker[index].emailId}\t"),
-                              Text("   ${quote?.trucker[index].phone}\t"
-                                  .padRight(12)),
+                              SelectableText(
+                                  "   ${quote?.trucker[index].emailId}\t"),
+                              SelectableText(
+                                  "   ${quote?.trucker[index].phone}\t"
+                                      .padRight(12)),
                               SizedBox(
                                   width: 100,
-                                  child: Text(
+                                  child: SelectableText(
                                     buying!.buyings[index].toString(),
                                   ))
                             ],

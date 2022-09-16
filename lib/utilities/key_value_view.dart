@@ -23,7 +23,7 @@ class KeyValueView extends StatelessWidget {
               )),
           Expanded(
               flex: 4,
-              child: Text(
+              child: SelectableText(
                 value,
                 style: const TextStyle(fontWeight: FontWeight.w200),
                 textAlign: TextAlign.end,
