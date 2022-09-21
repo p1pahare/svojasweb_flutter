@@ -96,7 +96,7 @@ class CreateQuoteCubit extends Cubit<CreateQuoteState> {
     final ApiResponse apiResponse = await GetIt.I<PortRepository>()
         .getPortByFields(portName: portName, portType: portType);
     if (apiResponse.status) {
-      return (apiResponse.data as List<dynamic>)
+      return (apiResponse.data['data'] as List<dynamic>)
           .map((e) => Port.fromJson(e))
           .toList();
     } else {

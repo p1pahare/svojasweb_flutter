@@ -13,7 +13,7 @@ class QuoteFailed extends QuoteState {
 }
 
 class QuoteSuccess extends QuoteState {
-  QuoteSuccess({this.quotes});
-
+  QuoteSuccess({this.quotes, this.pageMD});
+  final PageMD? pageMD;
   final List<Quote>? quotes;
 }

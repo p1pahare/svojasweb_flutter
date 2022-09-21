@@ -136,33 +136,6 @@ class _QuoteViewState extends State<QuoteView> {
             loadModel(context, state.quotes!);
             return Column(
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    if (GetIt.I<QuoteCubit>().isPrevious())
-                      MaterialButton(
-                        child: const Icon(Icons.arrow_back_ios_new),
-                        onPressed: () {
-                          GetIt.I<QuoteCubit>().prviousPage();
-                        },
-                      )
-                    else
-                      const SizedBox(
-                        width: 60,
-                      ),
-                    if (state.quotes?.isNotEmpty ?? false)
-                      MaterialButton(
-                        child: const Icon(Icons.arrow_forward_ios_rounded),
-                        onPressed: () {
-                          GetIt.I<QuoteCubit>().nextPage();
-                        },
-                      )
-                    else
-                      const SizedBox(
-                        width: 60,
-                      ),
-                  ],
-                ),
                 Expanded(
                   child: EasyTableTheme(
                       child: EasyTable<Quote>(
@@ -180,6 +153,29 @@ class _QuoteViewState extends State<QuoteView> {
                           row: RowThemeData(
                               dividerThickness: 2,
                               dividerColor: Colors.green))),
+                ),
+                SizedBox(
+                  height: 150,
+                  child: SingleChildScrollView(
+                    child: Wrap(
+                      crossAxisAlignment: WrapCrossAlignment.center,
+                      children: [
+                        ...List<Widget>.generate(
+                            state.pageMD?.lastPage ?? 0,
+                            (index) => MaterialButton(
+                                  color: index + 1 == state.pageMD?.currentPage
+                                      ? Colors.blue
+                                      : Colors.grey,
+                                  child: Text("${index + 1}"),
+                                  onPressed: () {
+                                    GetIt.I<QuoteCubit>().load(
+                                      pageNumber: index + 1,
+                                    );
+                                  },
+                                ))
+                      ],
+                    ),
+                  ),
                 ),
               ],
             );

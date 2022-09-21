@@ -2,10 +2,16 @@ import 'package:easy_table/easy_table.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
+import 'package:svojasweb/blocs/create_party/create_party_cubit.dart';
 import 'package:svojasweb/blocs/party/party_cubit.dart';
 import 'package:svojasweb/models/api_response.dart';
 import 'package:svojasweb/models/party.dart';
+import 'package:svojasweb/models/port.dart';
 import 'package:svojasweb/repositories/party_repository.dart';
+import 'package:svojasweb/utilities/autocomplete_demo.dart';
+import 'package:svojasweb/utilities/dropdown_field_custom.dart';
+import 'package:svojasweb/utilities/helper_functions.dart';
+import 'package:svojasweb/utilities/validations.dart';
 import 'package:svojasweb/views/create_party_view.dart';
 import 'package:svojasweb/views/drawer_view.dart';
 import 'package:svojasweb/views/subviews/view_party.dart';
@@ -22,6 +28,9 @@ class PartyView extends StatefulWidget {
 class _PartyViewState extends State<PartyView> {
   late EasyTableModel<Party>? _model;
   final GlobalKey<ScaffoldState> _scaff = GlobalKey();
+  TextEditingController type = TextEditingController();
+  TextEditingController port = TextEditingController();
+  FocusNode typeF = FocusNode();
   @override
   void initState() {
     loadPage();
@@ -135,33 +144,6 @@ class _PartyViewState extends State<PartyView> {
             loadModel(context, state.parties!);
             return Column(
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    if (GetIt.I<PartyCubit>().isPrevious())
-                      MaterialButton(
-                        child: const Icon(Icons.arrow_back_ios_new),
-                        onPressed: () {
-                          GetIt.I<PartyCubit>().prviousPage();
-                        },
-                      )
-                    else
-                      const SizedBox(
-                        width: 60,
-                      ),
-                    if (state.parties?.isNotEmpty ?? false)
-                      MaterialButton(
-                        child: const Icon(Icons.arrow_forward_ios_rounded),
-                        onPressed: () {
-                          GetIt.I<PartyCubit>().nextPage();
-                        },
-                      )
-                    else
-                      const SizedBox(
-                        width: 60,
-                      ),
-                  ],
-                ),
                 Expanded(
                   child: EasyTableTheme(
                       child: EasyTable<Party>(
@@ -179,6 +161,73 @@ class _PartyViewState extends State<PartyView> {
                           row: RowThemeData(
                               dividerThickness: 2,
                               dividerColor: Colors.green))),
+                ),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: DropDownFieldCustm(
+                          options: partyTypeOptions,
+                          onDone: (str) {
+                            GetIt.I<PartyCubit>().load(
+                                pageNumber: state.pageMD?.currentPage ?? 1,
+                                type: type.text,
+                                port: port.text);
+                          },
+                          validate: isNotBlank,
+                          label: 'Select Type',
+                          showLabel: true,
+                          controller: type,
+                          focusNode: typeF,
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: AutoCompleteDemo(
+                            label: "Select Port",
+                            validate: isNotBlank,
+                            fieldController: port,
+                            onSelect: (object) {
+                              if (object is Port) {
+                                port.text = object.portName;
+                                GetIt.I<PartyCubit>().load(
+                                    pageNumber: state.pageMD?.currentPage ?? 1,
+                                    type: type.text,
+                                    port: port.text);
+                              }
+                            },
+                            optionListing: (textValue) =>
+                                GetIt.I<CreatePartyCubit>().getPorts(textValue),
+                          )),
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: 150,
+                  child: SingleChildScrollView(
+                    child: Wrap(
+                      crossAxisAlignment: WrapCrossAlignment.center,
+                      children: [
+                        ...List<Widget>.generate(
+                            state.pageMD?.lastPage ?? 0,
+                            (index) => MaterialButton(
+                                  color: index + 1 == state.pageMD?.currentPage
+                                      ? Colors.blue
+                                      : Colors.grey,
+                                  child: Text("${index + 1}"),
+                                  onPressed: () {
+                                    GetIt.I<PartyCubit>().load(
+                                        pageNumber: index + 1,
+                                        type: type.text,
+                                        port: port.text);
+                                  },
+                                ))
+                      ],
+                    ),
+                  ),
                 ),
               ],
             );

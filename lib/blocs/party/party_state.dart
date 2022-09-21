@@ -13,7 +13,7 @@ class PartyFailed extends PartyState {
 }
 
 class PartySuccess extends PartyState {
-  PartySuccess({this.parties});
-
+  PartySuccess({this.parties, this.pageMD});
+  final PageMD? pageMD;
   final List<Party>? parties;
 }

@@ -14,7 +14,7 @@ class PortCubit extends Cubit<PortState> {
     final ApiResponse apiResponse =
         await GetIt.I<PortRepository>().getPortByFields();
     if (apiResponse.status) {
-      List<Port> ports = (apiResponse.data as List<dynamic>)
+      List<Port> ports = (apiResponse.data['data'] as List<dynamic>)
           .map<Port>((e) => Port.fromJson(e))
           .toList();
 

@@ -10,6 +10,7 @@ import 'package:svojasweb/models/party.dart';
 import 'package:svojasweb/models/textfield_entry.dart';
 import 'package:svojasweb/repositories/values.dart';
 import 'package:svojasweb/utilities/button_custm.dart';
+import 'package:svojasweb/utilities/helper_functions.dart';
 import 'package:svojasweb/utilities/new_big_button.dart';
 import 'package:svojasweb/utilities/textfield_entry_builder.dart';
 import 'package:svojasweb/utilities/validations.dart';
@@ -140,7 +141,7 @@ class _CreatePartyViewState extends State<CreatePartyView> {
           controller: TextEditingController(text: widget.party?.date)),
       Values.party_type: TextFieldEntry(
           fieldType: FieldType.dropdown,
-          options: ['Select', 'Customer', 'Trucker', 'Consignee', 'Shipper'],
+          options: partyTypeOptions,
           keyId: Values.party_type,
           controller: TextEditingController(text: widget.party?.partyType)),
       Values.party_name: TextFieldEntry(

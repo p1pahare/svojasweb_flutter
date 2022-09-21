@@ -10,7 +10,13 @@ import 'package:js/js.dart';
 
 @JS('window.converHTMLToPDF')
 external void convertHtmlToPdf(dynamic command);
-
+const partyTypeOptions = [
+  'Select',
+  'Customer',
+  'Trucker',
+  'Consignee',
+  'Shipper'
+];
 String getNameFromObject(dynamic object) {
   return object is Party
       ? "${object.partyName} (${object.orgName})"

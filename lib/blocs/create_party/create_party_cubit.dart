@@ -61,7 +61,7 @@ class CreatePartyCubit extends Cubit<CreatePartyState> {
     final ApiResponse apiResponse =
         await GetIt.I<PortRepository>().getPortByFields(portName: portName);
     if (apiResponse.status) {
-      return (apiResponse.data as List<dynamic>)
+      return (apiResponse.data['data'] as List<dynamic>)
           .map((e) => Port.fromJson(e))
           .toList();
     } else {

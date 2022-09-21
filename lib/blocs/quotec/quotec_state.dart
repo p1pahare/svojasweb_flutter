@@ -13,7 +13,7 @@ class QuotecFailed extends QuotecState {
 }
 
 class QuotecSuccess extends QuotecState {
-  QuotecSuccess({this.quotecs});
-
+  QuotecSuccess({this.quotecs, this.pageMD});
+  final PageMD? pageMD;
   final List<QuoteC>? quotecs;
 }
