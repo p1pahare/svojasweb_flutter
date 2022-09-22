@@ -14,8 +14,10 @@ import 'package:svojasweb/utilities/helper_functions.dart';
 import 'package:svojasweb/utilities/new_big_button.dart';
 import 'package:svojasweb/utilities/textfield_entry_builder.dart';
 import 'package:svojasweb/utilities/validations.dart';
+import 'package:svojasweb/views/create_quote_view.dart';
 import 'package:svojasweb/views/drawer_view.dart';
 import 'package:svojasweb/views/party_view.dart';
+import 'package:svojasweb/views/subviews/view_party.dart';
 
 class CreatePartyView extends StatefulWidget {
   const CreatePartyView({Key? key, this.party, required this.title})
@@ -378,11 +380,26 @@ class _CreatePartyViewState extends State<CreatePartyView> {
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text(state.successMessage!),
-                  BigButtonNew(
-                      ttitle: 'View Parties Table',
-                      onTap: () =>
-                          Navigator.pushNamed(context, PartyView.routeName)),
+                  Padding(
+                      padding: const EdgeInsets.all(50),
+                      child: Center(child: Text(state.successMessage!))),
+                  ViewParty(party: state.party!),
+                  Row(
+                    children: [
+                      BigButtonNew(
+                          ttitle: 'View Parties Table',
+                          onTap: () => Navigator.pushNamed(
+                              context, PartyView.routeName)),
+                      Expanded(
+                        child: Center(
+                          child: ButtonCustm(
+                              label: 'Create Quote',
+                              function1: () => Navigator.pushNamed(
+                                  context, CreateQuoteView.routeName)),
+                        ),
+                      ),
+                    ],
+                  ),
                 ],
               );
             }

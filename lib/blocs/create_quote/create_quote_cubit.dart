@@ -4,6 +4,7 @@ import 'package:meta/meta.dart';
 import 'package:svojasweb/models/api_response.dart';
 import 'package:svojasweb/models/party.dart';
 import 'package:svojasweb/models/port.dart';
+import 'package:svojasweb/models/quote.dart';
 import 'package:svojasweb/repositories/basic_repository.dart';
 import 'package:svojasweb/repositories/party_repository.dart';
 import 'package:svojasweb/repositories/port_repository.dart';
@@ -35,8 +36,9 @@ class CreateQuoteCubit extends Cubit<CreateQuoteState> {
         await GetIt.I<QuoteRepository>().createQuote(quote);
     if (apiResponse.status) {
       // GetIt.I<Preferences>().saveIsCreateQuote(isCreateQuote: true);
-
+      final Quote? quote = Quote.fromJson(apiResponse.data['ops'][0]);
       emit(CreateQuoteSuccess(
+          quote: quote,
           successMessage:
               "Quote Was Created Successfully. You can close the page now."));
     } else {
@@ -50,8 +52,9 @@ class CreateQuoteCubit extends Cubit<CreateQuoteState> {
         await GetIt.I<QuoteRepository>().editQuote(quote);
     if (apiResponse.status) {
       // GetIt.I<Preferences>().saveIsCreateQuote(isCreateQuote: true);
-
+      final Quote? quote = Quote.fromJson(apiResponse.data['ops'][0]);
       emit(CreateQuoteSuccess(
+          quote: quote,
           successMessage:
               "Quote Was Updated Successfully. You can close the page now."));
     } else {
@@ -67,7 +70,7 @@ class CreateQuoteCubit extends Cubit<CreateQuoteState> {
     final ApiResponse apiResponse = await GetIt.I<PartyRepository>()
         .getPartyByName(partyName: partyName, partyType: partyType, port: port);
     if (apiResponse.status) {
-      return (apiResponse.data as List<dynamic>)
+      return (apiResponse.data['data'] as List<dynamic>)
           .map((e) => Party.fromJson(e))
           .toList();
     } else {

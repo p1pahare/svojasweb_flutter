@@ -2,6 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:meta/meta.dart';
 import 'package:svojasweb/models/api_response.dart';
+import 'package:svojasweb/models/party.dart';
 import 'package:svojasweb/models/port.dart';
 import 'package:svojasweb/repositories/basic_repository.dart';
 import 'package:svojasweb/repositories/party_repository.dart';
@@ -33,8 +34,9 @@ class CreatePartyCubit extends Cubit<CreatePartyState> {
         await GetIt.I<PartyRepository>().createParty(party);
     if (apiResponse.status) {
       // GetIt.I<Preferences>().saveIsCreateParty(isCreateParty: true);
-
+      final Party? party = Party.fromJson(apiResponse.data['ops'][0]);
       emit(CreatePartySuccess(
+          party: party,
           successMessage:
               "Party Was Created Successfully. You can close the page now."));
     } else {
@@ -48,8 +50,9 @@ class CreatePartyCubit extends Cubit<CreatePartyState> {
         await GetIt.I<PartyRepository>().editParty(party);
     if (apiResponse.status) {
       // GetIt.I<Preferences>().saveIsCreateParty(isCreateParty: true);
-
+      final Party? party = Party.fromJson(apiResponse.data['ops'][0]);
       emit(CreatePartySuccess(
+          party: party,
           successMessage:
               "Party Was Updated Successfully. You can close the page now."));
     } else {

@@ -84,131 +84,134 @@ class MyApp extends StatelessWidget {
               home: Center(child: Text("Loading")),
             );
           } else {
-            return MaterialApp(
-              theme: ThemeData(
-                  primarySwatch: Colors.blueGrey, disabledColor: Colors.grey),
-              debugShowCheckedModeBanner: false,
-              onGenerateRoute: (settings) {
-                switch (settings.name) {
-                  case CreatePartyView.routeName:
-                    return CupertinoPageRoute<bool>(
-                        settings: settings,
-                        builder: (context) => const CreatePartyView(
-                              title: 'Create Party',
-                            ));
-                  case CreatePartyView.routeNameEdit:
-                    Party customer = settings.arguments as Party;
-                    return CupertinoPageRoute<bool>(
-                        settings: settings,
-                        builder: (context) => CreatePartyView(
-                              party: customer,
-                              title: 'Edit Party',
-                            ));
-                  case CreatePortView.routeName:
-                    return CupertinoPageRoute<bool>(
-                        settings: settings,
-                        builder: (context) => const CreatePortView(
-                              title: 'Create a Port',
-                            ));
-                  case CreateQuoteView.routeName:
-                    return CupertinoPageRoute<bool>(
-                        settings: settings,
-                        builder: (context) => const CreateQuoteView(
-                              title: 'Create Quote',
-                            ));
-                  case CreateQuoteView.routeNameEdit:
-                    Quote customer = settings.arguments as Quote;
-                    return CupertinoPageRoute<bool>(
-                        settings: settings,
-                        builder: (context) => CreateQuoteView(
-                              quote: customer,
-                              title: 'Edit Quote',
-                            ));
-                  case CreateQuotecView.routeName:
-                    return CupertinoPageRoute<bool>(
-                        settings: settings,
-                        builder: (context) => const CreateQuotecView(
-                              title: 'Create Quote to Customer',
-                            ));
-                  case CreateQuotecView.routeNameEdit:
-                    QuoteC customer = settings.arguments as QuoteC;
-                    return CupertinoPageRoute<bool>(
-                        settings: settings,
-                        builder: (context) => CreateQuotecView(
-                              quotec: customer,
-                              title: 'Edit Quote to Customer',
-                            ));
-                  case BuyingsReceived.routeName:
-                    return CupertinoPageRoute<bool>(
-                        settings: settings,
-                        builder: (context) => const BuyingsReceived(
-                              title: 'Buyings Received',
-                            ));
-                  case ConfirmedQuote.routeName:
-                    return CupertinoPageRoute<bool>(
-                        settings: settings,
-                        builder: (context) => const ConfirmedQuote(
-                              title: 'Confirmed Quote',
-                            ));
-                  case ConfirmShipments.routeName:
-                    return CupertinoPageRoute<bool>(
-                        settings: settings,
-                        builder: (context) => const ConfirmShipments(
-                              title: 'Confirm Shipments',
-                            ));
-                  case DashboardView.routeName:
-                    return CupertinoPageRoute(
-                        settings: settings,
-                        builder: (context) => const DashboardView(
-                              title: '',
-                            ));
-                  case PartyView.routeName:
-                    return CupertinoPageRoute(
-                        settings: settings,
-                        builder: (context) => const PartyView(
-                              title: 'Party Management',
-                            ));
-                  case PortView.routeName:
-                    return CupertinoPageRoute(
-                        settings: settings,
-                        builder: (context) => const PortView(
-                              title: 'Port Management',
-                            ));
-                  case QuoteView.routeName:
-                    return CupertinoPageRoute(
-                        settings: settings,
-                        builder: (context) => const QuoteView(
-                              title: 'Quote Management',
-                            ));
-                  case QuotecView.routeName:
-                    return CupertinoPageRoute(
-                        settings: settings,
-                        builder: (context) => const QuotecView(
-                              title: 'Quote to Customer',
-                            ));
-                  case LoginView.routeName:
-                    return CupertinoPageRoute(
-                        settings: settings,
-                        builder: (context) => const LoginView());
-                  case BolView.routeName:
-                    return CupertinoPageRoute(
-                        settings: settings,
-                        builder: (context) => const BolView());
-                  case '/':
-                  default:
-                    if (!futureShot.data!) {
-                      return CupertinoPageRoute(
+            return GestureDetector(
+              onTap: () => FocusScope.of(context).unfocus(),
+              child: MaterialApp(
+                theme: ThemeData(
+                    primarySwatch: Colors.blueGrey, disabledColor: Colors.grey),
+                debugShowCheckedModeBanner: false,
+                onGenerateRoute: (settings) {
+                  switch (settings.name) {
+                    case CreatePartyView.routeName:
+                      return CupertinoPageRoute<bool>(
                           settings: settings,
-                          builder: (context) => const LoginView());
-                    } else {
+                          builder: (context) => const CreatePartyView(
+                                title: 'Create Party',
+                              ));
+                    case CreatePartyView.routeNameEdit:
+                      Party customer = settings.arguments as Party;
+                      return CupertinoPageRoute<bool>(
+                          settings: settings,
+                          builder: (context) => CreatePartyView(
+                                party: customer,
+                                title: 'Edit Party',
+                              ));
+                    case CreatePortView.routeName:
+                      return CupertinoPageRoute<bool>(
+                          settings: settings,
+                          builder: (context) => const CreatePortView(
+                                title: 'Create a Port',
+                              ));
+                    case CreateQuoteView.routeName:
+                      return CupertinoPageRoute<bool>(
+                          settings: settings,
+                          builder: (context) => const CreateQuoteView(
+                                title: 'Create Quote',
+                              ));
+                    case CreateQuoteView.routeNameEdit:
+                      Quote customer = settings.arguments as Quote;
+                      return CupertinoPageRoute<bool>(
+                          settings: settings,
+                          builder: (context) => CreateQuoteView(
+                                quote: customer,
+                                title: 'Edit Quote',
+                              ));
+                    case CreateQuotecView.routeName:
+                      return CupertinoPageRoute<bool>(
+                          settings: settings,
+                          builder: (context) => const CreateQuotecView(
+                                title: 'Create Quote to Customer',
+                              ));
+                    case CreateQuotecView.routeNameEdit:
+                      QuoteC customer = settings.arguments as QuoteC;
+                      return CupertinoPageRoute<bool>(
+                          settings: settings,
+                          builder: (context) => CreateQuotecView(
+                                quotec: customer,
+                                title: 'Edit Quote to Customer',
+                              ));
+                    case BuyingsReceived.routeName:
+                      return CupertinoPageRoute<bool>(
+                          settings: settings,
+                          builder: (context) => const BuyingsReceived(
+                                title: 'Buyings Received',
+                              ));
+                    case ConfirmedQuote.routeName:
+                      return CupertinoPageRoute<bool>(
+                          settings: settings,
+                          builder: (context) => const ConfirmedQuote(
+                                title: 'Confirmed Quote',
+                              ));
+                    case ConfirmShipments.routeName:
+                      return CupertinoPageRoute<bool>(
+                          settings: settings,
+                          builder: (context) => const ConfirmShipments(
+                                title: 'Confirm Shipments',
+                              ));
+                    case DashboardView.routeName:
                       return CupertinoPageRoute(
                           settings: settings,
                           builder: (context) => const DashboardView(
                                 title: '',
                               ));
-                    }
-                }
-              },
+                    case PartyView.routeName:
+                      return CupertinoPageRoute(
+                          settings: settings,
+                          builder: (context) => const PartyView(
+                                title: 'Party Management',
+                              ));
+                    case PortView.routeName:
+                      return CupertinoPageRoute(
+                          settings: settings,
+                          builder: (context) => const PortView(
+                                title: 'Port Management',
+                              ));
+                    case QuoteView.routeName:
+                      return CupertinoPageRoute(
+                          settings: settings,
+                          builder: (context) => const QuoteView(
+                                title: 'Quote Management',
+                              ));
+                    case QuotecView.routeName:
+                      return CupertinoPageRoute(
+                          settings: settings,
+                          builder: (context) => const QuotecView(
+                                title: 'Quote to Customer',
+                              ));
+                    case LoginView.routeName:
+                      return CupertinoPageRoute(
+                          settings: settings,
+                          builder: (context) => const LoginView());
+                    case BolView.routeName:
+                      return CupertinoPageRoute(
+                          settings: settings,
+                          builder: (context) => const BolView());
+                    case '/':
+                    default:
+                      if (!futureShot.data!) {
+                        return CupertinoPageRoute(
+                            settings: settings,
+                            builder: (context) => const LoginView());
+                      } else {
+                        return CupertinoPageRoute(
+                            settings: settings,
+                            builder: (context) => const DashboardView(
+                                  title: '',
+                                ));
+                      }
+                  }
+                },
+              ),
             );
           }
         });

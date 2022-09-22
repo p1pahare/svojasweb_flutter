@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
+import 'package:rxdart/subjects.dart';
 import 'package:svojasweb/blocs/create_quote/create_quote_cubit.dart';
 import 'package:svojasweb/models/party.dart';
 import 'package:svojasweb/models/quote.dart';
@@ -12,9 +13,11 @@ import 'package:svojasweb/utilities/button_custm.dart';
 import 'package:svojasweb/utilities/new_big_button.dart';
 import 'package:svojasweb/utilities/textfield_entry_builder.dart';
 import 'package:svojasweb/utilities/validations.dart';
+import 'package:svojasweb/views/create_quotec_view.dart';
 import 'package:svojasweb/views/drawer_view.dart';
 import 'package:svojasweb/views/quote_view.dart';
 import 'package:svojasweb/views/subviews/view_party.dart';
+import 'package:svojasweb/views/subviews/view_quote.dart';
 
 class CreateQuoteView extends StatefulWidget {
   const CreateQuoteView({Key? key, this.quote, required this.title})
@@ -29,6 +32,14 @@ class CreateQuoteView extends StatefulWidget {
 
 class _CreateQuoteViewState extends State<CreateQuoteView> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  BehaviorSubject<List<Party>?> truckers = BehaviorSubject<List<Party>?>();
+  BehaviorSubject<Party?> company = BehaviorSubject<Party?>();
+  @override
+  void dispose() {
+    truckers.close();
+    company.close();
+    super.dispose();
+  }
 
   void onValueSelected(String key, String? value, {bool clear = true}) {
     switch (key) {
@@ -482,8 +493,8 @@ class _CreateQuoteViewState extends State<CreateQuoteView> {
           object: (widget.quote?.party.isEmpty ?? false)
               ? null
               : widget.quote?.party.first,
-          optionListing: (textValue) => GetIt.I<CreateQuoteCubit>()
-              .getParties(textValue, 'Customer', getPortValue()),
+          optionListing: (textValue) =>
+              GetIt.I<CreateQuoteCubit>().getParties(textValue, 'Customer', ''),
           controller: TextEditingController(
               text: (widget.quote?.party.isNotEmpty) ?? false
                   ? widget.quote?.party.first.partyName
@@ -551,7 +562,7 @@ class _CreateQuoteViewState extends State<CreateQuoteView> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext contexto) {
     return Scaffold(
       appBar: AppBar(title: Text(widget.title)),
       // drawer: const DrawerView(),
@@ -574,11 +585,27 @@ class _CreateQuoteViewState extends State<CreateQuoteView> {
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text(state.successMessage!),
-                  BigButtonNew(
-                      ttitle: 'View Quotes Table',
-                      onTap: () =>
-                          Navigator.pushNamed(context, QuoteView.routeName)),
+                  Padding(
+                    padding: const EdgeInsets.all(50),
+                    child: Center(child: Text(state.successMessage!)),
+                  ),
+                  ViewQuote(quote: state.quote!),
+                  Row(
+                    children: [
+                      BigButtonNew(
+                          ttitle: 'View Quotes Table',
+                          onTap: () => Navigator.pushNamed(
+                              context, QuoteView.routeName)),
+                      Expanded(
+                        child: Center(
+                          child: ButtonCustm(
+                              label: 'Quote to Customer',
+                              function1: () => Navigator.pushNamed(
+                                  context, CreateQuotecView.routeName)),
+                        ),
+                      ),
+                    ],
+                  ),
                 ],
               );
             }
@@ -586,9 +613,10 @@ class _CreateQuoteViewState extends State<CreateQuoteView> {
               quoteFields[Values.date]?.controller?.text = state.date ?? '';
               quoteFields[Values.quote_number]?.controller?.text =
                   widget.quote?.sid ?? state.id ?? '';
-              List<Party>? listruckers =
+              truckers.add(
                   (quoteFields[Values.truckers]?.object as List<dynamic>)
-                      .cast<Party>();
+                      .cast<Party>());
+              company.add(quoteFields[Values.customer]?.object);
               return SizedBox(
                   // width: min(MediaQuery.of(context).size.width, 480),
                   child: Form(
@@ -610,67 +638,12 @@ class _CreateQuoteViewState extends State<CreateQuoteView> {
                                     onValueSelected(key!, value),
                                 focusHandler: (isLast) {
                                   isLast
-                                      ? FocusScope.of(context).unfocus()
+                                      ? FocusScope.of(contexto).unfocus()
                                       : focusOnNextVisible(index, quoteFields);
                                 },
                               );
                             }),
                           ),
-                          StreamBuilder<List<Party>>(
-                              stream: Stream.value(listruckers),
-                              // GetIt.I<CreateQuotecCubit>()
-                              //     .getTruckersStream(widget.quotec?.truckers),
-                              builder: (context, snapp) {
-                                if (snapp.data != null) {
-                                  if (snapp.data?.isNotEmpty ?? false) {
-                                    listruckers = snapp.data;
-                                  }
-                                  return ListView.builder(
-                                      // gridDelegate:
-                                      //     const SliverGridDelegateWithFixedCrossAxisCount(
-                                      //         crossAxisCount: 2),
-                                      shrinkWrap: true,
-                                      physics:
-                                          const NeverScrollableScrollPhysics(),
-                                      itemCount: snapp.data?.length,
-                                      itemBuilder: (context, index) =>
-                                          Container(
-                                              margin: const EdgeInsets.all(20),
-                                              child: Stack(
-                                                children: [
-                                                  ViewParty(
-                                                      nameOnTop: true,
-                                                      party:
-                                                          snapp.data![index]),
-                                                  Positioned(
-                                                      top: 0,
-                                                      left: 0,
-                                                      child: MaterialButton(
-                                                        child: const Icon(
-                                                          Icons.cancel_outlined,
-                                                          size: 40,
-                                                          color: Colors.white,
-                                                        ),
-                                                        onPressed: () {
-                                                          setState(() {
-                                                            if (listruckers!
-                                                                    .length >=
-                                                                index + 1) {
-                                                              listruckers!
-                                                                  .removeAt(
-                                                                      index);
-                                                            }
-                                                          });
-                                                        },
-                                                      )),
-                                                ],
-                                              )));
-                                } else {
-                                  return const SizedBox(
-                                    height: 0,
-                                  );
-                                }
-                              }),
                           if (!quoteFields[Values.gross_weight]!.enabled)
                             Container(
                               margin: const EdgeInsets.all(40),
@@ -800,7 +773,7 @@ class _CreateQuoteViewState extends State<CreateQuoteView> {
                             child: ButtonCustm(
                               label: "Submit",
                               padding: 10,
-                              function1: () {
+                              function1: () async {
                                 final Map<String, dynamic> values = {
                                   for (final element in quoteFields.entries)
                                     if (element.value.controller?.text
@@ -815,7 +788,11 @@ class _CreateQuoteViewState extends State<CreateQuoteView> {
                                               ? false
                                               : element.value.controller?.text
                                 };
-                                if (_formKey.currentState!.validate()) {
+                                final compny = company.value;
+                                final trucers = truckers.value;
+                                if (_formKey.currentState!.validate() &&
+                                    compny != null &&
+                                    (trucers?.isNotEmpty ?? false)) {
                                   dev.log(values.toString());
                                   values[Values.package] = packages
                                       .map<Map<String, dynamic>>((e) =>
@@ -823,21 +800,9 @@ class _CreateQuoteViewState extends State<CreateQuoteView> {
                                               MapEntry(
                                                   key, value.controller?.text)))
                                       .toList();
-                                  if ((quoteFields[Values.customer]?.object
-                                          as Party?) !=
-                                      null) {
-                                    values[Values.customer] =
-                                        (quoteFields[Values.customer]?.object
-                                                as Party?)
-                                            ?.sid;
-                                  }
-
+                                  values[Values.customer] = compny.sid;
                                   values[Values.truckers] =
-                                      (quoteFields[Values.truckers]?.object
-                                              as List<dynamic>)
-                                          .cast<Party>()
-                                          .map((e) => e.sid)
-                                          .toList();
+                                      trucers?.map((e) => e.sid).toList();
                                   if (widget.quote == null) {
                                     GetIt.I<CreateQuoteCubit>().create(values);
                                   } else {
@@ -846,7 +811,125 @@ class _CreateQuoteViewState extends State<CreateQuoteView> {
                                 }
                               },
                             ),
-                          )
+                          ),
+                          StreamBuilder<List<Party>?>(
+                              stream: truckers.stream,
+                              // GetIt.I<CreateQuotecCubit>()
+                              //     .getTruckersStream(widget.quotec?.truckers),
+                              builder: (context, snapp) {
+                                if (snapp.data?.isNotEmpty ?? false) {
+                                  return Column(
+                                    children: [
+                                      const Center(
+                                        child: Text(
+                                          "Truckers Selected",
+                                          style: TextStyle(
+                                              fontSize: 24,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                      ),
+                                      ListView.builder(
+                                          // gridDelegate:
+                                          //     const SliverGridDelegateWithFixedCrossAxisCount(
+                                          //         crossAxisCount: 2),
+                                          shrinkWrap: true,
+                                          physics:
+                                              const NeverScrollableScrollPhysics(),
+                                          itemCount: snapp.data?.length,
+                                          itemBuilder: (context, index) =>
+                                              Container(
+                                                  margin:
+                                                      const EdgeInsets.all(20),
+                                                  child: Stack(
+                                                    children: [
+                                                      ViewParty(
+                                                          nameOnTop: true,
+                                                          party: snapp
+                                                              .data![index]),
+                                                      Positioned(
+                                                          top: 0,
+                                                          left: 0,
+                                                          child: MaterialButton(
+                                                            child: const Icon(
+                                                              Icons
+                                                                  .cancel_outlined,
+                                                              size: 40,
+                                                              color:
+                                                                  Colors.white,
+                                                            ),
+                                                            onPressed: () {
+                                                              final listtrucker =
+                                                                  snapp.data;
+                                                              listtrucker
+                                                                  ?.removeAt(
+                                                                      index);
+                                                              truckers.add(
+                                                                  listtrucker!);
+                                                              quoteFields[Values
+                                                                          .truckers]
+                                                                      ?.object =
+                                                                  listtrucker;
+                                                            },
+                                                          )),
+                                                    ],
+                                                  ))),
+                                    ],
+                                  );
+                                } else {
+                                  return const SizedBox(
+                                    height: 0,
+                                  );
+                                }
+                              }),
+                          StreamBuilder<Party?>(
+                              stream: company.stream,
+                              // GetIt.I<CreateQuotecCubit>()
+                              //     .getTruckersStream(widget.quotec?.truckers),
+                              builder: (context, snapp) {
+                                if (snapp.data != null) {
+                                  return Column(
+                                    children: [
+                                      const Center(
+                                        child: Text(
+                                          "Customer Selected",
+                                          style: TextStyle(
+                                              fontSize: 24,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                      ),
+                                      Container(
+                                          margin: const EdgeInsets.all(20),
+                                          child: Stack(
+                                            children: [
+                                              ViewParty(
+                                                  nameOnTop: true,
+                                                  party: snapp.data!),
+                                              Positioned(
+                                                  top: 0,
+                                                  left: 0,
+                                                  child: MaterialButton(
+                                                    child: const Icon(
+                                                      Icons.cancel_outlined,
+                                                      size: 40,
+                                                      color: Colors.white,
+                                                    ),
+                                                    onPressed: () {
+                                                      company.add(null);
+                                                      quoteFields[
+                                                              Values.customer]
+                                                          ?.object = null;
+                                                    },
+                                                  )),
+                                            ],
+                                          )),
+                                    ],
+                                  );
+                                } else {
+                                  return const SizedBox(
+                                    height: 0,
+                                  );
+                                }
+                              }),
                         ],
                       )));
             }

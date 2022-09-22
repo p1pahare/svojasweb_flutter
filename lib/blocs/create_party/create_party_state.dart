@@ -22,7 +22,7 @@ class CreatePageSuccess extends CreatePartyState {
 }
 
 class CreatePartySuccess extends CreatePartyState {
-  CreatePartySuccess({this.successMessage});
-
+  CreatePartySuccess({this.successMessage, this.party});
+  final Party? party;
   final String? successMessage;
 }

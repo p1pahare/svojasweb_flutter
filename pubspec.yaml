@@ -17,6 +17,7 @@ dependencies:
   adjusted_html_view_web: ^0.0.2
   webcontent_converter: ^0.0.7+2
   path_provider: ^2.0.11
+  rxdart: ^0.27.5
   js: ^0.6.4
 dev_dependencies:
   flutter_test:

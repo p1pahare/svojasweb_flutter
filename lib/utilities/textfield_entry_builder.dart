@@ -1,6 +1,5 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:svojasweb/models/party.dart';
 import 'package:svojasweb/models/quote.dart';
 import 'package:svojasweb/models/quotec.dart';
 import 'package:svojasweb/models/textfield_entry.dart';
@@ -10,7 +9,6 @@ import 'package:svojasweb/utilities/datefield_custm.dart';
 import 'package:svojasweb/utilities/dropdown_field_custom.dart';
 import 'package:svojasweb/utilities/helper_functions.dart';
 import 'package:svojasweb/utilities/textfield_custm.dart';
-import 'package:svojasweb/views/subviews/view_party.dart';
 import 'package:svojasweb/views/subviews/view_quote.dart';
 import 'package:svojasweb/views/subviews/view_quotec.dart';
 
@@ -74,12 +72,7 @@ class TextFieldEntryBuilder extends StatelessWidget {
                   optionListing: textFieldEntry!.optionListing,
                 ),
                 if (textFieldEntry!.object != null)
-                  if (textFieldEntry!.object is Party)
-                    ViewParty(
-                      party: textFieldEntry!.object,
-                      nameOnTop: true,
-                    )
-                  else if (textFieldEntry!.object is Quote)
+                  if (textFieldEntry!.object is Quote)
                     ViewQuote(quote: textFieldEntry!.object)
                   else if (textFieldEntry!.object is QuoteC)
                     ViewQuotec(quoteC: textFieldEntry!.object)

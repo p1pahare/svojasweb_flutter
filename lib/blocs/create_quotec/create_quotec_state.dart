@@ -13,8 +13,8 @@ class CreateQuotecFailed extends CreateQuotecState {
 }
 
 class CreateQuotecSuccess extends CreateQuotecState {
-  CreateQuotecSuccess({this.successMessage});
-
+  CreateQuotecSuccess({this.successMessage, this.quoteC});
+  final QuoteC? quoteC;
   final String? successMessage;
 }
 

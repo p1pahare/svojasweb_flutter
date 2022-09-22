@@ -13,8 +13,8 @@ class CreateQuoteFailed extends CreateQuoteState {
 }
 
 class CreateQuoteSuccess extends CreateQuoteState {
-  CreateQuoteSuccess({this.successMessage});
-
+  CreateQuoteSuccess({this.successMessage, this.quote});
+  final Quote? quote;
   final String? successMessage;
 }
 

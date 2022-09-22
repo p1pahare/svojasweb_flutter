@@ -10,8 +10,10 @@ import 'package:svojasweb/repositories/values.dart';
 import 'package:svojasweb/utilities/button_custm.dart';
 import 'package:svojasweb/utilities/new_big_button.dart';
 import 'package:svojasweb/utilities/textfield_entry_builder.dart';
+import 'package:svojasweb/views/buyings_received_view.dart';
 import 'package:svojasweb/views/drawer_view.dart';
 import 'package:svojasweb/views/quotec_view.dart';
+import 'package:svojasweb/views/subviews/view_quotec.dart';
 
 class CreateQuotecView extends StatefulWidget {
   const CreateQuotecView({Key? key, this.quotec, required this.title})
@@ -193,11 +195,27 @@ class _CreateQuotecViewState extends State<CreateQuotecView> {
             if (state is CreateQuotecSuccess) {
               return Column(
                 children: [
-                  Text(state.successMessage!),
-                  BigButtonNew(
-                      ttitle: 'View Quotes to Customer Table',
-                      onTap: () =>
-                          Navigator.pushNamed(context, QuotecView.routeName)),
+                  Padding(
+                    padding: const EdgeInsets.all(50.0),
+                    child: Center(child: Text(state.successMessage!)),
+                  ),
+                  ViewQuotec(quoteC: state.quoteC!),
+                  Row(
+                    children: [
+                      BigButtonNew(
+                          ttitle: 'View Quotes to Customer Table',
+                          onTap: () => Navigator.pushNamed(
+                              context, QuotecView.routeName)),
+                      Expanded(
+                        child: Center(
+                          child: ButtonCustm(
+                              label: 'Buyings Received',
+                              function1: () => Navigator.pushNamed(
+                                  context, BuyingsReceived.routeName)),
+                        ),
+                      ),
+                    ],
+                  ),
                 ],
               );
             }
