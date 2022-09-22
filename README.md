@@ -1,10 +1,22 @@
 # svojasweb
 
-A new Flutter project.
+A Flutter Based website for Shipments Management
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+This Application is used to manage Shipments :
+
+Customers,Truckers Info can be created.
+
+Quotes can be created and deleted.
+
+<p align="center">
+  <img src="./ss_1.png" width="350" title="Dashboard Screen">
+  <img src="./ss_2.png" width="350" title="Drawer menu Screen">
+<img src="./ss_3.png" width="350" title="Create Party Screen">
+<img src="./ss_4.png" width="350" title="Party listing">
+<img src="./ss_5.png" width="350" title="quote details">
+</p>
 
 A few resources to get you started if this is your first Flutter project:
 
