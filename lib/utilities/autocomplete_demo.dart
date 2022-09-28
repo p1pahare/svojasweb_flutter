@@ -27,6 +27,7 @@ class AutoCompleteDemo<T extends Object> extends StatelessWidget {
           optionsBuilder: (TextEditingValue textEditingValue) {
             return optionListing!(textEditingValue.text) as Future<Iterable<T>>;
           },
+          initialValue: fieldController?.value,
           displayStringForOption: getNameFromObject,
           fieldViewBuilder: (BuildContext context,
               TextEditingController fieldTextEditingController,

@@ -147,10 +147,11 @@ class MyApp extends StatelessWidget {
                       return CupertinoPageRoute<bool>(
                           settings: settings,
                           builder: (context) => BuyingsReceived(
-                                title: 'Buyings Received',
-                                preFilledValue: settings.arguments is String
-                                    ? (settings.arguments as String)
-                                    : null,
+                              title: 'Buyings Received',
+                              preFilledValue: 'SVOJ0000015'
+                              // settings.arguments is String
+                              //     ? (settings.arguments as String)
+                              //     : null,
                               ));
                     case ConfirmedQuote.routeName:
                       return CupertinoPageRoute<bool>(

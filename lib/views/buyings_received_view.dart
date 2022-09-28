@@ -55,7 +55,7 @@ class _BuyingsReceivedState extends State<BuyingsReceived> {
           optionListing: (textValue) async =>
               (await GetIt.I<CreateBuyingsCubit>().getQuotecs(textValue))
                   .entries,
-          controller: TextEditingController(text: '')),
+          controller: TextEditingController(text: widget.preFilledValue ?? '')),
       Values.date: TextFieldEntry(
           label: 'Date',
           keyId: Values.date,
