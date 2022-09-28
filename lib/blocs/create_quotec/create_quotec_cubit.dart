@@ -53,9 +53,9 @@ class CreateQuotecCubit extends Cubit<CreateQuotecState> {
         await GetIt.I<QuotecRepository>().editQuoteC(quotec);
     if (apiResponse.status) {
       // GetIt.I<Preferences>().saveIsCreateQuote(isCreateQuote: true);
-      final QuoteC? quoteC = QuoteC.fromJson(apiResponse.data['ops'][0]);
+      // final QuoteC? quoteC = QuoteC.fromJson(apiResponse.data['ops'][0]);
       emit(CreateQuotecSuccess(
-          quoteC: quoteC,
+          // quoteC: quoteC,
           successMessage:
               "Quote Was Updated Successfully. You can close the page now."));
     } else {

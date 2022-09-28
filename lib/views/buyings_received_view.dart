@@ -8,17 +8,21 @@ import 'package:svojasweb/models/quotec.dart';
 import 'package:svojasweb/models/textfield_entry.dart';
 import 'package:svojasweb/repositories/values.dart';
 import 'package:svojasweb/utilities/button_custm.dart';
+import 'package:svojasweb/utilities/new_big_button.dart';
 import 'dart:developer' as d;
 import 'package:svojasweb/utilities/textfield_entry_builder.dart';
 import 'package:svojasweb/utilities/validations.dart';
+import 'package:svojasweb/views/confirmed_quote_view.dart';
 import 'package:svojasweb/views/drawer_view.dart';
 import 'package:svojasweb/views/subviews/view_quote.dart';
 import 'package:svojasweb/views/subviews/view_quotec.dart';
 
 class BuyingsReceived extends StatefulWidget {
-  const BuyingsReceived({Key? key, required this.title}) : super(key: key);
+  const BuyingsReceived({Key? key, required this.title, this.preFilledValue})
+      : super(key: key);
   static const routeName = '/BuyingsReceived';
   final String title;
+  final String? preFilledValue;
   @override
   State<BuyingsReceived> createState() => _BuyingsReceivedState();
 }
@@ -66,7 +70,9 @@ class _BuyingsReceivedState extends State<BuyingsReceived> {
     initBuyings();
 
     GetIt.I<CreateBuyingsCubit>().load();
-
+    if (widget.preFilledValue != null) {
+      GetIt.I<CreateBuyingsCubit>().getQuotecs(widget.preFilledValue!);
+    }
     super.initState();
   }
 
@@ -93,14 +99,45 @@ class _BuyingsReceivedState extends State<BuyingsReceived> {
             if (state is CreateBuyingSuccess) {
               return Column(
                 children: [
-                  Text(state.successMessage!),
-                  ButtonCustm(
-                      label: 'Go back',
-                      function1: () => Navigator.pop(context)),
+                  Padding(
+                    padding: const EdgeInsets.all(50.0),
+                    child: Center(
+                      child: Text(state.successMessage!),
+                    ),
+                  ),
+                  Row(
+                    children: [
+                      BigButtonNew(
+                          ttitle: 'Close', onTap: () => Navigator.pop(context)),
+                      Expanded(
+                        child: Center(
+                          child: ButtonCustm(
+                              label: 'Proceed to View Confirmed Quote',
+                              function1: () => Navigator.pushNamed(
+                                  context, ConfirmedQuote.routeName,
+                                  arguments: state.buying?.quoteId)),
+                        ),
+                      ),
+                    ],
+                  ),
                 ],
               );
             }
             if (state is CreatePageSuccess) {
+              if (state.quote != null) {
+                quote = state.quote;
+                buyings = quote!.truckers!
+                    .map<TextEditingController>(
+                        ((e) => TextEditingController(text: '')))
+                    .toList();
+              }
+              if (state.quotec != null) quoteC = state.quotec;
+              if (state.buying != null) {
+                buyings = state.buying!.buyings
+                    .map<TextEditingController>(
+                        ((e) => TextEditingController(text: e)))
+                    .toList();
+              }
               return SizedBox(
                   // width: min(MediaQuery.of(context).size.width, 480),
                   child: Form(
@@ -119,38 +156,38 @@ class _BuyingsReceivedState extends State<BuyingsReceived> {
                                       buyingsFields.values.toList()[index],
                                   onValueSelected: (key, value) {
                                     d.log("$key!, $value");
-                                    if (buyingsFields[Values.quote_id]
-                                                ?.object !=
-                                            null &&
-                                        buyingsFields[Values.quote_id]
-                                            ?.object
-                                            .value
-                                            .isNotEmpty) {
-                                      buyingsFields[Values.quote_id]
-                                          ?.object
-                                          .value
-                                          .forEach((element) {
-                                        if (element is Quote) {
-                                          quote = element;
-                                          buyings = element.trucker
-                                              .map<TextEditingController>(
-                                                  ((e) => TextEditingController(
-                                                      text: '')))
-                                              .toList();
-                                        }
-                                        if (element is QuoteC) {
-                                          quoteC = element;
-                                        }
-                                        if (element is Buying) {
-                                          buying = element;
-                                          buyings = element.buyings
-                                              .map<TextEditingController>(
-                                                  ((e) => TextEditingController(
-                                                      text: e)))
-                                              .toList();
-                                        }
-                                      });
-                                    }
+                                    // if (buyingsFields[Values.quote_id]
+                                    //             ?.object !=
+                                    //         null &&
+                                    //     buyingsFields[Values.quote_id]
+                                    //         ?.object
+                                    //         .value
+                                    //         .isNotEmpty) {
+                                    //   buyingsFields[Values.quote_id]
+                                    //       ?.object
+                                    //       .value
+                                    //       .forEach((element) {
+                                    //     if (element is Quote) {
+                                    //       quote = element;
+                                    //       buyings = element.trucker
+                                    //           .map<TextEditingController>(
+                                    //               ((e) => TextEditingController(
+                                    //                   text: '')))
+                                    //           .toList();
+                                    //     }
+                                    //     if (element is QuoteC) {
+                                    //       quoteC = element;
+                                    //     }
+                                    //     if (element is Buying) {
+                                    //       buying = element;
+                                    //       buyings = element.buyings
+                                    //           .map<TextEditingController>(
+                                    //               ((e) => TextEditingController(
+                                    //                   text: e)))
+                                    //           .toList();
+                                    //     }
+                                    //   });
+                                    // }
                                     setState(() {});
                                   },
                                   focusHandler: (isLast) {
@@ -213,35 +250,36 @@ class _BuyingsReceivedState extends State<BuyingsReceived> {
                                                 Text(
                                                     "   ${quote?.trucker[index].phone}\t"
                                                         .padRight(12)),
-                                                SizedBox(
-                                                    width: 100,
-                                                    child: TextFormField(
-                                                      controller:
-                                                          buyings[index],
-                                                      validator: isNotBlank,
-                                                      decoration: InputDecoration(
-                                                          hintText: '',
-                                                          fillColor: Colors
-                                                              .white
-                                                              .withOpacity(0.6),
-                                                          labelStyle:
-                                                              const TextStyle(
-                                                                  color: Colors
-                                                                      .grey),
-                                                          filled: true,
-                                                          errorStyle:
-                                                              const TextStyle(
-                                                                  color: Colors
-                                                                      .redAccent),
-                                                          disabledBorder:
-                                                              const OutlineInputBorder(
-                                                                  borderSide:
-                                                                      BorderSide(
-                                                                          color: Colors
-                                                                              .grey)),
-                                                          border:
-                                                              const OutlineInputBorder()),
-                                                    ))
+                                                if (buyings.isNotEmpty)
+                                                  SizedBox(
+                                                      width: 100,
+                                                      child: TextFormField(
+                                                        controller:
+                                                            buyings[index],
+                                                        validator: isNotBlank,
+                                                        decoration: InputDecoration(
+                                                            hintText: '',
+                                                            fillColor: Colors
+                                                                .white
+                                                                .withOpacity(
+                                                                    0.6),
+                                                            labelStyle:
+                                                                const TextStyle(
+                                                                    color: Colors
+                                                                        .grey),
+                                                            filled: true,
+                                                            errorStyle:
+                                                                const TextStyle(
+                                                                    color: Colors
+                                                                        .redAccent),
+                                                            disabledBorder:
+                                                                const OutlineInputBorder(
+                                                                    borderSide: BorderSide(
+                                                                        color: Colors
+                                                                            .grey)),
+                                                            border:
+                                                                const OutlineInputBorder()),
+                                                      ))
                                               ],
                                             ),
                                           );

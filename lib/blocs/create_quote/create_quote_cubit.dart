@@ -52,9 +52,9 @@ class CreateQuoteCubit extends Cubit<CreateQuoteState> {
         await GetIt.I<QuoteRepository>().editQuote(quote);
     if (apiResponse.status) {
       // GetIt.I<Preferences>().saveIsCreateQuote(isCreateQuote: true);
-      final Quote? quote = Quote.fromJson(apiResponse.data['ops'][0]);
+      // final Quote? quote = Quote.fromJson(apiResponse.data['ops'][0]);
       emit(CreateQuoteSuccess(
-          quote: quote,
+          // quote: quote,
           successMessage:
               "Quote Was Updated Successfully. You can close the page now."));
     } else {

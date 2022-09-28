@@ -1,5 +1,4 @@
 import 'dart:developer';
-import 'package:adjusted_html_view_web/adjusted_html_view_web.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -7,11 +6,11 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:svojasweb/utilities/helper_functions.dart';
-import 'package:webcontent_converter/webcontent_converter.dart';
 import 'package:svojasweb/utilities/button_custm.dart';
-import 'package:path/path.dart' as p;
-import 'package:path_provider/path_provider.dart' as pp;
+// import 'package:path/path.dart' as p;
+// import 'package:path_provider/path_provider.dart' as pp;
 import 'package:svojasweb/views/drawer_view.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 class BolView extends StatefulWidget {
   const BolView({Key? key}) : super(key: key);
@@ -334,14 +333,8 @@ MACHINE )HS CODE 847740
                     if (kIsWeb) {
                       convertHtmlToPdf(htmlText);
                     } else {
-                      var dir = await pp.getApplicationDocumentsDirectory();
-                      var savedPath = p.join(dir.path, "sample.pdf");
-                      WebcontentConverter.contentToPDF(
-                          content: htmlText,
-                          savedPath: savedPath,
-                          format: PaperFormat.a4,
-                          margins: PdfMargins.px(
-                              top: 35, bottom: 35, right: 35, left: 35));
+                      ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text("Not Implemented")));
                     }
                   },
                 ),
@@ -568,22 +561,30 @@ class TextColumn extends StatelessWidget {
   }
 }
 
-class HtmlView extends StatelessWidget {
+class HtmlView extends StatefulWidget {
   const HtmlView({Key? key, required this.htmlText}) : super(key: key);
   final String htmlText;
+
+  @override
+  State<HtmlView> createState() => _HtmlViewState();
+}
+
+class _HtmlViewState extends State<HtmlView> {
+  late WebViewController _controller;
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-        child: Container(
-      alignment: Alignment.center,
-      padding: const EdgeInsets.only(left: 30),
-      color: Colors.white,
-      child: Center(
-        child: AdjustedHtmlView(
-          htmlText: htmlText,
-          htmlValidator: HtmlValidator.loose(),
-        ),
-      ),
-    ));
+    return Container(
+        alignment: Alignment.center,
+        padding: const EdgeInsets.only(left: 30),
+        color: Colors.white,
+        child: Center(
+          child: WebView(
+            initialUrl: 'about:blank',
+            onWebViewCreated: (WebViewController webViewController) {
+              _controller = webViewController;
+              _controller.loadHtmlString(widget.htmlText);
+            },
+          ),
+        ));
   }
 }

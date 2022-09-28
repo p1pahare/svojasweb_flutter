@@ -58,6 +58,7 @@ class TextFieldEntryBuilder extends StatelessWidget {
                 AutoCompleteDemo(
                   label: textFieldEntry!.label,
                   validate: textFieldEntry?.validate,
+                  fieldController: textFieldEntry?.controller,
                   onSelect: (object) {
                     if (textFieldEntry?.object is List) {
                       textFieldEntry?.object.add(object);

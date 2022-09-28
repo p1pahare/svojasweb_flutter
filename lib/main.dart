@@ -40,9 +40,12 @@ import 'package:svojasweb/views/port_view.dart';
 import 'package:svojasweb/views/quote_view.dart';
 import 'package:svojasweb/views/quotec_view.dart';
 import 'package:flutter_web_plugins/url_strategy.dart';
+import 'package:webview_flutter/webview_flutter.dart';
+import 'package:webview_flutter_web/webview_flutter_web.dart';
 
 void main() {
   usePathUrlStrategy();
+  WebView.platform = WebWebViewPlatform();
   runApp(const MyApp());
 }
 
@@ -143,20 +146,29 @@ class MyApp extends StatelessWidget {
                     case BuyingsReceived.routeName:
                       return CupertinoPageRoute<bool>(
                           settings: settings,
-                          builder: (context) => const BuyingsReceived(
+                          builder: (context) => BuyingsReceived(
                                 title: 'Buyings Received',
+                                preFilledValue: settings.arguments is String
+                                    ? (settings.arguments as String)
+                                    : null,
                               ));
                     case ConfirmedQuote.routeName:
                       return CupertinoPageRoute<bool>(
                           settings: settings,
-                          builder: (context) => const ConfirmedQuote(
+                          builder: (context) => ConfirmedQuote(
                                 title: 'Confirmed Quote',
+                                prefilledValue: settings.arguments is String
+                                    ? (settings.arguments as String)
+                                    : null,
                               ));
                     case ConfirmShipments.routeName:
                       return CupertinoPageRoute<bool>(
                           settings: settings,
-                          builder: (context) => const ConfirmShipments(
+                          builder: (context) => ConfirmShipments(
                                 title: 'Confirm Shipments',
+                                prefilledValue: settings.arguments is String
+                                    ? (settings.arguments as String)
+                                    : null,
                               ));
                     case DashboardView.routeName:
                       return CupertinoPageRoute(

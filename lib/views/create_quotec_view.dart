@@ -199,7 +199,7 @@ class _CreateQuotecViewState extends State<CreateQuotecView> {
                     padding: const EdgeInsets.all(50.0),
                     child: Center(child: Text(state.successMessage!)),
                   ),
-                  ViewQuotec(quoteC: state.quoteC!),
+                  if (state.quoteC != null) ViewQuotec(quoteC: state.quoteC!),
                   Row(
                     children: [
                       BigButtonNew(
@@ -209,9 +209,10 @@ class _CreateQuotecViewState extends State<CreateQuotecView> {
                       Expanded(
                         child: Center(
                           child: ButtonCustm(
-                              label: 'Buyings Received',
+                              label: 'Add Buyings Received',
                               function1: () => Navigator.pushNamed(
-                                  context, BuyingsReceived.routeName)),
+                                  context, BuyingsReceived.routeName,
+                                  arguments: state.quoteC?.quoteId)),
                         ),
                       ),
                     ],
@@ -300,10 +301,12 @@ class _CreateQuotecViewState extends State<CreateQuotecView> {
                                                 as Quote?)
                                             ?.quoteId;
                                   }
-                                  // values[Values.quote_number] = state.id;
+
                                   if (widget.quotec == null) {
                                     GetIt.I<CreateQuotecCubit>().create(values);
                                   } else {
+                                    values[Values.sid] = widget.quotec?.sId;
+                                    values.remove(Values.quote_id);
                                     GetIt.I<CreateQuotecCubit>().edit(values);
                                   }
                                 }

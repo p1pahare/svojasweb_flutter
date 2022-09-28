@@ -20,9 +20,11 @@ import 'package:svojasweb/views/subviews/view_quote.dart';
 import 'package:svojasweb/views/subviews/view_quotec.dart';
 
 class ConfirmShipments extends StatefulWidget {
-  const ConfirmShipments({Key? key, required this.title}) : super(key: key);
+  const ConfirmShipments({Key? key, required this.title, this.prefilledValue})
+      : super(key: key);
   static const routeName = '/ConfirmShipments';
   final String title;
+  final String? prefilledValue;
   @override
   State<ConfirmShipments> createState() => _ConfirmShipmentsState();
 }
@@ -115,6 +117,9 @@ class _ConfirmShipmentsState extends State<ConfirmShipments> {
   void initState() {
     super.initState();
     initCquote();
+    if (widget.prefilledValue != null) {
+      GetIt.I<CreateShipmentCubit>().getBuyings(widget.prefilledValue!);
+    }
   }
 
   String servertoFormatDate(String? datee) {

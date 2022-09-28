@@ -7,6 +7,7 @@ import 'package:svojasweb/models/cquote.dart';
 import 'package:svojasweb/models/quote.dart';
 import 'package:svojasweb/models/quotec.dart';
 import 'package:svojasweb/repositories/buying_repository.dart';
+import 'dart:developer' as d;
 
 part 'create_buyings_state.dart';
 
@@ -22,8 +23,9 @@ class CreateBuyingsCubit extends Cubit<CreateBuyingsState> {
         await GetIt.I<BuyingRepository>().createBuying(buying);
     if (apiResponse.status) {
       // GetIt.I<Preferences>().saveIsCreateQuote(isCreateQuote: true);
-
+      final Buying? buying = Buying.fromJson(apiResponse.data['ops'][0]);
       emit(CreateBuyingSuccess(
+          buying: buying,
           successMessage:
               "Buyings Was Updated Successfully. You can close the page now."));
     } else {
@@ -37,8 +39,9 @@ class CreateBuyingsCubit extends Cubit<CreateBuyingsState> {
         await GetIt.I<BuyingRepository>().editBuying(buying);
     if (apiResponse.status) {
       // GetIt.I<Preferences>().saveIsCreateQuote(isCreateQuote: true);
-
+      final Buying? buying = Buying.fromJson(apiResponse.data['ops'][0]);
       emit(CreateBuyingSuccess(
+          buying: buying,
           successMessage:
               "Quote Was Updated Successfully. You can close the page now."));
     } else {
@@ -50,29 +53,39 @@ class CreateBuyingsCubit extends Cubit<CreateBuyingsState> {
     if (quoteId.isEmpty) {
       return {};
     }
+    d.log(state.toString());
     final ApiResponse apiResponse =
         await GetIt.I<BuyingRepository>().getBuyingByQuoteID(quoteId);
     if (apiResponse.status) {
       final Map<String, List<dynamic>> finalMap = {};
       final entries = (apiResponse.data as Map<String, dynamic>);
+      Quote? quote;
+      QuoteC? quoteC;
+      Buying? buying;
+      Cquote? cquote;
       entries.forEach((key, value) {
         List<dynamic> newValue = [];
         for (final element in value) {
           if (element['type'] == 'quote') {
-            newValue.add(Quote.fromJson(element));
+            quote = Quote.fromJson(element);
+            newValue.add(quote);
           }
           if (element['type'] == 'quotec') {
-            newValue.add(QuoteC.fromJson(element));
+            quoteC = QuoteC.fromJson(element);
+            newValue.add(quoteC);
           }
           if (element['type'] == 'buying') {
-            newValue.add(Buying.fromJson(element));
+            buying = Buying.fromJson(element);
+            newValue.add(buying);
           }
           if (element['type'] == 'cquote') {
-            newValue.add(Cquote.fromJson(element));
+            cquote = Cquote.fromJson(element);
+            newValue.add(cquote);
           }
         }
         finalMap[key] = newValue;
       });
+      emit(CreatePageSuccess(buying: buying, quote: quote, quotec: quoteC));
       return finalMap;
     } else {
       return {};

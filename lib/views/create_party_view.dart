@@ -383,7 +383,7 @@ class _CreatePartyViewState extends State<CreatePartyView> {
                   Padding(
                       padding: const EdgeInsets.all(50),
                       child: Center(child: Text(state.successMessage!))),
-                  ViewParty(party: state.party!),
+                  if (state.party != null) ViewParty(party: state.party!),
                   Row(
                     children: [
                       BigButtonNew(

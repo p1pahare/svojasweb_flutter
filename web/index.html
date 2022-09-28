@@ -40,8 +40,18 @@
   <script>
     var serviceWorkerVersion = null;
     var scriptLoaded = false;
+    function randomIntFromInterval(min, max) { // min and max included 
+  return Math.floor(Math.random() * (max - min + 1) + min)
+}
     window.converHTMLToPDF = (htmll) => {
-  html2pdf().from(htmll).save()
+      var opt = {
+  margin:       0.55,
+  filename:     `myfile${randomIntFromInterval(1000,9999)}.pdf`,
+  image:        { type: 'jpeg', quality: 0.98 },
+  html2canvas:  { scale: 1.1 },
+  jsPDF:        { unit: 'in', format: 'A4', orientation: 'portrait' }
+};
+  html2pdf().set(opt).from(htmll).save()
 }
 
     function loadMainDartJs() {

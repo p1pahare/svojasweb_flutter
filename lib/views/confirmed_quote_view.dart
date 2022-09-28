@@ -14,9 +14,11 @@ import 'package:svojasweb/views/subviews/view_quote.dart';
 import 'package:svojasweb/views/subviews/view_quotec.dart';
 
 class ConfirmedQuote extends StatefulWidget {
-  const ConfirmedQuote({Key? key, required this.title}) : super(key: key);
+  const ConfirmedQuote({Key? key, required this.title, this.prefilledValue})
+      : super(key: key);
   static const routeName = '/ConfirmedQuote';
   final String title;
+  final String? prefilledValue;
   @override
   State<ConfirmedQuote> createState() => _ConfirmedQuoteState();
 }
@@ -34,6 +36,9 @@ class _ConfirmedQuoteState extends State<ConfirmedQuote> {
   @override
   void initState() {
     super.initState();
+    if (widget.prefilledValue != null) {
+      GetIt.I<BuyingCubit>().getQuotecs(widget.prefilledValue!);
+    }
   }
 
   @override

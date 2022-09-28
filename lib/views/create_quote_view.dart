@@ -589,7 +589,7 @@ class _CreateQuoteViewState extends State<CreateQuoteView> {
                     padding: const EdgeInsets.all(50),
                     child: Center(child: Text(state.successMessage!)),
                   ),
-                  ViewQuote(quote: state.quote!),
+                  if (state.quote != null) ViewQuote(quote: state.quote!),
                   Row(
                     children: [
                       BigButtonNew(

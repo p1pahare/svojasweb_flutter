@@ -14,8 +14,8 @@ dependencies:
   http: ^0.13.4
   intl: ^0.17.0
   get_it: ^7.2.0
-  adjusted_html_view_web: ^0.0.2
-  webcontent_converter: ^0.0.7+2
+  webview_flutter_web: ^0.1.0+4
+  webview_flutter: ^3.0.4
   path_provider: ^2.0.11
   rxdart: ^0.27.5
   js: ^0.6.4

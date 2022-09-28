@@ -13,8 +13,8 @@ class CreateBuyingFailed extends CreateBuyingsState {
 }
 
 class CreateBuyingSuccess extends CreateBuyingsState {
-  CreateBuyingSuccess({this.successMessage});
-
+  CreateBuyingSuccess({this.successMessage, this.buying});
+  final Buying? buying;
   final String? successMessage;
 }
 
