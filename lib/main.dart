@@ -37,6 +37,8 @@ import 'package:svojasweb/views/dashboard_view.dart';
 import 'package:svojasweb/views/login_view.dart';
 import 'package:svojasweb/views/party_view.dart';
 import 'package:svojasweb/views/port_view.dart';
+import 'package:svojasweb/views/quote_customer_mail1.dart';
+import 'package:svojasweb/views/quote_trucker_mail1.dart';
 import 'package:svojasweb/views/quote_view.dart';
 import 'package:svojasweb/views/quotec_view.dart';
 import 'package:flutter_web_plugins/url_strategy.dart';
@@ -147,11 +149,10 @@ class MyApp extends StatelessWidget {
                       return CupertinoPageRoute<bool>(
                           settings: settings,
                           builder: (context) => BuyingsReceived(
-                              title: 'Buyings Received',
-                              preFilledValue: 'SVOJ0000015'
-                              // settings.arguments is String
-                              //     ? (settings.arguments as String)
-                              //     : null,
+                                title: 'Buyings Received',
+                                preFilledValue: settings.arguments is String
+                                    ? (settings.arguments as String)
+                                    : null,
                               ));
                     case ConfirmedQuote.routeName:
                       return CupertinoPageRoute<bool>(
@@ -176,6 +177,28 @@ class MyApp extends StatelessWidget {
                           settings: settings,
                           builder: (context) => const DashboardView(
                                 title: '',
+                              ));
+                    case QuoteCustomerMail1.routeName:
+                      Map<String, dynamic> args =
+                          settings.arguments as Map<String, dynamic>;
+                      Party? party = args['party'];
+                      Quote? quote = args['quote'];
+                      return CupertinoPageRoute(
+                          settings: settings,
+                          builder: (context) => QuoteCustomerMail1(
+                                party: party,
+                                quote: quote,
+                              ));
+                    case QuoteTruckerMail1.routeName:
+                      Map<String, dynamic> args =
+                          settings.arguments as Map<String, dynamic>;
+                      Party? party = args['party'];
+                      Quote? quote = args['quote'];
+                      return CupertinoPageRoute(
+                          settings: settings,
+                          builder: (context) => QuoteCustomerMail1(
+                                party: party,
+                                quote: quote,
                               ));
                     case PartyView.routeName:
                       return CupertinoPageRoute(

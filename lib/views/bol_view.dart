@@ -90,7 +90,7 @@ MACHINE )HS CODE 847740
     super.initState();
   }
 
-  Future feedHtml() async {
+  Future<void> feedHtml() async {
     htmlText = await rootBundle.loadString("lib/assets/bill_of_lading.html");
   }
 

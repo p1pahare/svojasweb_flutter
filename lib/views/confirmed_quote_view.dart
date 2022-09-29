@@ -92,7 +92,7 @@ class _ConfirmedQuoteState extends State<ConfirmedQuote> {
                             ),
                             ListView.builder(
                                 shrinkWrap: true,
-                                itemCount: state.quote?.trucker.length,
+                                itemCount: state.buying?.buyings.length ?? 0,
                                 itemBuilder: (context, index) {
                                   return Container(
                                     height: 50,

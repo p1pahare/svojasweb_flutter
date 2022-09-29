@@ -15,6 +15,8 @@ import 'package:svojasweb/utilities/textfield_entry_builder.dart';
 import 'package:svojasweb/utilities/validations.dart';
 import 'package:svojasweb/views/create_quotec_view.dart';
 import 'package:svojasweb/views/drawer_view.dart';
+import 'package:svojasweb/views/quote_customer_mail1.dart';
+import 'package:svojasweb/views/quote_trucker_mail1.dart';
 import 'package:svojasweb/views/quote_view.dart';
 import 'package:svojasweb/views/subviews/view_party.dart';
 import 'package:svojasweb/views/subviews/view_quote.dart';
@@ -590,6 +592,16 @@ class _CreateQuoteViewState extends State<CreateQuoteView> {
                     child: Center(child: Text(state.successMessage!)),
                   ),
                   if (state.quote != null) ViewQuote(quote: state.quote!),
+                  TruckerList(
+                    truckers: truckers,
+                    quoteFields: quoteFields,
+                    quote: state.quote ?? widget.quote,
+                  ),
+                  SelectedCustomer(
+                    company: company,
+                    quoteFields: quoteFields,
+                    quote: state.quote ?? widget.quote,
+                  ),
                   Row(
                     children: [
                       BigButtonNew(
@@ -812,124 +824,10 @@ class _CreateQuoteViewState extends State<CreateQuoteView> {
                               },
                             ),
                           ),
-                          StreamBuilder<List<Party>?>(
-                              stream: truckers.stream,
-                              // GetIt.I<CreateQuotecCubit>()
-                              //     .getTruckersStream(widget.quotec?.truckers),
-                              builder: (context, snapp) {
-                                if (snapp.data?.isNotEmpty ?? false) {
-                                  return Column(
-                                    children: [
-                                      const Center(
-                                        child: Text(
-                                          "Truckers Selected",
-                                          style: TextStyle(
-                                              fontSize: 24,
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                      ),
-                                      ListView.builder(
-                                          // gridDelegate:
-                                          //     const SliverGridDelegateWithFixedCrossAxisCount(
-                                          //         crossAxisCount: 2),
-                                          shrinkWrap: true,
-                                          physics:
-                                              const NeverScrollableScrollPhysics(),
-                                          itemCount: snapp.data?.length,
-                                          itemBuilder: (context, index) =>
-                                              Container(
-                                                  margin:
-                                                      const EdgeInsets.all(20),
-                                                  child: Stack(
-                                                    children: [
-                                                      ViewParty(
-                                                          nameOnTop: true,
-                                                          party: snapp
-                                                              .data![index]),
-                                                      Positioned(
-                                                          top: 0,
-                                                          left: 0,
-                                                          child: MaterialButton(
-                                                            child: const Icon(
-                                                              Icons
-                                                                  .cancel_outlined,
-                                                              size: 40,
-                                                              color:
-                                                                  Colors.white,
-                                                            ),
-                                                            onPressed: () {
-                                                              final listtrucker =
-                                                                  snapp.data;
-                                                              listtrucker
-                                                                  ?.removeAt(
-                                                                      index);
-                                                              truckers.add(
-                                                                  listtrucker!);
-                                                              quoteFields[Values
-                                                                          .truckers]
-                                                                      ?.object =
-                                                                  listtrucker;
-                                                            },
-                                                          )),
-                                                    ],
-                                                  ))),
-                                    ],
-                                  );
-                                } else {
-                                  return const SizedBox(
-                                    height: 0,
-                                  );
-                                }
-                              }),
-                          StreamBuilder<Party?>(
-                              stream: company.stream,
-                              // GetIt.I<CreateQuotecCubit>()
-                              //     .getTruckersStream(widget.quotec?.truckers),
-                              builder: (context, snapp) {
-                                if (snapp.data != null) {
-                                  return Column(
-                                    children: [
-                                      const Center(
-                                        child: Text(
-                                          "Customer Selected",
-                                          style: TextStyle(
-                                              fontSize: 24,
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                      ),
-                                      Container(
-                                          margin: const EdgeInsets.all(20),
-                                          child: Stack(
-                                            children: [
-                                              ViewParty(
-                                                  nameOnTop: true,
-                                                  party: snapp.data!),
-                                              Positioned(
-                                                  top: 0,
-                                                  left: 0,
-                                                  child: MaterialButton(
-                                                    child: const Icon(
-                                                      Icons.cancel_outlined,
-                                                      size: 40,
-                                                      color: Colors.white,
-                                                    ),
-                                                    onPressed: () {
-                                                      company.add(null);
-                                                      quoteFields[
-                                                              Values.customer]
-                                                          ?.object = null;
-                                                    },
-                                                  )),
-                                            ],
-                                          )),
-                                    ],
-                                  );
-                                } else {
-                                  return const SizedBox(
-                                    height: 0,
-                                  );
-                                }
-                              }),
+                          TruckerList(
+                              truckers: truckers, quoteFields: quoteFields),
+                          SelectedCustomer(
+                              company: company, quoteFields: quoteFields),
                         ],
                       )));
             }
@@ -942,5 +840,164 @@ class _CreateQuoteViewState extends State<CreateQuoteView> {
       ),
       drawer: const DrawerView(),
     );
+  }
+}
+
+class SelectedCustomer extends StatelessWidget {
+  const SelectedCustomer(
+      {Key? key, required this.company, required this.quoteFields, this.quote})
+      : super(key: key);
+
+  final BehaviorSubject<Party?> company;
+  final Map<String, TextFieldEntry> quoteFields;
+  final Quote? quote;
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<Party?>(
+        stream: company.stream,
+        // GetIt.I<CreateQuotecCubit>()
+        //     .getTruckersStream(widget.quotec?.truckers),
+        builder: (context, snapp) {
+          if (snapp.data != null) {
+            return Column(
+              children: [
+                const Center(
+                  child: Text(
+                    "Customer Selected",
+                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  ),
+                ),
+                Container(
+                    margin: const EdgeInsets.all(20),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Expanded(
+                          child: Stack(
+                            children: [
+                              ViewParty(nameOnTop: true, party: snapp.data!),
+                              Positioned(
+                                  top: 0,
+                                  left: 0,
+                                  child: MaterialButton(
+                                    child: const Icon(
+                                      Icons.cancel_outlined,
+                                      size: 40,
+                                      color: Colors.white,
+                                    ),
+                                    onPressed: () {
+                                      company.add(null);
+                                      quoteFields[Values.customer]?.object =
+                                          null;
+                                    },
+                                  )),
+                            ],
+                          ),
+                        ),
+                        if (quote != null)
+                          ButtonCustm(
+                            label: 'Mail',
+                            function1: () => Navigator.pushNamed(
+                                context, QuoteCustomerMail1.routeName,
+                                arguments: {
+                                  'party': snapp.data!,
+                                  'quote': quote
+                                }),
+                          )
+                      ],
+                    )),
+              ],
+            );
+          } else {
+            return const SizedBox(
+              height: 0,
+            );
+          }
+        });
+  }
+}
+
+class TruckerList extends StatelessWidget {
+  const TruckerList(
+      {Key? key, required this.truckers, required this.quoteFields, this.quote})
+      : super(key: key);
+
+  final BehaviorSubject<List<Party>?> truckers;
+  final Map<String, TextFieldEntry> quoteFields;
+  final Quote? quote;
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<List<Party>?>(
+        stream: truckers.stream,
+        // GetIt.I<CreateQuotecCubit>()
+        //     .getTruckersStream(widget.quotec?.truckers),
+        builder: (context, snapp) {
+          if (snapp.data?.isNotEmpty ?? false) {
+            return Column(
+              children: [
+                const Center(
+                  child: Text(
+                    "Truckers Selected",
+                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  ),
+                ),
+                ListView.builder(
+                    // gridDelegate:
+                    //     const SliverGridDelegateWithFixedCrossAxisCount(
+                    //         crossAxisCount: 2),
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: snapp.data?.length,
+                    itemBuilder: (context, index) => Container(
+                        margin: const EdgeInsets.all(20),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Expanded(
+                              child: Stack(
+                                children: [
+                                  ViewParty(
+                                      nameOnTop: true,
+                                      party: snapp.data![index]),
+                                  Positioned(
+                                      top: 0,
+                                      left: 0,
+                                      child: MaterialButton(
+                                        child: const Icon(
+                                          Icons.cancel_outlined,
+                                          size: 40,
+                                          color: Colors.white,
+                                        ),
+                                        onPressed: () {
+                                          final listtrucker = snapp.data;
+                                          listtrucker?.removeAt(index);
+                                          truckers.add(listtrucker!);
+                                          quoteFields[Values.truckers]?.object =
+                                              listtrucker;
+                                        },
+                                      )),
+                                ],
+                              ),
+                            ),
+                            if (quote != null)
+                              ButtonCustm(
+                                label: 'Mail',
+                                function1: () => Navigator.pushNamed(
+                                    context, QuoteTruckerMail1.routeName,
+                                    arguments: {
+                                      'party': snapp.data![index],
+                                      'quote': quote
+                                    }),
+                              )
+                          ],
+                        ))),
+              ],
+            );
+          } else {
+            return const SizedBox(
+              height: 0,
+            );
+          }
+        });
   }
 }

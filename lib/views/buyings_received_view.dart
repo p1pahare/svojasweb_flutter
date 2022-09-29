@@ -3,8 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:svojasweb/blocs/create_buyings/create_buyings_cubit.dart';
 import 'package:svojasweb/models/buying.dart';
-import 'package:svojasweb/models/quote.dart';
-import 'package:svojasweb/models/quotec.dart';
 import 'package:svojasweb/models/textfield_entry.dart';
 import 'package:svojasweb/repositories/values.dart';
 import 'package:svojasweb/utilities/button_custm.dart';
@@ -42,8 +40,7 @@ class _BuyingsReceivedState extends State<BuyingsReceived> {
 
   List<TextEditingController> buyings = [];
   Map<String, TextFieldEntry> buyingsFields = {};
-  Quote? quote;
-  QuoteC? quoteC;
+
   Buying? buying;
   void initBuyings() {
     buyingsFields = {
@@ -125,13 +122,11 @@ class _BuyingsReceivedState extends State<BuyingsReceived> {
             }
             if (state is CreatePageSuccess) {
               if (state.quote != null) {
-                quote = state.quote;
-                buyings = quote!.truckers!
+                buyings = state.quote!.truckers!
                     .map<TextEditingController>(
                         ((e) => TextEditingController(text: '')))
                     .toList();
               }
-              if (state.quotec != null) quoteC = state.quotec;
               if (state.buying != null) {
                 buyings = state.buying!.buyings
                     .map<TextEditingController>(
@@ -199,22 +194,22 @@ class _BuyingsReceivedState extends State<BuyingsReceived> {
                                 );
                               }),
                             ),
-                            if (quote != null)
+                            if (state.quote != null)
                               Container(
                                   margin: const EdgeInsets.all(25),
-                                  child: ViewQuote(quote: quote!)),
-                            if (quoteC != null)
+                                  child: ViewQuote(quote: state.quote!)),
+                            if (state.quotec != null)
                               Container(
                                   margin: const EdgeInsets.all(25),
-                                  child: ViewQuotec(quoteC: quoteC!)),
+                                  child: ViewQuotec(quoteC: state.quotec!)),
                             Builder(builder: (context) {
-                              if (quote == null) {
+                              if (state.quote == null) {
                                 return const Center(
                                   child: Text("Please Select a Quote"),
                                 );
                               }
 
-                              if (quote?.trucker.isEmpty ?? false) {
+                              if (state.quote?.trucker.isEmpty ?? false) {
                                 return const Center(
                                     child: Text(
                                         "No Truckers Selected in this Quote"));
@@ -229,7 +224,7 @@ class _BuyingsReceivedState extends State<BuyingsReceived> {
                                     ),
                                     ListView.builder(
                                         shrinkWrap: true,
-                                        itemCount: quote?.trucker.length,
+                                        itemCount: buyings.length,
                                         itemBuilder: (context, index) {
                                           return Container(
                                             height: 50,
@@ -244,11 +239,11 @@ class _BuyingsReceivedState extends State<BuyingsReceived> {
                                                   MainAxisAlignment.spaceAround,
                                               children: [
                                                 Text(
-                                                    "   ${quote?.trucker[index].partyName} (${quote?.trucker[index].orgName})\t"),
+                                                    "   ${state.quote?.trucker[index].partyName} (${state.quote?.trucker[index].orgName})\t"),
                                                 Text(
-                                                    "   ${quote?.trucker[index].emailId}\t"),
+                                                    "   ${state.quote?.trucker[index].emailId}\t"),
                                                 Text(
-                                                    "   ${quote?.trucker[index].phone}\t"
+                                                    "   ${state.quote?.trucker[index].phone}\t"
                                                         .padRight(12)),
                                                 if (buyings.isNotEmpty)
                                                   SizedBox(
@@ -296,10 +291,11 @@ class _BuyingsReceivedState extends State<BuyingsReceived> {
                                 function1: () {
                                   final Map<String, dynamic> values = {};
 
-                                  if (quote != null &&
+                                  if (state.quote != null &&
                                       _formKey.currentState!.validate() &&
                                       buyings.isNotEmpty) {
-                                    values[Values.quote_id] = quote?.quoteId;
+                                    values[Values.quote_id] =
+                                        state.quote?.quoteId;
                                     values[Values.buyings] = buyings
                                         .map<String>((e) => e.text)
                                         .toList();

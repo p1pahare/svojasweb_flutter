@@ -570,7 +570,7 @@ class QuoteDetails extends StatelessWidget {
               ),
               ListView.builder(
                   shrinkWrap: true,
-                  itemCount: quote?.trucker.length,
+                  itemCount: buying?.buyings.length ?? 0,
                   itemBuilder: (context, index) {
                     return Container(
                       height: 50,

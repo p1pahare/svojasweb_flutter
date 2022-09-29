@@ -11,7 +11,7 @@ class KeyValueView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 28),
-      width: max(480, MediaQuery.of(context).size.width / 2 - 60),
+      width: max(480, MediaQuery.of(context).size.width / 2 - 100),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
