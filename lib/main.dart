@@ -196,7 +196,7 @@ class MyApp extends StatelessWidget {
                       Quote? quote = args['quote'];
                       return CupertinoPageRoute(
                           settings: settings,
-                          builder: (context) => QuoteCustomerMail1(
+                          builder: (context) => QuoteTruckerMail1(
                                 party: party,
                                 quote: quote,
                               ));

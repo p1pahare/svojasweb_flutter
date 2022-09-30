@@ -2,6 +2,7 @@
 
 class Values2 {
   static const base_url = 'http://localhost:3000/api/';
+  static const url_another = 'http://localhost:4000/api/';
   static const login = 'login';
   static const get_statistics = 'get_statistics';
   static const get_date_and_reference = 'get_date_and_reference';

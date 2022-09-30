@@ -50,9 +50,7 @@ class CreatePartyCubit extends Cubit<CreatePartyState> {
         await GetIt.I<PartyRepository>().editParty(party);
     if (apiResponse.status) {
       // GetIt.I<Preferences>().saveIsCreateParty(isCreateParty: true);
-      final Party? party = Party.fromJson(apiResponse.data['ops'][0]);
       emit(CreatePartySuccess(
-          party: party,
           successMessage:
               "Party Was Updated Successfully. You can close the page now."));
     } else {

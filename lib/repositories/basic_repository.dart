@@ -92,4 +92,38 @@ class BasicRepository {
       }
     }
   }
+
+  Future<ApiResponse> sendMail(
+      {String? email, String? due, String? task}) async {
+    try {
+      final bytes = utf8.encode(due!);
+      final base64Str = base64.encode(bytes);
+      final body = jsonEncode({'email': email, 'due': base64Str, 'task': task});
+
+      final http.Response response = await http.post(
+          Uri.parse(Values.url_another),
+          body: body,
+          headers: {'Content-Type': 'application/json'});
+
+      if (response.statusCode == 200) {
+        final String body = response.body;
+        log(body);
+        return ApiResponse.fromJson(
+            {"status": true, "message": "", "data": body});
+      } else {
+        String message = response.reasonPhrase ?? 'Something Went Wrong';
+        log(message);
+        return ApiResponse.fromJson({"status": false, "message": message});
+      }
+    } catch (e) {
+      if (e is SocketException) {
+        return ApiResponse(
+            status: false,
+            message:
+                "Network Problem Occurred. Kindly check your internet connection.");
+      } else {
+        return ApiResponse(status: false, message: e.toString());
+      }
+    }
+  }
 }
