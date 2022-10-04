@@ -10,7 +10,7 @@ import 'package:svojasweb/repositories/values.dart';
 import 'package:svojasweb/utilities/button_custm.dart';
 import 'package:svojasweb/utilities/new_big_button.dart';
 import 'package:svojasweb/utilities/textfield_entry_builder.dart';
-import 'package:svojasweb/views/buyings_received_view.dart';
+import 'package:svojasweb/views/confirmed_quote_view.dart';
 import 'package:svojasweb/views/drawer_view.dart';
 import 'package:svojasweb/views/quotec_view.dart';
 import 'package:svojasweb/views/subviews/view_quotec.dart';
@@ -209,9 +209,9 @@ class _CreateQuotecViewState extends State<CreateQuotecView> {
                       Expanded(
                         child: Center(
                           child: ButtonCustm(
-                              label: 'Add Buyings Received',
+                              label: 'Next: Confirmed Quote',
                               function1: () => Navigator.pushNamed(
-                                  context, BuyingsReceived.routeName,
+                                  context, ConfirmedQuote.routeName,
                                   arguments: state.quoteC?.quoteId)),
                         ),
                       ),

@@ -57,22 +57,25 @@ class DrawerView extends StatelessWidget {
           ),
           ListTile(
             leading: const Icon(Icons.api),
+            title: const Text('Buyings Received'),
+            onTap: () {
+              if (!isDashboard) {
+                Navigator.pop(context);
+              }
+              Navigator.popAndPushNamed(
+                context,
+                BuyingsReceived.routeName,
+              );
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.api),
             title: const Text('Quote to Customer'),
             onTap: () {
               if (!isDashboard) {
                 Navigator.pop(context);
               }
               Navigator.popAndPushNamed(context, CreateQuotecView.routeName);
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.api),
-            title: const Text('Buyings Received'),
-            onTap: () {
-              if (!isDashboard) {
-                Navigator.pop(context);
-              }
-              Navigator.popAndPushNamed(context, BuyingsReceived.routeName);
             },
           ),
           ListTile(
