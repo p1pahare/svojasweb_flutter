@@ -13,7 +13,7 @@ import 'package:svojasweb/utilities/button_custm.dart';
 import 'package:svojasweb/utilities/new_big_button.dart';
 import 'package:svojasweb/utilities/textfield_entry_builder.dart';
 import 'package:svojasweb/utilities/validations.dart';
-import 'package:svojasweb/views/create_quotec_view.dart';
+import 'package:svojasweb/views/buyings_received_view.dart';
 import 'package:svojasweb/views/drawer_view.dart';
 import 'package:svojasweb/views/quote_customer_mail1.dart';
 import 'package:svojasweb/views/quote_trucker_mail1.dart';
@@ -611,9 +611,11 @@ class _CreateQuoteViewState extends State<CreateQuoteView> {
                       Expanded(
                         child: Center(
                           child: ButtonCustm(
-                              label: 'Quote to Customer',
+                              label: 'Buyings Received',
                               function1: () => Navigator.pushNamed(
-                                  context, CreateQuotecView.routeName)),
+                                  context, BuyingsReceived.routeName,
+                                  arguments: state.quote?.quoteId ??
+                                      widget.quote?.quoteId)),
                         ),
                       ),
                     ],

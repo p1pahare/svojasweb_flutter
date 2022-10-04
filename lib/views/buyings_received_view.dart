@@ -10,7 +10,7 @@ import 'package:svojasweb/utilities/new_big_button.dart';
 import 'dart:developer' as d;
 import 'package:svojasweb/utilities/textfield_entry_builder.dart';
 import 'package:svojasweb/utilities/validations.dart';
-import 'package:svojasweb/views/confirmed_quote_view.dart';
+import 'package:svojasweb/views/create_quotec_view.dart';
 import 'package:svojasweb/views/drawer_view.dart';
 import 'package:svojasweb/views/subviews/view_quote.dart';
 import 'package:svojasweb/views/subviews/view_quotec.dart';
@@ -109,9 +109,9 @@ class _BuyingsReceivedState extends State<BuyingsReceived> {
                       Expanded(
                         child: Center(
                           child: ButtonCustm(
-                              label: 'Proceed to View Confirmed Quote',
+                              label: 'Quote to Customer',
                               function1: () => Navigator.pushNamed(
-                                  context, ConfirmedQuote.routeName,
+                                  context, CreateQuotecView.routeName,
                                   arguments: state.buying?.quoteId)),
                         ),
                       ),
